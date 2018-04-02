@@ -30,6 +30,8 @@ public class CountDownLatchDemo {
             this.workTime=workTime;
             this.latch=latch;
         }
+
+        @Override
         public void run(){
             System.out.println("Worker " + workerName + " do work begin at " + sdf.format(new Date()));
             doWork();//工作了

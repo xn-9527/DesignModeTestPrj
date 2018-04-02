@@ -72,6 +72,11 @@ public class TestAlibabaJava {
         for(String s : array){
             System.out.println(s);//output:
         }
+        //反例： 直接使用 toArray 无参方法存在问题，此方法返回值只能是 Object[]类，若强转其它类型数组将出现 ClassCastException 错误。
+        Object[] array1 = list.toArray();
+        for(Object s : array1){
+            System.out.println("!!!!!" + s.toString());//output:
+        }
 
         //Arrays.asList()----------------------------------------------------------
         /*
@@ -96,6 +101,18 @@ public class TestAlibabaJava {
         * */
         //演示会报错的情况，正确的做法是用iterator
         System.out.println("list remove/add----------------------------------");
+        List<String> a2 = new ArrayList<String>();
+        a2.add("1");
+        a2.add("2");
+        Iterator<String> iterator = a2.iterator();
+        while (iterator.hasNext()) {
+            String item = iterator.next();
+            if ("2".equals(item)) {
+                iterator.remove();
+            }
+        }
+        System.out.println(a2);
+
         List<String> a = new ArrayList<String>();
         a.add("1");
         a.add("2");
@@ -136,6 +153,19 @@ public class TestAlibabaJava {
         });
         System.out.println(aa);
 
+        System.out.println("HashMap----------------------------------");
+        //initialCapacity = (需要存储的元素个数 / 负载因子) + 1。注意负载因子 （ 即 loader
+        //factor） 默认为 0.75， 如果暂时无法确定初始值大小，请设置为 16（即默认值）
+        //capacity译为容量。capacity就是指HashMap中桶的数量。默认值为16。一般第一次扩容时会扩容到64。总之，容量都是2的幂。
+        Map testMap = new HashMap(4);
+        System.out.println(testMap.size());
+        testMap.put("a",1);
+        testMap.put("a1",11);
+        testMap.put("a2",12);
+        testMap.put("a3",13);
+        testMap.put("a4",14);
+        System.out.println(testMap.size());
+
         //遍历 Map------------------------------------------------
         // 使用 entrySet 遍历 Map 类集合 KV，而不是 keySet 方式进行遍历
         System.out.println("遍历 Map----------------------------------");
@@ -146,6 +176,9 @@ public class TestAlibabaJava {
         System.out.println(mapK);
         Set mapKV = map.entrySet();
         System.out.println(mapKV);
+        map.forEach((k,v) -> {
+            System.out.println("key:" + k + ",value:" + v);
+        });
 
         //SimpleDateFormat------------------------------------------------
         System.out.println("SimpleDateFormat----------------------------------");
@@ -231,10 +264,40 @@ public class TestAlibabaJava {
 
         //------------------------------------------------
         System.out.println("Arrays.asList()----------------------------------");
-
+        boolean flag = 10%2 == 1 && 10 / 3 == 0 && 1 / 0 == 0 ;
+        System.out.println(flag ? "mldn" : "yootk") ;
+        System.out.println(Float.MAX_VALUE);
+        System.out.println(Double.MAX_VALUE);
+        System.out.println(Integer.MAX_VALUE);
+        System.out.println(Integer.MAX_VALUE+1);
+        System.out.println(Integer.MAX_VALUE+2);
+        System.out.println(inc(10) + inc(8) + inc(-10)) ;
+        long num = 100 ;
+//        int x = num + 2 ;//error
+//        System.out.println(x) ;
+        char c = 'A' ;
+        int num1 = 10 ;
+        switch(c) {
+            case 'B' :
+                num1 ++ ;//少了break
+            case 'A' :
+                num1 ++ ;//少了break
+            case 'Y' :
+                num1 ++ ;
+                break ;
+            default :
+                num1 -- ;
+        }
+        System.out.println(num1) ;
         //------------------------------------------------
         System.out.println("Arrays.asList()----------------------------------");
+    }
 
+    public static int inc(int temp) {
+        if (temp > 0) {
+            return temp * 2 ;
+        }
+        return -1 ;
     }
 
     //DateUtils
@@ -244,4 +307,45 @@ public class TestAlibabaJava {
             return new SimpleDateFormat("yyyy-MM-dd");
         }
     };
+
+    //堆栈的代码
+    public class  Stack<E>{
+        public ArrayList<E> temp = new ArrayList<E>();
+        private int maxSize;
+        private int top;
+
+        public Stack(){}
+        public Stack(int size){
+            maxSize = size;
+            top = -1;
+        }
+
+        public void push(E e){
+            temp.set(++top, e);
+        }
+
+        public E pop(){
+            return temp.get(top--);
+        }
+
+        public boolean isEmpty(){
+            return (top == -1);
+        }
+
+        //生产者，频繁往外读取内容的，适合用extends
+        public void pushAll(Iterable<? extends E> src){
+            //读src
+            for (E e: src) {
+                push(e);
+            }
+        }
+
+        //消费者，经常往里插入的，适合用super
+        public void popAll(Collection<? super E> dst){
+            //写dst
+            if(!isEmpty()){
+                dst.add(pop());
+            }
+        }
+    }
 }
