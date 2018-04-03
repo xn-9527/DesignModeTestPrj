@@ -3,6 +3,7 @@ package test;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -176,9 +177,20 @@ public class TestAlibabaJava {
         System.out.println(mapK);
         Set mapKV = map.entrySet();
         System.out.println(mapKV);
+        //java1.8支持
         map.forEach((k,v) -> {
             System.out.println("key:" + k + ",value:" + v);
         });
+
+        Map concurrentHashMap = new ConcurrentHashMap();
+        Map synchronizedMap = Collections.synchronizedMap(new HashMap());
+        /**
+         * TreeMap 实现 SortedMap 接口，能够将保存的记录排序，默认是键的升序，也可以指定比较器。
+         * 当 Iterator 遍历 TreeMap 时，得到的记录是排过序的。
+         * 在使用TreeMap时，key必须实现Comparable接口或者在构造TreeMap传入自定义的Comparator，
+         * 否则会在运行时抛出java.lang.ClassCastException类型的异常
+         */
+        Map treeMap = new TreeMap();
 
         //SimpleDateFormat------------------------------------------------
         System.out.println("SimpleDateFormat----------------------------------");
