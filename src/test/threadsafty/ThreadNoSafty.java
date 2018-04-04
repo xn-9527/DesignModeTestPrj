@@ -1,4 +1,4 @@
-package test.thradsafty;
+package test.threadsafty;
 
 import java.util.ArrayList;
 import java.util.List;
