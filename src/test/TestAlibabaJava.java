@@ -2,6 +2,10 @@ package test;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -170,7 +174,8 @@ public class TestAlibabaJava {
         //遍历 Map------------------------------------------------
         // 使用 entrySet 遍历 Map 类集合 KV，而不是 keySet 方式进行遍历
         System.out.println("遍历 Map----------------------------------");
-        Map map = new HashMap<>();
+        Map map = new HashMap<>(16);
+
         map.put("1", "abc");
         map.put("2", "efg");
         Set mapK = map.keySet();
@@ -182,8 +187,26 @@ public class TestAlibabaJava {
             System.out.println("key:" + k + ",value:" + v);
         });
 
-        Map concurrentHashMap = new ConcurrentHashMap();
+        TestAlibabaJava.testMapThread(map, "hashMap");
+        /**
+         * ConcurrentHashMap是HashMap的线程安全版本，ConcurrentSkipListMap是TreeMap的线程安全版本。
+         */
+        System.out.println("concurrentHashMap----------------------------------");
+        Map concurrentHashMap = new ConcurrentHashMap(16);
+        concurrentHashMap.put("2", "efg");
+        concurrentHashMap.put("1", "abc");
+        System.out.println(concurrentHashMap);
+        TestAlibabaJava.testMapThread(concurrentHashMap, "concurrentHashMap");
+
+        System.out.println("synchronizedMap----------------------------------");
         Map synchronizedMap = Collections.synchronizedMap(new HashMap());
+        TestAlibabaJava.testMapThread(synchronizedMap, "synchronizedMap");
+
+        System.out.println("hashTable----------------------------------");
+        Map hashTable = new Hashtable(16);
+        TestAlibabaJava.testMapThread(hashTable, "hashTable");
+
+        System.out.println("treeMap----------------------------------");
         /**
          * TreeMap 实现 SortedMap 接口，能够将保存的记录排序，默认是键的升序，也可以指定比较器。
          * 当 Iterator 遍历 TreeMap 时，得到的记录是排过序的。
@@ -213,6 +236,68 @@ public class TestAlibabaJava {
         Random rand = new Random();
         int randNum = rand.nextInt(3);
         System.out.println(randNum);
+        //当循环次数足够大时，可以明显看出线程3和4的运行速度，比线程1和2快了一倍。
+        final int totalCount = 100000;
+        Thread thread1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Long start = System.currentTimeMillis();
+                System.out.println("线程1开始:" + new Date(start));
+                for(int i = 0; i < totalCount; i++) {
+                    int c = r.nextInt();
+//                    System.out.println("Thread1公用random因子:" + c);
+                }
+                Long end = System.currentTimeMillis();
+                System.out.println("线程1结束:" + new Date(end));
+                System.out.println("线程1用时:" + (end - start));
+            }
+        });
+        Thread thread2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Long start = System.currentTimeMillis();
+                System.out.println("线程2开始:" + new Date(start));
+                for(int i = 0; i < totalCount; i++) {
+                    int c = r.nextInt();
+//                    System.out.println("Thread2公用random因子:" + c);
+                }
+                Long end = System.currentTimeMillis();
+                System.out.println("线程2结束:" + new Date(end));
+                System.out.println("线程2用时:" + (end - start));
+            }
+        });
+        Thread thread3 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Long start = System.currentTimeMillis();
+                System.out.println("线程3开始:" + new Date(start));
+                for(int i = 0; i < totalCount; i++) {
+                    int c = tlr.nextInt();
+//                    System.out.println("Thread3用threadLocalRandom因子:" + c);
+                }
+                Long end = System.currentTimeMillis();
+                System.out.println("线程3结束:" + new Date(end));
+                System.out.println("线程3用时:" + (end - start));
+            }
+        });
+        Thread thread4 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Long start = System.currentTimeMillis();
+                System.out.println("线程4开始:" + new Date(start));
+                for(int i = 0; i < totalCount; i++) {
+                    int c = tlr.nextInt();
+//                    System.out.println("Thread4用threadLocalRandom因子:" + c);
+                }
+                Long end = System.currentTimeMillis();
+                System.out.println("线程4结束:" + new Date(end));
+                System.out.println("线程4用时:" + (end - start));
+            }
+        });
+        thread1.start();
+        thread2.start();
+        thread3.start();
+        thread4.start();
 
         //AtomicInteger------------------------------------------------
         //  volatile 解决多线程内存不可见问题。对于一写多读，是可以解决变量同步问题，
@@ -320,6 +405,49 @@ public class TestAlibabaJava {
         }
     };
 
+    /**
+     * 测试map的多线程安全性
+     * @param map
+     */
+    public static void testMapThread(final Map map, final String name) {
+        final String key = "aa";
+        map.put(key,0);
+        final int j = 1000;
+        Thread hashMapT1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int value = 1;
+                for(int i = 0; i < j; i++) {
+                    map.put(key + i, value);
+                    Integer getValue = Integer.parseInt(map.get(key + i).toString());
+                    if(!getValue.equals(value)) {
+                        System.out.println(name + "MapThread1:" + getValue);
+                    }
+                }
+
+            }
+        });
+        Thread hashMapT2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int value = 2;
+                for(int i = 0; i < j; i++) {
+                    map.put(key + i, value);
+                    Integer getValue = Integer.parseInt(map.get(key + i).toString());
+                    if(!getValue.equals(value)) {
+                        System.out.println(name + "MapThread2:" + getValue);
+                    }
+                }
+
+            }
+        });
+        hashMapT1.start();
+        //单线程都没问题，多线程HashMap的get就会报错，concurrentHashMap，synchronizedMap,hashTable的get都正常。
+        //其中hashTable不会出现多线程set和get不一致的情况。
+        hashMapT2.start();
+        System.out.println(name + "MapThread main:" + map.get(key));
+    }
+
     //堆栈的代码
     public class  Stack<E>{
         public ArrayList<E> temp = new ArrayList<E>();
@@ -360,4 +488,6 @@ public class TestAlibabaJava {
             }
         }
     }
+
+
 }
