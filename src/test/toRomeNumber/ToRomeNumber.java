@@ -83,6 +83,7 @@ public class ToRomeNumber {
         int remainder = number % divisor;
         if (multiple > downThreadHold && multiple < upThreadHold) {
             result.append(digitRomes[multiple - 1]);
+            result.append(" ");
         }
         return remainder;
     }
