@@ -52,15 +52,29 @@ public class ToRomeNumber {
         /**
          * 第二版,提取成公共函数
          */
-        int remainder = integer;
+        /*int remainder = integer;
         for(int i = 3;i > -1;i --) {
             if (i == 3) {
                 remainder = calResultByDigit(remainder, i, 0, 4, result);
             } else {
                 remainder = calResultByDigit(remainder, i, 0, 9, result);
             }
+        }*/
+
+        /**
+         * 第三版，参考网上简洁的方法，改成从低位开始计算
+         */
+        int remainder1 = integer;
+        //i表示从右往左第几位
+        int i = 0;
+        while (remainder1 > 0) {
+            int digitNumber = remainder1 % 10;
+            remainder1 /= 10;
+            result.insert(0 ," ");
+            result.insert(0 ,getDigitRomes(i)[digitNumber - 1]);
+            i++;
         }
-        return result.toString();
+        return result.toString().trim();
     }
 
     /**
@@ -72,6 +86,7 @@ public class ToRomeNumber {
      * @param result
      * @return
      */
+    @Deprecated
     public static Integer calResultByDigit(Integer number,
                                            Integer digit,
                                            Integer downThreadHold,
