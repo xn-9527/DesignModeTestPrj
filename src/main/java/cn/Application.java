@@ -1,5 +1,6 @@
 package cn;
 
+import cn.quartz.ScheduleExecutorTest;
 import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -21,6 +22,7 @@ public class Application {
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
+		new ScheduleExecutorTest();
 		logger.info("DesignModeTest SpringBoot Start Success");
 	}
 
