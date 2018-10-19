@@ -1,4 +1,4 @@
-package cn.test.xiaomi;
+package cn.test.xiaomi.singlesend;
 
 /**
  * Created by xiaoni on 2018/10/19.

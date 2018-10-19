@@ -1,9 +1,9 @@
-package cn.test.xiaomi.connection;
+package cn.test.xiaomi.singlesend.connection;
 
 /**
  * Created by xiaoni on 2018/10/19.
  */
-import cn.test.xiaomi.MyDatagramSocket;
+import cn.test.xiaomi.singlesend.MyDatagramSocket;
 
 import java.net.*;
 
