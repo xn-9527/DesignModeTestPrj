@@ -13,7 +13,7 @@ import java.io.*;
  *
  */
 public class MyDatagramSocket extends DatagramSocket {
-    static final int MAX_LEN = 100;
+    static final int MAX_LEN = 1024;
 
     MyDatagramSocket() throws SocketException {
         super();
