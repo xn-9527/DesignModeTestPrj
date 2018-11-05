@@ -11,7 +11,7 @@ public class CashContext {
 //        this.cs = cashSuper;
 //    }
 
-    //与简单工厂模式结合
+    //与简单工厂模式结合，客户端只认识一个CashContext类，耦合低
     public CashContext(String type) {
         switch (type) {
             case "正常收费":

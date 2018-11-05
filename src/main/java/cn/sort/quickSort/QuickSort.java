@@ -1,6 +1,7 @@
-package cn.sort.insertSort;
+package cn.sort.quickSort;
 
 import cn.sort.GoodsPrice;
+import cn.sort.insertSort.InsertSort;
 
 import java.util.ArrayList;
 import java.util.List;
