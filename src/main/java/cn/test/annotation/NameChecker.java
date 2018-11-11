@@ -8,10 +8,7 @@ import groovy.util.logging.Slf4j;
 
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Name;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
+import javax.lang.model.element.*;
 import javax.lang.model.element.Element;
 import javax.lang.model.util.ElementScanner6;
 import java.util.EnumSet;
@@ -35,7 +32,7 @@ public class NameChecker {
 
     /**
      * 对Java程序命名进行检查，根据《Java语言规范》第三版第6.8节的要求，Java程序命名应当符合下列格式：
-     *
+     * <p>
      * <ul>
      * <li>类或接口：符合驼式命名法，首字母大写。
      * <li>方法：符合驼式命名法，首字母小写。
@@ -101,7 +98,7 @@ public class NameChecker {
         private boolean heuristicallyConstant(VariableElement e) {
             if (e.getEnclosingElement().getKind() == INTERFACE)
                 return true;
-            else if (e.getKind() == FIELD && e.getModifiers().containsAll(EnumSet.of(PUBLIC, STATIC, FINAL)))
+            else if (e.getKind() == FIELD && e.getModifiers().containsAll(EnumSet.of(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)))
                 return true;
             else {
                 return false;
