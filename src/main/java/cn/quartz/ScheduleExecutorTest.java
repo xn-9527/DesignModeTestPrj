@@ -1,5 +1,7 @@
 package cn.quartz;
 
+import org.apache.log4j.Logger;
+
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -10,6 +12,8 @@ import java.util.concurrent.TimeUnit;
 public class ScheduleExecutorTest {
 
     private final ScheduledExecutorService scheduledExecutor = new ScheduledThreadPoolExecutor(12);
+
+    private static Logger logger = Logger.getLogger(ScheduleExecutorTest.class);
 
     public ScheduleExecutorTest() {
         this.testSchedule();
@@ -26,6 +30,7 @@ public class ScheduleExecutorTest {
             public void run() {
                 long now = System.currentTimeMillis();
                 System.out.println("scheduleWithFixedDelay 1 seconds" + (now - lastWith));
+                logger.info("scheduleWithFixedDelay 1 seconds" + (now - lastWith));
                 lastWith = now;
                 try {
                     for (int i = 0;i < 3;i++) {

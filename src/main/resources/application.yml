@@ -21,6 +21,9 @@ spring:
       enabled: true
       max-file-size: 1000Mb
       max-request-size: 1000Mb
+  #设置时区的方法三——测试无效
+#  jackson:
+#    time-zone: Asia/Shanghai
 
 
 #  rabbitmq:
