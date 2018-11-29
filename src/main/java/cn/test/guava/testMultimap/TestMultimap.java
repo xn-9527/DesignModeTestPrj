@@ -1,9 +1,6 @@
 package cn.test.guava.testMultimap;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +26,7 @@ public class TestMultimap {
 
     public static void main(String[] args) {
         //上面传统的场景,可以使用ArrayListMultimap
+        Multimap<String, String> multimapTest = MultimapBuilder.treeKeys().arrayListValues().build();
         Multimap<String, String> multimap = ArrayListMultimap.create();
         multimap.put("fruit", "bannana");
         multimap.put("fruit", "apple");//key可以重复
