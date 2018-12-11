@@ -1,10 +1,13 @@
 package cn;
 
 import cn.quartz.ScheduleExecutorTest;
+import cn.test.applicationContext.SpringContextHolder;
+import cn.test.applicationContext.TestApplicationContext;
 import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PostConstruct;
@@ -26,6 +29,11 @@ public class Application {
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 	}
 
+	@Bean
+	public SpringContextHolder springContextHolderUtil() {
+		return new SpringContextHolder();
+	}
+
 	/**
 	 * Start
 	 */
@@ -35,6 +43,7 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 		new ScheduleExecutorTest();
 		logger.info("DesignModeTest SpringBoot Start Success");
+		SpringContextHolder.getBean(TestApplicationContext.class).test();
 	}
 
 }
