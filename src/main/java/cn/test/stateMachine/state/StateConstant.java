@@ -9,9 +9,9 @@ public final class StateConstant {
         public final static String OFF_LINE = "offLine";
     }
 
-    public final static class OnLine {
+    public static class OnLine {
         public final static String ON_LINE = "online";
-        public final static class CanOrder {
+        public static class CanOrder extends OnLine {
             public final static String CHARGE_COMPLETED = "charge_completed";
             public final static String CHARGING = "charging";
             public final static String AT_CHARGE_POINT = "at_charge_point";
@@ -21,9 +21,9 @@ public final class StateConstant {
             public final static String CAN_ORDER = "can_order";
         }
 
-        public final static class CanNotOrder {
+        public static class CanNotOrder extends OnLine {
             public final static String CAN_NOT_ORDER = "can_not_order";
-            public final static class OnTransport {
+            public final static class OnTransport extends CanNotOrder {
                 public final static String GO_TO_LOAD = "go_to_load";
                 public final static String LOADING = "loading";
                 public final static String ON_TRANSPORT = "on_transport";
