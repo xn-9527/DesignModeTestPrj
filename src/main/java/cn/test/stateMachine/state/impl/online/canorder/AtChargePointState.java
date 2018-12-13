@@ -35,10 +35,8 @@ public class AtChargePointState implements CanOrderState {
 
     public void gotoStandbyPointMissionStart() {
         BaseState lastState = robotState.getCurrentState();
-        if (lastState instanceof AtChargePointState) {
-            robotState.setCurrentState(robotState.getGotoStandByPointState());
-            robotState.setLastState(lastState);
-        }
+        robotState.setCurrentState(robotState.getGotoStandByPointState());
+        robotState.setLastState(lastState);
     }
 
     public void gotoStandbyPointMissionFinish() {
@@ -137,7 +135,9 @@ public class AtChargePointState implements CanOrderState {
 
     @Override
     public void onCharge() {
-
+        BaseState lastState = robotState.getCurrentState();
+        robotState.setCurrentState(robotState.getChargingState());
+        robotState.setLastState(lastState);
     }
 
     @Override

@@ -34,7 +34,7 @@ public class CanOrderStateImpl implements CanOrderState {
         }
     }
 
-    public void gotoStandbyPointMissionStart() {
+/*    public void gotoStandbyPointMissionStart() {
         BaseState lastState = robotState.getCurrentState();
         if (lastState instanceof AtChargePointState) {
             robotState.setCurrentState(robotState.getGotoStandByPointState());
@@ -46,7 +46,7 @@ public class CanOrderStateImpl implements CanOrderState {
         BaseState lastState = robotState.getCurrentState();
         robotState.setCurrentState(robotState.getAtStandByPointState());
         robotState.setLastState(lastState);
-    }
+    }*/
 
     public void atStandbyPoint() {
         BaseState lastState = robotState.getCurrentState();
@@ -66,7 +66,7 @@ public class CanOrderStateImpl implements CanOrderState {
         }
     }
 
-    public void gotoChargePointMissionStart() {
+/*    public void gotoChargePointMissionStart() {
         BaseState lastState = robotState.getCurrentState();
         if (lastState instanceof AtStandbyPointState) {
             robotState.setCurrentState(robotState.getGotoChargePointState());
@@ -78,7 +78,7 @@ public class CanOrderStateImpl implements CanOrderState {
         BaseState lastState = robotState.getCurrentState();
         robotState.setCurrentState(robotState.getAtChargePointState());
         robotState.setLastState(lastState);
-    }
+    }*/
 
     @Override
     public void onHeartBeat() {
@@ -121,20 +121,20 @@ public class CanOrderStateImpl implements CanOrderState {
     @Override
     public void goToSpecialPointMissionStart(String pointType) {
         if (EventConstant.PointType.CHARGE == pointType) {
-            gotoChargePointMissionStart();
-        }
-        if (EventConstant.PointType.STAND_BY == pointType) {
-            gotoStandbyPointMissionStart();
+            System.out.println("只能从待命点去充电点");
+//            gotoChargePointMissionStart();
+        } else if (EventConstant.PointType.STAND_BY == pointType) {
+            System.out.println("只能从充电点去待命点");
+//            gotoStandbyPointMissionStart();
         }
     }
 
     @Override
     public void goToSpecialPointMissionFinish(String pointType) {
         if (EventConstant.PointType.CHARGE == pointType) {
-            gotoChargePointMissionFinish();
-        }
-        if (EventConstant.PointType.STAND_BY == pointType) {
-            gotoStandbyPointMissionFinish();
+//            gotoChargePointMissionFinish();
+        } else if (EventConstant.PointType.STAND_BY == pointType) {
+//            gotoStandbyPointMissionFinish();
         }
     }
 

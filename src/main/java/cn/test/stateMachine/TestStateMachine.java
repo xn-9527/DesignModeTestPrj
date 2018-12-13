@@ -40,6 +40,12 @@ public class TestStateMachine {
 
         robotState.atSpecialPoint(EventConstant.PointType.STAND_BY);
         printState(robotState);
+
+        robotState.goToSpecialPointMissionFinish(EventConstant.PointType.STAND_BY);
+        printState(robotState);
+
+        robotState.notAtSpecialPoint(EventConstant.PointType.STAND_BY);
+        printState(robotState);
     }
 
     public final static void printState(RobotState robotState) {
