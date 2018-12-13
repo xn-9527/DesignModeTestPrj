@@ -1,4 +1,4 @@
-package cn.test.stateMachine.state;
+package cn.test.stateMachine.state.constant;
 
 /**
  * Created by Chay on 2018/12/12.

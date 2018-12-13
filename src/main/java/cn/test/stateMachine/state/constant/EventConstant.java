@@ -1,4 +1,4 @@
-package cn.test.stateMachine.state;
+package cn.test.stateMachine.state.constant;
 
 /**
  * Created by chay on 2018/12/12.
@@ -16,7 +16,7 @@ public class EventConstant {
     }
 
     public final static class MissionItemType {
-        public final static String load = "load_mission";
-        public final static String unload = "unload_mission";
+        public final static String LOAD = "load_mission";
+        public final static String UNLOAD = "unload_mission";
     }
 }
