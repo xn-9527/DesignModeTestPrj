@@ -13,7 +13,7 @@ import cn.test.annotation.NameChecker;
  */
 //*表示支持所有的Annotations
 @SupportedAnnotationTypes("*")
-//表示只支持jdk1.6的代码
+//表示只支持jdk某版本的代码
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class NameCheckProcessor extends AbstractProcessor {
     private NameChecker nameChecker;
@@ -49,6 +49,15 @@ public class NameCheckProcessor extends AbstractProcessor {
     }
 
     public static void main(String[] args) {
+        /**
+         * 注解属于早期(编译期)优化，在运行期间发生作用(与java代码一样)。
+         *
+         * 插入式注解处理器的初始化是在initProcessAnnotations()方法中，
+         * 它的执行过程是在processAnnotations()方法中，该方法判断是否还有新的注解处理器需要执行，
+         * 如果有的话，通过com.sun.tools.javac.processing.JavacProcessingEnvironment类的doProcessing()方法生成
+         * 一个新的JavaCompiler对象对编译的后续步骤进行处理。
+         */
+
         /**
          * G:\WorkSpaceSSD\DesignModeTestPrj\target\classes>javac -processor cn.test.annotation.NameCheckProcessor ../../src/main/java/cn/test/annotation/BADLY_NAMED_CODE.java
          ..\..\src\main\java\cn\test\annotation\BADLY_NAMED_CODE.java:6: 警告: 名称“BADLY_NAMED_CODE”应当符合驼式命名法（Camel Case Names）
