@@ -44,6 +44,15 @@ public class Application {
 		new ScheduleExecutorTest();
 		logger.info("DesignModeTest SpringBoot Start Success");
 		SpringContextHolder.getBean(TestApplicationContext.class).test();
+
+		//注册一个关机钩，当系统被退出或被异常中断时，启动这个关机钩线程
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				//添入你想在退出JVM之前要处理的必要操作代码
+				System.out.println("##################Main Thread Shutdown#####################");
+			}
+		});
 	}
 
 }

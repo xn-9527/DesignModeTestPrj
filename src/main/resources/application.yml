@@ -128,5 +128,13 @@ spring:
 #        web: DEBUG
 #      hibernate: DEBUG
 
+endpoints:
+  shutdown:
+    #启用shutdown,POST访问URL“host:port/shutdown”可关闭程序;
+    #经测试，定时任务线程不会被停止；且停止结果不会触发shutdown hook；
+    enabled: true
+    #禁用密码验证
+    sensitive: false
+
 
 

@@ -12,17 +12,20 @@ public class TestJVMQuit {
 //        System.out.println(1/0);
 
         //注册一个关机钩，当系统被退出或被异常中断时，启动这个关机钩线程
-        Runtime.getRuntime().addShutdownHook(new Thread(){
+        Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
-            public void run(){
+            public void run() {
                 //添入你想在退出JVM之前要处理的必要操作代码
-                System.out.println("T1");}
+                System.out.println("T1");
+            }
         });
 
         //注册第二个关机钩
-        Runtime.getRuntime().addShutdownHook(new Thread(){
+        Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
-            public void run(){ System.out.println("T2");}
+            public void run() {
+                System.out.println("T2");
+            }
         });
 
         //在注册关机钩后，异常退出，会执行关机钩
