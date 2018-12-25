@@ -1,28 +1,26 @@
 package cn.test.runshell;
 
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * @author Created by xiaoni on 2018/12/24.
+ * @author Created by chay on 2018/12/24.
  */
-public class RunShell {
+@Slf4j
+public class RunShellUtil {
     public static void main(String[] args) {
-        try {
-            runShell();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        String shPath = "G:\\WorkSpaceSSD\\DesignModeTestPrj\\src\\main\\java\\cn\\test\\runshell\\demo-classes.bat";
+        runShell(shPath);
     }
 
-    public static void runShell() {
-        //            String shpath="G:\\WorkSpaceSSD\\DesignModeTestPrj\\src\\main\\java\\cn\\test\\runshell\\demo-classes.sh";
+    public static void runShell(String shPath) {
         Process ps = null;
         try {
-            String shpath = "G:\\WorkSpaceSSD\\DesignModeTestPrj\\src\\main\\java\\cn\\test\\runshell\\demo-classes.bat";
-            ps = Runtime.getRuntime().exec(shpath);
+            ps = Runtime.getRuntime().exec(shPath);
             ps.waitFor();
 
             try(BufferedReader br = new BufferedReader(new InputStreamReader(ps.getInputStream()));) {
@@ -35,9 +33,9 @@ public class RunShell {
                 System.out.println(result);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("run shell io exception:" + e.getMessage(), e);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error("run shell interrupted exception:" + e.getMessage(), e);
         } finally {
             if (ps != null) {
                 ps.destroy();
