@@ -1,4 +1,4 @@
-package cn.test.java8stream;
+package cn.test.java8.java8stream;
 
 import java.util.Arrays;
 import java.util.IntSummaryStatistics;
