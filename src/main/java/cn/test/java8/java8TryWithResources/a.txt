@@ -1,0 +1,1 @@
+G:\WorkSpaceSSD\DesignModeTestPrj\src\main\java\cn\test\java8\java8TryWithResources\a.txtinside try catch block  	 outside try catch block
