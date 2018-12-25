@@ -45,6 +45,9 @@ public class Application {
 		logger.info("DesignModeTest SpringBoot Start Success");
 		SpringContextHolder.getBean(TestApplicationContext.class).test();
 
+		/**
+		 * 经测试，springboot的shutdownHook无效
+		 */
 		//注册一个关机钩，当系统被退出或被异常中断时，启动这个关机钩线程
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
@@ -53,6 +56,8 @@ public class Application {
 				System.out.println("##################Main Thread Shutdown#####################");
 			}
 		});
+
+		System.out.println(1/0);
 	}
 
 }
