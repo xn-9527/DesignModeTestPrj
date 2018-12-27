@@ -1,15 +1,18 @@
 package cn.app.listener;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationFailedEvent;
 import org.springframework.context.ApplicationListener;
 
 /**
  * @author Created by chay on 2018/12/24.
  */
+@Slf4j
 public class MyApplicationFailedEventListener implements ApplicationListener<ApplicationFailedEvent> {
 
     @Override
     public void onApplicationEvent(ApplicationFailedEvent event) {
+        log.info("##########################MyApplicationFailedEventListener########################");
         Throwable throwable = event.getException();
         handleThrowable(throwable);
     }
@@ -20,7 +23,7 @@ public class MyApplicationFailedEventListener implements ApplicationListener<App
      * @param throwable
      */
     private void handleThrowable(Throwable throwable) {
-        System.out.println("##########################app failed########################");
+        log.info("##########################app failed########################");
 
     }
 }
