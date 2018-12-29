@@ -19,11 +19,11 @@ public class MyApplicationFailedEventListener implements ApplicationListener<App
 
     /**
      * 处理异常
+     * 当设置虚拟机最大内存参数-Xmx20m的时候，启动会报错，进入该流程
      *
      * @param throwable
      */
     private void handleThrowable(Throwable throwable) {
         log.info("##########################app failed########################");
-
     }
 }

@@ -7,6 +7,7 @@ import cn.app.listener.MyApplicationStartedEventListener;
 import cn.quartz.ScheduleExecutorTest;
 import cn.test.applicationContext.SpringContextHolder;
 import cn.test.applicationContext.TestApplicationContext;
+import cn.test.runshell.RunShellUtil;
 import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -15,6 +16,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TimeZone;
 //import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -57,7 +60,7 @@ public class Application {
 //		SpringApplication.run(Application.class, args);
 
         //测试定时任务
-        new ScheduleExecutorTest();
+//        new ScheduleExecutorTest();
 
         logger.info("DesignModeTest SpringBoot Start Success");
 
@@ -68,16 +71,38 @@ public class Application {
          * 经测试，springboot的shutdownHook无效
          */
         //注册一个关机钩，当系统被退出或被异常中断时，启动这个关机钩线程
+        addShutdownHook();
+
+        //尝试让主线程异常,亲测这两种不会导致jvm挂掉
+        /*//java.lang.ArithmeticException: / by zero
+        System.out.println(1 / 0);
+        //OutOfMemoryError
+        List<String> test = new ArrayList<>();
+        while (1==1) {
+            test.add("asdfsdf");
+        }*/
+
+        //退出码，钩子有效
+        try {
+            Thread.sleep(3000L);
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage(), e);
+        }
+        logger.info("30秒到了，开始退出虚拟机");
+        System.exit(1);
+    }
+
+    /**
+     * 设置一个关机钩子，在jvm异常退出前会执行
+     */
+    private static void addShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
                 //添入你想在退出JVM之前要处理的必要操作代码
                 System.out.println("##################Main Thread Shutdown#####################");
+                RunShellUtil.runShell("G:\\WorkSpaceSSD\\DesignModeTestPrj\\src\\main\\java\\cn\\test\\runshell\\demo-classes.bat");
             }
         });
-
-        //尝试让主线程异常
-        System.out.println(1 / 0);
     }
-
 }

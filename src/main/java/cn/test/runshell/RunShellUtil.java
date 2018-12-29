@@ -18,6 +18,7 @@ public class RunShellUtil {
     }
 
     public static void runShell(String shPath) {
+        log.info("@@@@@start running shell: {}", shPath);
         Process ps = null;
         try {
             ps = Runtime.getRuntime().exec(shPath);
@@ -29,8 +30,7 @@ public class RunShellUtil {
                 while ((line = br.readLine()) != null) {
                     sb.append(line).append("\n");
                 }
-                String result = sb.toString();
-                System.out.println(result);
+                log.info("@@@@@shell running result:" + sb.toString());
             }
         } catch (IOException e) {
             log.error("run shell io exception:" + e.getMessage(), e);

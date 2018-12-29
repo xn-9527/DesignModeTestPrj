@@ -1,6 +1,6 @@
 package cn.test.applicationContext;
 
-import groovy.util.logging.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,6 +10,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TestApplicationContext {
     public void test() {
-        System.out.println("dsfsdfsdfasdf");
+        log.info("dsfsdfsdfasdf");
     }
 }
