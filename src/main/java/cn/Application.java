@@ -46,21 +46,16 @@ public class Application {
      */
     public static void main(String[] args) {
         //设置时区的方法一——测试有效
-//		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
         //测试监听器的启动方式
-        SpringApplication app = new SpringApplication(Application.class);
-        app.addListeners(new MyApplicationStartedEventListener());
-        app.addListeners(new MyApplicationFailedEventListener());
-        app.addListeners(new MyApplicationPreparedEventListener());
-        app.addListeners(new MyApplicationEnvironmentPreparedEventListener());
-        app.run(args);
+        startAppWithListener(args);
 
         //原默认启动方式
 //		SpringApplication.run(Application.class, args);
 
         //测试定时任务
-//        new ScheduleExecutorTest();
+        new ScheduleExecutorTest();
 
         logger.info("DesignModeTest SpringBoot Start Success");
 
@@ -71,7 +66,7 @@ public class Application {
          * 经测试，springboot的shutdownHook无效
          */
         //注册一个关机钩，当系统被退出或被异常中断时，启动这个关机钩线程
-        addShutdownHook();
+        addShutdownHook(args);
 
         //尝试让主线程异常,亲测这两种不会导致jvm挂掉
         /*//java.lang.ArithmeticException: / by zero
@@ -95,14 +90,31 @@ public class Application {
     /**
      * 设置一个关机钩子，在jvm异常退出前会执行
      */
-    private static void addShutdownHook() {
+    private static void addShutdownHook(final String[] args) {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
                 //添入你想在退出JVM之前要处理的必要操作代码
                 System.out.println("##################Main Thread Shutdown#####################");
                 RunShellUtil.runShell("G:\\WorkSpaceSSD\\DesignModeTestPrj\\src\\main\\java\\cn\\test\\runshell\\demo-classes.bat");
+                addShutdownHook(args);
+                //尝试在关机后，重新运行spring,会报错shutting down in progress
+                startAppWithListener(args);
             }
         });
+    }
+
+    /**
+     * 带监听的启动项目
+     *
+     * @param args
+     */
+    private static void startAppWithListener(String[] args) {
+        SpringApplication app = new SpringApplication(Application.class);
+        app.addListeners(new MyApplicationStartedEventListener());
+        app.addListeners(new MyApplicationFailedEventListener());
+        app.addListeners(new MyApplicationPreparedEventListener());
+        app.addListeners(new MyApplicationEnvironmentPreparedEventListener());
+        app.run(args);
     }
 }

@@ -45,13 +45,14 @@ public class QuartzTest {
      * 0 0 *(去掉这个)/1 * * ?    每天隔一小时
      * 0 0 1-8/1 * * ?    从凌晨一点到早上八点每隔一小时
      */
-//    @Scheduled(cron = "*/1 * * * * ?")
-//    public void test1() {
+    @Scheduled(cron = "*/1 * * * * ?")
+    public void test1() {
 //        if (i < 10) {
-//            log.info("我是test1");
-//            i ++;
+            log.info("我是test1");
+            i ++;
 //        }
-//    }
+    }
+
 
 //    public static void main(String[] args) {
 //        new QuartzTest().test1();
