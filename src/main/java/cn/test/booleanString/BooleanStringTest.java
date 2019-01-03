@@ -2,6 +2,9 @@ package cn.test.booleanString;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by xiaoni on 2019/1/2.
  */
@@ -17,6 +20,16 @@ public class BooleanStringTest {
 
         printJsonObject(jsonObject, key);
         printJsonObject(jsonObject, key1);
+
+        System.out.println("#############################################");
+        Map map = new HashMap();
+        map.put(key, true);
+        map.put(key1,"1");
+        System.out.println(map);
+        System.out.println(Boolean.valueOf(map.get(key).toString()).booleanValue());
+        System.out.println(Boolean.valueOf(map.get(key1).toString()).booleanValue());
+        System.out.println(Boolean.parseBoolean(map.get(key1).toString()));
+        System.out.println(Boolean.valueOf("1".equals(map.get(key1))));
     }
 
     /**
