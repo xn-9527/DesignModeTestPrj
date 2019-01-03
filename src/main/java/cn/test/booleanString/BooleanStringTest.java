@@ -30,6 +30,7 @@ public class BooleanStringTest {
         System.out.println(Boolean.valueOf(map.get(key1).toString()).booleanValue());
         System.out.println(Boolean.parseBoolean(map.get(key1).toString()));
         System.out.println(Boolean.valueOf("1".equals(map.get(key1))));
+        System.out.println(String.valueOf("1".equals(map.get(key1))));
     }
 
     /**
