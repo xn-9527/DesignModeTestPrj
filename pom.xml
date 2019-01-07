@@ -12,7 +12,10 @@
     <groupId>com.my.testio</groupId>
     <artifactId>testIOModule</artifactId>
     <version>1.0</version>
-    <packaging>jar</packaging>
+    <modules>
+        <module>spring-boot-starter-helloworld</module>
+    </modules>
+    <packaging>pom</packaging>
 
     <name>DesignModeTest</name>
     <description>DesignModeTest server project for Spring Boot</description>
