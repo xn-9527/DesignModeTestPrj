@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.TimeZone;
 //import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@EnableAutoConfiguration
 @SpringBootApplication
 //@ComponentScan
 @EnableScheduling

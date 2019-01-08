@@ -5,6 +5,9 @@ server:
     timeout: 10
 
 spring:
+  person:
+    name: chay
+    age: 18
 #  redis:
 #    database: 1
 #    host: 172.16.2.70
