@@ -18,7 +18,7 @@
         <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
 
-    <!-- 自定义starter都应该继承自该依赖 -->
+    <!-- 自定义starter都应该继承自该依赖，亲测加或者不加都可以成功 -->
     <!-- 如果自定义starter本身需要继承其它的依赖，可以参考 https://stackoverflow.com/a/21318359 解决 -->
     <!--<parent>-->
         <!--<groupId>org.springframework.boot</groupId>-->
