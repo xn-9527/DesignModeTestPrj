@@ -98,7 +98,7 @@ public class Application {
                 RunShellUtil.runShell("G:\\WorkSpaceSSD\\DesignModeTestPrj\\src\\main\\java\\cn\\test\\runshell\\demo-classes.bat");
                 addShutdownHook(args);
                 //尝试在关机后，重新运行spring,会报错shutting down in progress
-                startAppWithListener(args);
+//                startAppWithListener(args);
             }
         });
     }
