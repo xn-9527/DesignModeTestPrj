@@ -17,6 +17,7 @@ public class PhoneNumber2 implements Comparable<PhoneNumber2> {
 
     /**
      * 改进的compareTo方法
+     * 但需要注意很大的数减很小的数溢出的问题。
      *
      * @param pn
      * @return
