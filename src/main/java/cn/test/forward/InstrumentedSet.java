@@ -1,6 +1,8 @@
 package cn.test.forward;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -26,9 +28,7 @@ public class InstrumentedSet<E> extends ForwardingSet<E> {
     /**
      * 为了统计数量，我们自己复写addAll方法。
      *
-     * 如果简单的扩展原来的add和addAll，都增进addCount++,可能会导致数量double两倍。
-     * 因为原来的类的addAll调用的是add方法,在调用addAll时，+1，然后又调用add，又+1。
-     * 所以在不知道原来类的方法的实现细节的时候，直接继承调用或修改，子类是很脆弱的。
+     * 这里结果正常。
      *
      * @param c
      * @return
@@ -41,5 +41,11 @@ public class InstrumentedSet<E> extends ForwardingSet<E> {
 
     public int getAddCount() {
         return addCount;
+    }
+
+    public static void main(String[] args) {
+        InstrumentedSet<String> s = new InstrumentedSet<>(new HashSet<>());
+        s.addAll(Arrays.asList("A", "b", "dfsf"));
+        System.out.println(s.getAddCount());//3
     }
 }

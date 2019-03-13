@@ -12,6 +12,8 @@ import java.util.Spliterator;
  * 增加一个私有域，它引用现有类的一个实例。
  *
  * 新类是“转发类”，用于“转发”：新类中每个实例方法都可以调用被包含的现有类实例中对应的方法，并返回它的结果。
+ *
+ * 好处是：继承转发类的子类非常稳定，当Set类修改新增方法时，转发类不新增，子类就不受影响。
  */
 public class ForwardingSet<E> implements Set<E> {
     private final Set<E> s;
