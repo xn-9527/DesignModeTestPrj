@@ -1,6 +1,9 @@
 package cn.quartz;
 
+import cn.test.service.TestUserService;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -9,11 +12,15 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Created by xiaoni on 2018/10/17.
  */
+@Component
 public class ScheduleExecutorTest {
 
     private final ScheduledExecutorService scheduledExecutor = new ScheduledThreadPoolExecutor(12);
 
     private static Logger logger = Logger.getLogger(ScheduleExecutorTest.class);
+
+    @Autowired
+    private TestUserService testUserService;
 
     public ScheduleExecutorTest() {
         this.testSchedule();
@@ -32,6 +39,8 @@ public class ScheduleExecutorTest {
                 System.out.println("scheduleWithFixedDelay 1 seconds" + (now - lastWith));
                 logger.info("scheduleWithFixedDelay 1 seconds" + (now - lastWith));
                 lastWith = now;
+                //测试Service的AutoWired，不加@Component注解autoWired是空的，加了就不是空的
+                testUserService.sayHello();
                 try {
                     for (int i = 0;i < 3;i++) {
                         Thread.sleep(1000);
