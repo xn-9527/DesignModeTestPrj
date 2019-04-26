@@ -9,13 +9,16 @@ import cn.test.applicationContext.SpringContextHolder;
 import cn.test.applicationContext.TestApplicationContext;
 import cn.test.runshell.RunShellUtil;
 import org.apache.log4j.Logger;
+import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PostConstruct;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -47,10 +50,10 @@ public class Application {
         //设置时区的方法一——测试有效
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
-        //测试监听器的启动方式
+        //测试监听器的启动方式,该方式不会打印banner
         startAppWithListener(args);
 
-        //原默认启动方式
+        //原默认启动方式，该方式可以打印banner，可以设置bannerMode(Banner.Mode.OFF).run(args)来关闭
 //		SpringApplication.run(Application.class, args);
 
         //测试定时任务
@@ -114,6 +117,8 @@ public class Application {
         app.addListeners(new MyApplicationFailedEventListener());
         app.addListeners(new MyApplicationPreparedEventListener());
         app.addListeners(new MyApplicationEnvironmentPreparedEventListener());
+        //无论怎么设置，banner不会打印
+        app.setBannerMode(Banner.Mode.CONSOLE);
         app.run(args);
     }
 }
