@@ -50,7 +50,7 @@ public class MyCloneUtils {
      * 深克隆map
      *
      * @param source
-     * @param tClass
+     * @param tClass map的Value的类型
      * @return
      */
     public synchronized static Map deepCloneMap(Map source, Class tClass) {
