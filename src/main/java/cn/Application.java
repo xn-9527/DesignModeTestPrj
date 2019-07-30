@@ -13,9 +13,12 @@ import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.io.PrintStream;
@@ -68,7 +71,7 @@ public class Application {
          * 经测试，springboot的shutdownHook无效
          */
         //注册一个关机钩，当系统被退出或被异常中断时，启动这个关机钩线程
-        addShutdownHook(args);
+//        addShutdownHook(args);
 
         //尝试让主线程异常,亲测这两种不会导致jvm挂掉
         /*//java.lang.ArithmeticException: / by zero
@@ -85,8 +88,8 @@ public class Application {
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
-        logger.info("30秒到了，开始退出虚拟机");
-        System.exit(1);
+//        logger.info("30秒到了，开始退出虚拟机");
+//        System.exit(1);
     }
 
     /**
@@ -99,7 +102,7 @@ public class Application {
                 //添入你想在退出JVM之前要处理的必要操作代码
                 System.out.println("##################Main Thread Shutdown#####################");
                 RunShellUtil.runShell("G:\\WorkSpaceSSD\\DesignModeTestPrj\\src\\main\\java\\cn\\test\\runshell\\demo-classes.bat");
-                addShutdownHook(args);
+//                addShutdownHook(args);
                 //尝试在关机后，重新运行spring,会报错shutting down in progress
 //                startAppWithListener(args);
             }
