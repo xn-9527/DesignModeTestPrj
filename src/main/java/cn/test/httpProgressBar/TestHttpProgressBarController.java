@@ -16,6 +16,9 @@ import java.net.URL;
 /**
  * Created by chay on 2019/7/30.
  * 只能用谷歌浏览器看效果
+ *
+ * 从源码可以发现：
+ * 虽然原生的OutputStream.flush()什么都不做，但是response里面的输出流默认是org.apache.catalina.connector.OutputBuffer，也就是带缓存的，所以在调用flush方法的时候，输出会带缓存，刷新是有效的。
  */
 @RestController
 @RequestMapping("test/http/progress")
