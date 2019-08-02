@@ -1,5 +1,6 @@
 package cn.test.httpProgressBar;
 
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.http.HttpHeaders;
@@ -28,11 +29,12 @@ public class TestHttpProgressBarController {
     @GetMapping
     public void test(HttpServletRequest request, HttpServletResponse response, @RequestHeader HttpHeaders headers) {
         try {
+            int maxNum = 40;
             /**
              * 方法1 BufferedWriter 可以分块返回
              */
-//            response.setContentType("text/html;charset=utf-8");
-//            BufferedWriter bw = new BufferedWriter(response.getWriter());
+            response.setContentType("text/html;charset=utf-8");
+            BufferedWriter bw = new BufferedWriter(response.getWriter());
 
             /**
              * 方法2 BufferedOutputStream 可以分块返回
@@ -49,8 +51,8 @@ public class TestHttpProgressBarController {
             /**
              * 方法4 ServletOutputStream 可以分块返回
              */
-            response.setContentType("text/html;charset=utf-8");
-            ServletOutputStream outputStream = response.getOutputStream();
+//            response.setContentType("text/html;charset=utf-8");
+//            ServletOutputStream outputStream = response.getOutputStream();
 
             //可以设置头文件长度，如果达到长度，输出流自动关闭；如果总数据长度达不到，输出流全部完成后关闭；
 //            response.setHeader("Content-Length", "192");
@@ -60,15 +62,15 @@ public class TestHttpProgressBarController {
             //设置请求头 和 文件下载名称
 //            response.addHeader("Content-Disposition","attachment;filename=test.txt");
 
-            for (int i = 0; i < 40; i++) {
-                String data = i + "aaaa";
-                log.info("loop : {}", data);
+            for (int i = 0; i < maxNum; i++) {
+                String data = JSON.toJSONString(AjaxResult.success( "站路径总40条，当前已生成" + i + "条。"));
+                log.info("loop : {}, byte length: {}", data, data.getBytes().length);
                 /**
                  * 方法1 可以分块返回
                  */
-//                bw.write(data);
-//                bw.write("\r\n"); //空格符，没有也没关系
-//                bw.flush();
+                bw.write(data);
+                bw.write("\r\n"); //空格符，没有也没关系
+                bw.flush();
 
                 /**
                  * 方法2 可以分块返回
@@ -85,13 +87,13 @@ public class TestHttpProgressBarController {
                 /**
                  * 方法4 可以分块返回
                  */
-                outputStream.write(String.valueOf(data).getBytes());
+//                outputStream.write(data.getBytes());
 //                outputStream.flush();
 
                 /**
-                 * 方法5——只针对刷新流，刷新流的缓存可以统一用response
+                 * 方法5——只针对刷新流，刷新流的缓存可以统一用response,换行符无效
                  */
-                response.flushBuffer();
+//                response.flushBuffer();
                 try {
                     Thread.sleep(300);
                 } catch (InterruptedException e) {
