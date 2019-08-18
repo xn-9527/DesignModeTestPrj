@@ -1,6 +1,7 @@
 package cn.math.fibonacciSequence;
 
-import cn.besselBezierTest.CvPoint2D;
+import cn.math.arithmeticSeries.ArithmeticSeries;
+import cn.math.geometricSeries.GeometricSeries;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -20,59 +21,108 @@ public class FibonacciArc extends JPanel {
     //缩放倍数, 越大，越缩小(看到的螺旋越多)
     private final static int ZOOM = 1;
     //画几阶弧线
-    private final static int N = 20;
+    private final static int N = 30;
+    //画函数类型常量
+    //斐波纳挈
+    private final static int FUNCTION_FIBONACCI = 1;
+    //等差级数
+    private final static int FUNCTION_ARITHMETIC_SERIES = 2;
+    //等比级数
+    private final static int FUNCTION_GEOMETIRC_SERIES = 3;
 
     public FibonacciArc() {
+        //默认斐波纳挈
+        this.functionTypeId = FUNCTION_FIBONACCI;
     }
+
+    public FibonacciArc(int functionTypeId) {
+        this.functionTypeId = functionTypeId;
+    }
+
+    /**
+     * 画什么类型的曲线
+     */
+    private int functionTypeId;
 
     @Override
     protected void paintComponent(Graphics g) {
         // TODO Auto-generated method stub
         super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.MAGENTA);
-        g2.setColor(Color.RED);
+
         //上一个斐波那契数
         int lastFibonacciI = 0;
         //扇形圆心点
         int x = X0;
         int y = Y0;
-        //java画图工具矩形区域左上角坐标
-        int xRec = x;
-        int yRec = y;
+        //java画弧线图工具矩形区域左上角坐标
+        int xArcRec = x;
+        int yArcRec = y;
+        //java画矩形图工具矩形区域左上角坐标
+        int xRecRec = x;
+        int yRecRec = y;
         //计算象限
         int startAngle = 0;
         //要画的度数
         int arcAngle = 90;
+
+        ArithmeticSeries arithmeticSeries = new ArithmeticSeries(1, 10);
+        GeometricSeries geometricSeries = new GeometricSeries(1, 2);
+
         //因为左上角是坐标原点，所以计算坐标平移量时要反着来
         for (int i = 3; i < N; i++) {
             //计算斐波那契数
-            int fibonacciI = FibonacciSequence.f(i);
+            int fibonacciI;
+            switch (functionTypeId) {
+                case FUNCTION_FIBONACCI:
+                    fibonacciI = FibonacciSequence.f(i);
+                    break;
+                case FUNCTION_ARITHMETIC_SERIES:
+                    fibonacciI = arithmeticSeries.f(i);
+                    break;
+                case FUNCTION_GEOMETIRC_SERIES:
+                    fibonacciI = new Long(geometricSeries.f(i)).intValue();
+                    break;
+                default:
+                    fibonacciI = FibonacciSequence.f(i);
+            }
+
             int change = fibonacciI - lastFibonacciI;
             switch (i % 4) {
                 case 0:
                     //第一象限
                     startAngle = 0;
                     x = x - change;
+
+                    xRecRec = x;
+                    yRecRec = y - fibonacciI;
                     break;
                 case 1:
                     //第二象限
                     startAngle = 90;
                     y = y + change;
+
+                    xRecRec = x - fibonacciI;
+                    yRecRec = y - fibonacciI;
                     break;
                 case 2:
                     //第三象限
                     startAngle = 180;
                     x = x + change;
+
+                    xRecRec = x - fibonacciI;
+                    yRecRec = y;
                     break;
                 case 3:
                     //第四象限
                     startAngle = 270;
                     y = y - change;
+
+                    xRecRec = x;
+                    yRecRec = y;
                     break;
             }
-            xRec = x - fibonacciI;
-            yRec = y - fibonacciI;
+            xArcRec = x - fibonacciI;
+            yArcRec = y - fibonacciI;
 
             /**
              * 绘制一个覆盖指定矩形的圆弧或椭圆弧边框。
@@ -92,7 +142,16 @@ public class FibonacciArc extends JPanel {
              startAngle - 开始角度。
              arcAngle - 相对于开始角度而言，弧跨越的角度。
              */
-            g2.drawArc(X0 + (xRec - X0) / ZOOM, Y0 + (yRec - Y0) / ZOOM, 2 * fibonacciI / ZOOM, 2 * fibonacciI / ZOOM, startAngle, arcAngle);
+            int drawWidth = 2 * fibonacciI / ZOOM;
+            int drawHeight = 2 * fibonacciI / ZOOM;
+            int drawArcX = X0 + (xArcRec - X0) / ZOOM;
+            int drawArcY = Y0 + (yArcRec - Y0) / ZOOM;
+            //画矩形
+            g.setColor(Color.RED);
+            g.drawRect(xRecRec / ZOOM, yRecRec / ZOOM, drawWidth / 2, drawHeight / 2);
+            //画斐波那契弧线
+            g.setColor(Color.MAGENTA);
+            g.drawArc(drawArcX, drawArcY, drawWidth, drawHeight, startAngle, arcAngle);
 
             lastFibonacciI = fibonacciI;
         }
@@ -104,7 +163,9 @@ public class FibonacciArc extends JPanel {
 
     public static void main(String[] args) {
         JFrame f = new JFrame();
-        FibonacciArc fibonacciArc = new FibonacciArc();
+//        FibonacciArc fibonacciArc = new FibonacciArc();
+//        FibonacciArc fibonacciArc = new FibonacciArc(FibonacciArc.FUNCTION_ARITHMETIC_SERIES);
+        FibonacciArc fibonacciArc = new FibonacciArc(FibonacciArc.FUNCTION_GEOMETIRC_SERIES);
         fibonacciArc.repaint();
         f.add(fibonacciArc);
 
