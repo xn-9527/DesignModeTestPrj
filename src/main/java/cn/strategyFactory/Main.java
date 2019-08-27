@@ -2,6 +2,13 @@ package cn.strategyFactory;
 
 public class Main {
 
+    /**
+     * 策略模式，在具有公共接口的独立类中定义每种计算，利用该模式创建各种促销类，他们从同一个超类继承。
+     * 每个类有相同名称的接口方法，用于根据又会计算金额。每个类内部的代码不相同。
+     *
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         System.out.println("Hello World!");
 
