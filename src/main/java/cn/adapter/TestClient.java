@@ -1,5 +1,10 @@
 package cn.adapter;
 
+import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashMap;
+
 /**
  * Created by xiaoni on 2019/8/28.
  * //客户端调用适配器中的方法
@@ -21,6 +26,7 @@ package cn.adapter;
  用途
  想要复用一些现有的类，但是接口与复用环境要求不一致
  */
+@Slf4j
 public class TestClient {
     public static void main(String[] args){
 
@@ -31,5 +37,9 @@ public class TestClient {
         System.out.println("客户端调用适配器中的方法");
         adapter.request();
 
+        HashMap test = new HashMap();
+        test.put("a", "1");
+        test.put("b", "2");
+        log.info(JSON.toJSONString(test));
     }
 }
