@@ -1,8 +1,10 @@
 package cn.adapter;
 
+import cn.test.httpProgressBar.AjaxResult;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -41,5 +43,8 @@ public class TestClient {
         test.put("a", "1");
         test.put("b", "2");
         log.info(JSON.toJSONString(test));
+
+        AjaxResult testAjaxResult = AjaxResult.success(Arrays.asList(1,2,3));
+        log.info(JSON.toJSONString(testAjaxResult));
     }
 }
