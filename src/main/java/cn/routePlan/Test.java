@@ -19,12 +19,12 @@ public class Test {
          * 13     23    33
          */
         routeList.add(new Route(11L, 21L, 100L, 200L));
-        routeList.add(new Route(11L, 22L, 50L, 100L));
-        routeList.add(new Route(11L, 12L, 200L, 300L));
         routeList.add(new Route(21L, 31L, 50L, 20L));
         routeList.add(new Route(21L, 33L, 300L, 200L));
         routeList.add(new Route(12L, 23L, 50L, 20L));
         routeList.add(new Route(23L, 33L, 50L, 20L));
+        routeList.add(new Route(11L, 22L, 50L, 100L));
+        routeList.add(new Route(11L, 12L, 200L, 300L));
 
         RoutePlanMaps routePlanMaps = new RoutePlanMaps();
         routePlanMaps.setRouteList(routeList);

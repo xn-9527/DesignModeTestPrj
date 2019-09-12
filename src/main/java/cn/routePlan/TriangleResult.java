@@ -1,5 +1,7 @@
 package cn.routePlan;
 
+import lombok.Data;
+
 /**
  * @author Created by chay on 2017/12/25.
  * 顶点P，与线段A,B组成三角形
@@ -15,6 +17,7 @@ package cn.routePlan;
  * r>=1,BP向量的模
  * 其他,CP向量的模，C是P在AB向量上的投影点
  */
+@Data
 public class TriangleResult {
     /**
      * AB向量的模
@@ -40,52 +43,4 @@ public class TriangleResult {
      * AP向量在AB向量的投影长度=r * AB向量的模,有正负
      */
     double shadowAC;
-
-    public double getAbsAB() {
-        return absAB;
-    }
-
-    public void setAbsAB(double absAB) {
-        this.absAB = absAB;
-    }
-
-    public double getAbsAP() {
-        return absAP;
-    }
-
-    public void setAbsAP(double absAP) {
-        this.absAP = absAP;
-    }
-
-    public double getAbsBP() {
-        return absBP;
-    }
-
-    public void setAbsBP(double absBP) {
-        this.absBP = absBP;
-    }
-
-    public double getR() {
-        return r;
-    }
-
-    public void setR(double r) {
-        this.r = r;
-    }
-
-    public double getShadowAC() {
-        return shadowAC;
-    }
-
-    public void setShadowAC(double shadowAC) {
-        this.shadowAC = shadowAC;
-    }
-
-    public double getAbsPC() {
-        return absPC;
-    }
-
-    public void setAbsPC(double absPC) {
-        this.absPC = absPC;
-    }
 }

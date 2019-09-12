@@ -1,12 +1,10 @@
 package cn.routePlan;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-
 public class RoutePlanMaps {
-    private final static long DEFAULT_POINT_ID = -1L;
-
     private Graph g = new Graph();
 
     public RoutePlanMaps() {
@@ -14,42 +12,27 @@ public class RoutePlanMaps {
 
     private List<Route> routeList;
 
-    /**
-     * 初始化：载入所有固定路径，且列表里面的路径是根据START_POINT进行排序的
-     */
     public void init() {
-        Long startPointId = DEFAULT_POINT_ID;
-        List<Long> startPointList = new ArrayList<Long>();
         List<Vertex> vertexList = null;
+        //初始化开始点的Vertex
         for (Route route : routeList) {
-            //id 变更，更新上一个id的路径到图中，并重新申请相关资源
-            if (!startPointId.equals(route.getStartPointId())) {
-                //更新上一个id的路径到图中
-                if (!startPointId.equals(DEFAULT_POINT_ID)) {
-                    g.addVertex(startPointId, vertexList);
-                    startPointList.add(startPointId);
-                }
-                // 重新申请资源
-                startPointId = route.getStartPointId();
-                vertexList = new ArrayList<Vertex>();
+            Long startPointId = route.getStartPointId();
+            vertexList = g.getVertex(startPointId);
+            if (vertexList == null) {
+                vertexList = new ArrayList<>();
+                g.addVertex(startPointId, vertexList);
             }
-
             vertexList.add(new Vertex(route.getEndPointId(), route.getWeight()));
         }
-
-        //最后一个路径ID的相关数据更新到图中
-        if (!startPointId.equals(DEFAULT_POINT_ID)) {
-            g.addVertex(startPointId, vertexList);
-            startPointList.add(startPointId);
-        }
-
-        //对于某个没有作为任意一条路径的起始点的点，也需要进行初始化
+        //初始化结束点的Vertex
         for (Route route : routeList) {
             Long endPointId = route.getEndPointId();
-            if (startPointList.contains(endPointId)) {
+            //已初始化过的点，不需要重复初始化
+            if (g.getVertex(endPointId) != null) {
                 continue;
             }
-            g.addVertex(endPointId, new ArrayList<Vertex>());
+            //结束点的边是空
+            g.addVertex(endPointId, Collections.emptyList());
         }
     }
 
@@ -112,13 +95,12 @@ public class RoutePlanMaps {
         return null;
     }
 
-    public List<Route> getRouteList() {
-        return routeList;
-    }
-
+    /**
+     * 设置用于规划的路径序列
+     *
+     * @param routeList
+     */
     public void setRouteList(List<Route> routeList) {
         this.routeList = routeList;
     }
-
-
 }
