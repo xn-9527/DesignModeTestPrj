@@ -187,7 +187,7 @@ public class MathLineUtil {
         String orinNumString = nf.format(d);
         String result = orinNumString;
 
-        //如果保留小数大于0，则校验小数位是否足够，不够的某尾补0
+        //如果保留小数大于0，则校验小数位是否足够，不够的末尾补0
         if (scale > 0) {
             String[] split = orinNumString.split(POINT_STRING_SPLIT);
             int splitLength = split.length;
