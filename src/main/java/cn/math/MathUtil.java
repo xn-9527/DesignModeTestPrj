@@ -38,10 +38,38 @@ public class MathUtil {
         return befores[k];
     }
 
+    /**
+     * A(m,k)从m个数中取k个数排序组合
+     * 根据排列组合公式 A(m,n)/n!=C(m,n)
+     *
+     * @param m
+     * @param n
+     * @return
+     */
+    public static long A(int m, int n) {
+        return C(m, n) * stepMultiply(n);
+    }
+
+    /**
+     * n!
+     *
+     * @param n
+     * @return
+     */
+    public static long stepMultiply(int n) {
+        long result = 1;
+        for(int i = 1; i <=n;i++) {
+            result = result * i;
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
-        int n = 9;
-        int k = 2;
-        log.info("" + MathUtil.C(n, k));
+        int n = 16;
+        int k = 1;
+        log.info("C({},{})={}",n,k, MathUtil.C(n, k));
+        log.info("k!({})={}",k, MathUtil.stepMultiply(k));
+        log.info("A({},{})={}",n,k, MathUtil.A(n, k));
         long loop = 0;
         for (int i = 0; i < 9; i++) {
             for(int j = 0; j < 9; j ++) {
