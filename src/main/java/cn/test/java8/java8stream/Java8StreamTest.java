@@ -1,5 +1,8 @@
 package cn.test.java8.java8stream;
 
+import cn.string2asc.StringToAscUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Arrays;
 import java.util.IntSummaryStatistics;
 import java.util.List;
@@ -10,6 +13,7 @@ import java.util.stream.Stream;
 /**
  * @author Created by xiaoni on 2018/10/9.
  */
+@Slf4j
 public class Java8StreamTest {
     public static void main(String[] args) {
 
@@ -134,5 +138,29 @@ public class Java8StreamTest {
         System.out.println("所有数之和 : " + stats.getSum());
         //平均数 : 3.0
         System.out.println("平均数 :" + stats.getAverage());
+
+
+        /**
+         * 阿里2019云栖========================================================
+         */
+        Stream.of("Apsara", "2019", "9.25- 9.27", "Digital Economy")
+                /**
+                 *Stream.map()对数组的每个元素都执行
+                 * 57 == x.charAt(0) ? "Hera is the" : (50 == x.charAt(0) ? x.concat(":") : x)
+                 * 57 对应9，50 对应2
+                 * 所以当执行到x.charAt(0)第一个字符是9的时候，会进行替换"Hera is the"；
+                 * 其他字符会进入50 == x.charAt(0) ? x.concat(":") : x。
+                 * 其他字符中，x.charAt(0)第一个字符是2的时候，会进行连接":"，剩下的原字符串输出。
+                 * 所以上面的"2019"会连接":","9.25- 9.27"会被替换成"Hera is the"，
+                 * 最终输出就是: Apsara 2019: Hera is the Digital Economy
+                 */
+                .map(x -> 57 == x.charAt(0) ? "Hera is the" :
+                        50 == x.charAt(0) ? x.concat(":") : x)
+                .reduce((x,y) -> x + " " + y)
+                .ifPresent(System.out::println);
+        //57 对应9
+        log.info(StringToAscUtil.ASCIIToConvert(String.valueOf(57)));
+        //50 对应2
+        log.info(StringToAscUtil.ASCIIToConvert(String.valueOf(50)));
     }
 }
