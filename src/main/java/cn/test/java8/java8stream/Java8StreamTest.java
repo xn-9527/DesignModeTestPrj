@@ -1,14 +1,15 @@
 package cn.test.java8.java8stream;
 
 import cn.string2asc.StringToAscUtil;
+import cn.test.equals.User;
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Arrays;
-import java.util.IntSummaryStatistics;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.codehaus.groovy.runtime.DefaultGroovyMethods.collect;
 
 /**
  * @author Created by xiaoni on 2018/10/9.
@@ -162,5 +163,13 @@ public class Java8StreamTest {
         log.info(StringToAscUtil.ASCIIToConvert(String.valueOf(57)));
         //50 对应2
         log.info(StringToAscUtil.ASCIIToConvert(String.valueOf(50)));
+
+        //test filter
+        List<User> userList = new ArrayList<>();
+        userList.add(new User("a","male","123"));
+        userList.add(new User("b","male","123"));
+        userList.add(new User("c","male",null));
+        userList = userList.stream().filter(user -> user.getIdCard() != null).collect(Collectors.toList());
+        log.info(JSON.toJSONString(userList));
     }
 }
