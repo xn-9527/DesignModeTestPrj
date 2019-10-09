@@ -285,6 +285,30 @@ public class PingUtil {
         }
     }
 
+    public static <T> T serverConnectAndCheckFirstUseTokenHttpMethod(RestTemplate restTemplate,
+                                                                HttpMethod method,
+                                                                String token,
+                                                                String requestUrl, Object request, Class<T> responseType, Object... uriVariables) {
+        if (restTemplate == null) {
+            log.info("restTemplate is Null");
+            return null;
+        }
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            headers.set("Authorization", "bearer" + token);
+            HttpEntity<Object> entity = new HttpEntity<>(request, headers);
+            if (method.ordinal() == HttpMethod.DELETE.ordinal() || method.ordinal() == HttpMethod.GET.ordinal()) {
+                requestUrl = requestUrl + SEARCH_PARAMETER_QUESTION_MARK + request;
+            }
+            ResponseEntity<T> responseEntity = restTemplate.exchange(requestUrl, method, entity, responseType, uriVariables);
+            return responseEntity.getBody();
+        } catch (RestClientException e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
     /**
      * server端使用，使用post方法请求
      *

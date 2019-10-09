@@ -33,5 +33,6 @@ public class MystarterApplicationTests {
         System.out.println("test");
         personService.sayHello();
         testPingUtilService.test();
+        testPingUtilService.testAjaxResult();
     }
 }
