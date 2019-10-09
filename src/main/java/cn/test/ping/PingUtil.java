@@ -1,7 +1,8 @@
-package cn.mrobot.utils;
+package cn.test.ping;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Nullable;
@@ -28,6 +29,7 @@ public class PingUtil {
     private static final String WINDOWS_PING_IDENTIFY_STRING = "时间";
     private static final String OS_WINDOWS = "windows";
     private static final String CHARSET_GB2312 = "GB2312";
+    private static final String PING_RESULT = "(\\d+ms)(\\s+)(TTL=\\d+)";
 
     /**
      * 判断网络是不是通
@@ -36,7 +38,7 @@ public class PingUtil {
      * @param logName
      * @return
      */
-    public static boolean isConnect(String hostIp, String logName) throws Exception {
+    public static boolean isConnect(String hostIp, String logName) {
         boolean connect = false;
         Runtime runtime = Runtime.getRuntime();
         Process process;
@@ -75,7 +77,7 @@ public class PingUtil {
                 }
                 log.debug("[{}]返回值为:{}", logName, sb);
                 //ping的结果一般含ttl表示畅通，但是ping localhost返回结果不含ttl，windows只包含“时间”
-                if (null != sb && !sb.toString().equals("")) {
+                if (!"".equals(sb.toString())) {
                     if (sb.toString().toLowerCase().indexOf(identifyString) > 0) {
                         // 网络畅通
                         log.debug("[{}]ping:{}网络畅通", logName, hostIp);
@@ -88,8 +90,9 @@ public class PingUtil {
                 }
             } else {
                 log.debug("[{}]ping:{}网络异常,在{}ms内没有回执", logName, hostIp, timeOut);
-                return false;
+                connect = false;
             }
+            return connect;
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         } finally {
@@ -99,7 +102,6 @@ public class PingUtil {
                 }
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
-            } finally {
             }
             try {
                 if (isr != null) {
@@ -107,7 +109,6 @@ public class PingUtil {
                 }
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
-            } finally {
             }
             try {
                 if (br != null) {
@@ -115,7 +116,6 @@ public class PingUtil {
                 }
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
-            } finally {
             }
             return connect;
         }
@@ -136,15 +136,20 @@ public class PingUtil {
     public static <T> T connectAndCheckFirstUseGet(RestTemplate restTemplate,
                                                    String serverUrl,
                                                    String logName,
-                                                   String requestUrl, Class<T> responseType, Object... uriVariables) throws URISyntaxException {
+                                                   String requestUrl, Class<T> responseType, Object... uriVariables) {
         if (restTemplate == null) {
             log.info("restTemplate is Null");
             return null;
         }
-        if (!isHostAvailablePingFirst(new URI(serverUrl), logName)) {
+        try {
+            if (!isHostAvailablePingFirst(new URI(serverUrl), logName)) {
+                return null;
+            }
+            return restTemplate.getForObject(requestUrl, responseType, uriVariables);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
             return null;
         }
-        return restTemplate.getForObject(requestUrl, responseType, uriVariables);
     }
 
     /**
@@ -179,7 +184,7 @@ public class PingUtil {
     }
 
     /**
-     * 发送请求前，先测试网络连接，使用post方法请求
+     * 发送请求前，先测试网络连接，使用指定的http method方法请求
      *
      * @param restTemplate
      * @param serverUrl
@@ -194,22 +199,118 @@ public class PingUtil {
                                                           HttpMethod method,
                                                           String serverUrl,
                                                           String logName,
-                                                          String requestUrl, Object request, Class<T> responseType, Object... uriVariables) throws Exception {
+                                                          String requestUrl, Object request, Class<T> responseType, Object... uriVariables) {
         if (restTemplate == null) {
             log.info("restTemplate is Null");
             return null;
         }
-        if (!isHostAvailablePingFirst(new URI(serverUrl), logName)) {
+        try {
+            if (!isHostAvailablePingFirst(new URI(serverUrl), logName)) {
+                return null;
+            }
+            return serverConnectAndCheckFirstUseHttpMethod(restTemplate, method, serverUrl, logName, requestUrl, request, responseType, uriVariables);
+        } catch (URISyntaxException e) {
+            log.error(e.getMessage(), e);
             return null;
         }
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        HttpEntity<Object> entity = new HttpEntity<>(request, headers);
-        if (method.ordinal() == HttpMethod.DELETE.ordinal() || method.ordinal() == HttpMethod.GET.ordinal()) {
-            requestUrl = requestUrl + SEARCH_PARAMETER_QUESTION_MARK + request;
+    }
+
+    /**
+     * server端使用，使用get方法请求
+     *
+     * @param restTemplate
+     * @param serverUrl
+     * @param requestUrl
+     * @param responseType
+     * @param uriVariables
+     * @param <T>
+     * @return
+     */
+    @Nullable
+    public static <T> T serverConnectAndCheckFirstUseGet(RestTemplate restTemplate,
+                                                         String serverUrl,
+                                                         String logName,
+                                                         String requestUrl, Class<T> responseType, Object... uriVariables) {
+        if (restTemplate == null) {
+            log.info("restTemplate is Null");
+            return null;
         }
-        ResponseEntity<T> responseEntity = restTemplate.exchange(requestUrl, method, entity, responseType, uriVariables);
-        return responseEntity.getBody();
+        try {
+            return restTemplate.getForObject(requestUrl, responseType, uriVariables);
+        } catch (RestClientException e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * 用于server端访问，使用post方法请求
+     *
+     * @param restTemplate
+     * @param serverUrl
+     * @param requestUrl
+     * @param responseType
+     * @param uriVariables
+     * @param <T>
+     * @return
+     */
+    @Nullable
+    public static <T> T serverConnectAndCheckFirstUseHttpMethod(RestTemplate restTemplate,
+                                                                HttpMethod method,
+                                                                String serverUrl,
+                                                                String logName,
+                                                                String requestUrl, Object request, Class<T> responseType, Object... uriVariables) {
+        if (restTemplate == null) {
+            log.info("restTemplate is Null");
+            return null;
+        }
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            HttpEntity<Object> entity = new HttpEntity<>(request, headers);
+            if (method.ordinal() == HttpMethod.DELETE.ordinal() || method.ordinal() == HttpMethod.GET.ordinal()) {
+                requestUrl = requestUrl + SEARCH_PARAMETER_QUESTION_MARK + request;
+            }
+            if (method == HttpMethod.PATCH) {
+                //注意：容器undertow.HttpServlet暂时不支持patch请求
+                return restTemplate.patchForObject(requestUrl, request, responseType, uriVariables);
+            } else {
+                ResponseEntity<T> responseEntity = restTemplate.exchange(requestUrl, method, entity, responseType, uriVariables);
+                return responseEntity.getBody();
+            }
+
+        } catch (RestClientException e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * server端使用，使用post方法请求
+     *
+     * @param restTemplate
+     * @param serverUrl
+     * @param requestUrl
+     * @param responseType
+     * @param uriVariables
+     * @param <T>
+     * @return
+     */
+    @Nullable
+    public static <T> T serverConnectAndCheckFirstUsePost(RestTemplate restTemplate,
+                                                          String serverUrl,
+                                                          String logName,
+                                                          String requestUrl, Object request, Class<T> responseType, Object... uriVariables) {
+        if (restTemplate == null) {
+            log.info("restTemplate is Null");
+            return null;
+        }
+        try {
+            return restTemplate.postForObject(requestUrl, request, responseType, uriVariables);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
     }
 
     /**
@@ -218,7 +319,6 @@ public class PingUtil {
      * @param ipAddress
      * @param logName
      * @return
-     * @throws Exception
      */
     public static boolean ping(String ipAddress, String logName) {
         boolean status = false;
@@ -252,9 +352,8 @@ public class PingUtil {
      * 另一种ping的方法，执行ping命令
      *
      * @param ipAddress
-     * @throws Exception
      */
-    public static void ping02(String ipAddress) throws Exception {
+    public static void ping02(String ipAddress) {
         String line = null;
         try {
             Process pro = Runtime.getRuntime().exec("ping " + ipAddress);
@@ -299,23 +398,13 @@ public class PingUtil {
 
     //若line含有=18ms TTL=16字样,说明已经ping通,返回1,否則返回0.
     private static int getCheckResult(String line) {  // System.out.println("控制台输出的结果为:"+line);
-        Pattern pattern = Pattern.compile("(\\d+ms)(\\s+)(TTL=\\d+)", Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile(PING_RESULT, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(line);
         while (matcher.find()) {
             return 1;
         }
         return 0;
     }
-
-    /*public static void main(String[] args) {
-        try {
-            PingUtil.isConnect("172.16.1.81", "NET_CLOUD_SERVER");
-            isHostAvailablePingFirst(new URI("http://172.16.1.81:8063"), "NET_CLOUD_SERVER");
-            PingUtil.ping("172.16.1.51", "test");
-        } catch (Exception e) {
-        } finally {
-        }
-    }*/
 
     /**
      * 判断连接是否可用-纯socket

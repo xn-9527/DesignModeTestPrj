@@ -11,19 +11,11 @@ import cn.test.runshell.RunShellUtil;
 import org.apache.log4j.Logger;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.Environment;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TimeZone;
 //import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -51,7 +43,7 @@ public class Application {
      */
     public static void main(String[] args) {
         //设置时区的方法一——测试有效
-		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
         //测试监听器的启动方式,该方式不会打印banner
         startAppWithListener(args);
