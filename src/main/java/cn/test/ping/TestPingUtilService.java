@@ -46,6 +46,8 @@ public class TestPingUtilService {
                 if (pageInfo.getList() == null || pageInfo.getList().isEmpty()) {
                     totalFailed ++;
                     log.error("time {}, result list empty, total-Failed {} , total {}", i, totalFailed, total);
+                } else {
+                    log.info("time {}, result list size: {}",i, pageInfo.getList().size());
                 }
             }
         }
