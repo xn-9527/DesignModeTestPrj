@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+  myblog-server:
+    restart: always
+    image: registry.cn-shanghai.aliyuncs.com/mrobot-images/spring-boot-service:2.0
+    mem_limit: 1024m
+    memswap_limit: 1024m
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 120000
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+        max-file: "50"
+    network_mode: "host"
+    volumes:
+      - ./myblog-server/myblog.jar:/usr/src/spring-boot-app/ni-ser.jar:ro
+      - ./myblog-server/logs:/mnt/server/logs
+    ports:
+      - "9988:80"
+    environment:
+      - JAVA_OPTIONS=-Xmx1024m
+      - LOGGING_PATH=/mnt/server
+      - MYSQL_DB_HOSTNAME=${SERVER_HOST}
+      - MYSQL_DB_PORT=33163
