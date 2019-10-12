@@ -65,8 +65,8 @@ public class MathUtil {
     }
 
     public static void main(String[] args) {
-        int n = 16;
-        int k = 1;
+        int n = 26;
+        int k = 6;
         log.info("C({},{})={}",n,k, MathUtil.C(n, k));
         log.info("k!({})={}",k, MathUtil.stepMultiply(k));
         log.info("A({},{})={}",n,k, MathUtil.A(n, k));
