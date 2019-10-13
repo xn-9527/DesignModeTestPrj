@@ -12,4 +12,14 @@ public class DemoServiceImpl implements IDemoService{
     public String get(String name) {
         return "This is chay demo, welcome name:" + name;
     }
+
+    @Override
+    public String create(String name) {
+        return "create " + name;
+    }
+
+    @Override
+    public String delete(String name) {
+        return "delete " + name;
+    }
 }

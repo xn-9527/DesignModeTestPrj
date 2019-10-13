@@ -5,4 +5,8 @@ package cn.chay.demo.service;
  */
 public interface IDemoService {
     String get(String name);
+
+    String create(String name);
+
+    String delete(String name);
 }

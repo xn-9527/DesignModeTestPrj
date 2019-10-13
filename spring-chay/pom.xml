@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.chay.spring.demo</groupId>
-    <artifactId>testIOModule</artifactId>
+    <artifactId>testSpring</artifactId>
     <version>1.0</version>
-    <packaging>pom</packaging>
+    <packaging>war</packaging>
 
-    <name>springDemo</name>
-    <description>springDemo server project for Spring</description>
+    <name>springChayDemo</name>
+    <description>springChayDemo server project for Spring</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -23,6 +23,21 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>${servlet.api.version}</version>
+        </dependency>
+
+        <!--使用@Data注解相关快速构建get,set-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <!-- springboot中集成了，所以加上-->
+            <!--<scope>provided</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.25</version>
+            <!--<type>jar</type>-->
         </dependency>
     </dependencies>
 

@@ -29,4 +29,26 @@ public class DemoAction {
             e.printStackTrace();
         }
     }
+
+    @GPRequestMapping("/create.json")
+    public void create(HttpServletRequest req, HttpServletResponse resp,
+                      @GPRequestParam("name") String name ) {
+        String result = demoService.create(name);
+        try {
+            resp.getWriter().write(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @GPRequestMapping("/delete.json")
+    public void delete(HttpServletRequest req, HttpServletResponse resp,
+                       @GPRequestParam("name") String name ) {
+        String result = demoService.delete(name);
+        try {
+            resp.getWriter().write(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
