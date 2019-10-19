@@ -12,12 +12,13 @@ import java.util.concurrent.locks.ReentrantLock;
  * 看trylock的描述，只有锁没有被另一个线程拿着，都是可以的，所以只要是同一个线程的不同方法，拿相同锁都是成功的。
  * Acquires the lock only if it is not held by another thread at the time
  * of invocation.
+ * 同一个线程虽然多个方法可以拿同一个锁，但是计数器都会+1
  */
 @Slf4j
 public class ReentrantLockTest {
     ReentrantLock reentrantLock = new ReentrantLock();
 
-    public void a() {
+    public void aLock() {
         if (reentrantLock.tryLock()) {
             log.info("a locked");
         } else {
@@ -25,7 +26,7 @@ public class ReentrantLockTest {
         }
     }
 
-    public void b() {
+    public void bLock() {
         if (reentrantLock.tryLock()) {
             log.info("b locked");
         } else {
@@ -33,11 +34,28 @@ public class ReentrantLockTest {
         }
     }
 
+    public void cLockUnlock() {
+        if (reentrantLock.tryLock()) {
+            log.info("c locked");
+            log.info(String.valueOf(reentrantLock.getHoldCount()));
+            reentrantLock.unlock();
+            log.info(String.valueOf(reentrantLock.getHoldCount()));
+        } else {
+            log.info("c locked failed");
+        }
+    }
+
     public void test() {
-        a();
-        b();
+        aLock();
+        log.info(String.valueOf(reentrantLock.getHoldCount()));
+        cLockUnlock();
+        bLock();
+        log.info(String.valueOf(reentrantLock.getHoldCount()));
         try {
             reentrantLock.unlock();
+            log.info(String.valueOf(reentrantLock.getHoldCount()));
+            reentrantLock.unlock();
+            log.info(String.valueOf(reentrantLock.getHoldCount()));
         } catch (Exception e) {
             e.printStackTrace();
         }
