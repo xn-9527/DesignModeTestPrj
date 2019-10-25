@@ -45,37 +45,49 @@ public class CacheBuilderTest {
                     }
                 });
 
-        for (int i = 1; i < 100; i++) {
+        for (int i = 1; i < 10; i++) {
             log.info("=============================");
             messageCache.put("a" + i, "a" + i);
-            log.info("cache size:" + messageCache.size());
+            log.info("messageCache size:" + messageCache.size());
             log.info(JSON.toJSONString(messageCache.stats().averageLoadPenalty()));
             messageCache.put("b" + i, "b" + i);
             log.info(JSON.toJSONString(messageCache.stats().averageLoadPenalty()));
 
             log.info(messageCache.getIfPresent("a" + i));
             log.info(JSON.toJSONString(messageCache.stats().averageLoadPenalty()));
+            log.info("messageCache status, hitCount1: {}, missCount: {}, hitRate: {}",
+                    messageCache.stats().hitCount(),
+                    messageCache.stats().missCount(),
+                    messageCache.stats().hitRate());
 
             log.info("############################");
+            //读取不存在的值，会增加missCount +1
             log.info(messageCache.getIfPresent("c" + i));
-            log.info(JSON.toJSONString(messageCache.stats().averageLoadPenalty()));
-            log.info(JSON.toJSONString(messageCache.stats().totalLoadTime()));
-            log.info(JSON.toJSONString(messageCache.stats().loadCount()));
-            log.info("messageCache status, hitCount:" + cache.stats().hitCount()
-                    + ", missCount:" + cache.stats().missCount());
+            log.info("" + messageCache.stats().averageLoadPenalty());
+            log.info("" + messageCache.stats().totalLoadTime());
+            log.info("" + messageCache.stats().loadCount());
+            log.info("messageCache status, hitCount1: {}, missCount: {}, hitRate: {}",
+                    messageCache.stats().hitCount(),
+                    messageCache.stats().missCount(),
+                    messageCache.stats().hitRate());
             log.info("messageCache size:" + messageCache.size());
 
             //--------------
             dynamicCache.put("a" + i, "a" + i);
-            log.info(dynamicCache.getIfPresent("a" + i));
+            //不读取不会把hitCount +1，一直是0
+//            log.info(dynamicCache.getIfPresent("a" + i));
+            //这里打印是空对象
             log.info("dynamicCache stats:" + JSON.toJSONString(dynamicCache.stats()));
-            log.info("dynamicCache status, hitCount:" + cache.stats().hitCount()
-                    + ", missCount:" + cache.stats().missCount());
+            //只能用这种方法打印状态
+            log.info("dynamicCache status, hitCount:" + dynamicCache.stats().hitCount()
+                    + ", missCount:" + dynamicCache.stats().missCount());
 
             //--------------
             cache.put("a" + i, i);
             log.info("" + cache.getIfPresent("a" + i));
+            //这里打印是空对象
             log.info("cache stats:" + JSON.toJSONString(cache.stats()));
+            //只能用这种方法打印状态
             log.info("cache status, hitCount:" + cache.stats().hitCount()
                     + ", missCount:" + cache.stats().missCount());
             try {
