@@ -8,6 +8,12 @@ public class WheelWorker implements Runnable, Comparable<WheelWorker> {
      * 任务触发时间
      */
     private long trigTime;
+    /**
+     * 圈数计数：
+     * 初始化圈数=根据触发时间%时间轮一圈的时间
+     * 当时间轮转一圈(即扫描过该任务)，圈数-1
+     */
+    private long roundCount;
     private Runnable runnable;
 
     public WheelWorker(Long trigTime, Runnable runnable) {
