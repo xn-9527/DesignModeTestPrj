@@ -9,8 +9,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.codehaus.groovy.runtime.DefaultGroovyMethods.collect;
-
 /**
  * @author Created by xiaoni on 2018/10/9.
  */

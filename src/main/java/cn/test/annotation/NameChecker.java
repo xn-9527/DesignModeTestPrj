@@ -4,7 +4,8 @@ package cn.test.annotation;
  * Created by xiaoni on 2018/11/8.
  */
 
-import groovy.util.logging.Slf4j;
+
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;

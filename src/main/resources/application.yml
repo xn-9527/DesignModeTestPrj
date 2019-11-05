@@ -28,6 +28,12 @@ spring:
 #  jackson:
 #    time-zone: Asia/Shanghai
 
+  mvc:
+    view:
+      # 定位模板的目录，默认会去资源的static/下
+      prefix: /
+      # 给返回的页面添加后缀名
+      suffix: .html
 
 #  rabbitmq:
 ##    host: 172.16.2.70
