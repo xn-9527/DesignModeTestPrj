@@ -11,6 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Slf4j
 public class MyWheelTimer {
+    private static final int MAX_TICKS_PER_WHEEL = 1073741824;
+    private static final long WAITING_SHUTDOWN_MILLIS = 1000L;
     private static final boolean IS_WINDOWS;
 
     static {
@@ -74,7 +76,10 @@ public class MyWheelTimer {
     private static final int WORKER_STATE_STARTED = 1;
     private static final int WORKER_STATE_SHUTDOWN = 2;
     @SuppressWarnings({"unused", "FieldMayBeFinal", "RedundantFieldInitialization"})
-    private volatile int workerState = WORKER_STATE_INIT; // 0 - init, 1 - started, 2 - shut down
+    /**
+     * 0 - init, 1 - started, 2 - shut down
+     */
+    private volatile int workerState = WORKER_STATE_INIT;
 
     public MyWheelTimer(ExecutorService executorService,
                         long tickDuration, TimeUnit unit, int ticksPerWheel) {
@@ -124,7 +129,7 @@ public class MyWheelTimer {
             throw new IllegalArgumentException(
                     "ticksPerWheel must be greater than 0: " + ticksPerWheel);
         }
-        if (ticksPerWheel > 1073741824) {
+        if (ticksPerWheel > MAX_TICKS_PER_WHEEL) {
             throw new IllegalArgumentException(
                     "ticksPerWheel may not be greater than 2^30: " + ticksPerWheel);
         }
@@ -179,7 +184,7 @@ public class MyWheelTimer {
 
         executorService.shutdownNow();
         try {
-            while (!executorService.awaitTermination(1000, TimeUnit.MILLISECONDS)){
+            while (!executorService.awaitTermination(WAITING_SHUTDOWN_MILLIS, TimeUnit.MILLISECONDS)){
             }
         } catch (InterruptedException e) {
             log.error("executorService stopped" + e.getMessage(), e);
@@ -190,7 +195,7 @@ public class MyWheelTimer {
 
         workerThread.shutdownNow();
         try {
-            while (!workerThread.awaitTermination(1000, TimeUnit.MILLISECONDS)) {
+            while (!workerThread.awaitTermination(WAITING_SHUTDOWN_MILLIS, TimeUnit.MILLISECONDS)) {
             }
         } catch (InterruptedException e) {
             log.info("workerThread stopped" + e.getMessage(), e);
@@ -274,7 +279,7 @@ public class MyWheelTimer {
                     continue;
                 }
                 for (MyWheelWorker workerInQueue : queue) {
-                    if (workerInQueue.getId() == myWheelWorker.getId()) {
+                    if (workerInQueue.getId().equals(myWheelWorker.getId())) {
                         queue.remove(workerInQueue);
                         return;
                     }

@@ -1,6 +1,5 @@
 package cn.test.wheelTimer;
 
-import com.alibaba.fastjson.JSON;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,13 +21,13 @@ public class MyWheelWorker implements Runnable, Comparable<MyWheelWorker> {
     private final static long SLEEP_PRE_TRIGGER_MILLIS = 3L;
 
     /**
-     * 时间轮工人id，整个系统全局唯一
+     * 时间轮工人id生成器，整个系统全局唯一
      */
     private static final AtomicInteger AUTO_ID = new AtomicInteger();
     /**
-     * 对象的id
+     * 对象的id，可外部指定，如果不指定，则由生成器生成。
      */
-    private int id;
+    private String id;
     /**
      * 任务触发时间
      */
@@ -45,7 +44,7 @@ public class MyWheelWorker implements Runnable, Comparable<MyWheelWorker> {
      */
     private String interruptMessage;
 
-    public MyWheelWorker(long triggerTime, Runnable runnable) {
+    public MyWheelWorker(long triggerTime, Runnable runnable, String workerUuid, String interruptMessage) {
         if (triggerTime <= 0) {
             throw new IllegalArgumentException("triggerTime must bigger than 0:" + triggerTime);
         }
@@ -53,15 +52,23 @@ public class MyWheelWorker implements Runnable, Comparable<MyWheelWorker> {
             throw new NullPointerException("runnable is null.");
         }
 
-        AUTO_ID.incrementAndGet();
-        this.id = AUTO_ID.get();
+        if (workerUuid == null || workerUuid.isEmpty()) {
+            AUTO_ID.incrementAndGet();
+            this.id = String.valueOf(AUTO_ID.get());
+        } else {
+            this.id = workerUuid;
+        }
         this.triggerTime = triggerTime;
         this.runnable = runnable;
+        this.interruptMessage = interruptMessage;
     }
 
     public MyWheelWorker(long triggerTime, Runnable runnable, String interruptMessage) {
-        this(triggerTime, runnable);
-        this.interruptMessage = interruptMessage;
+        this(triggerTime, runnable, null, interruptMessage);
+    }
+
+    public MyWheelWorker(long triggerTime, Runnable runnable) {
+        this(triggerTime, runnable, null, null);
     }
 
     @Override
