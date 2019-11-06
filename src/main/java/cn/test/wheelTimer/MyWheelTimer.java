@@ -36,7 +36,7 @@ public class MyWheelTimer {
      * key : 格子编号
      * value： 该格子内的任务，自动按照触发时间升序排序
      */
-    private final ConcurrentHashMap<Integer, PriorityQueue<WheelWorker>> taskWheel;
+    private final ConcurrentHashMap<Integer, PriorityQueue<MyWheelWorker>> taskWheel;
     /**
      * 一圈的格数，2的次方
      */
@@ -119,7 +119,7 @@ public class MyWheelTimer {
      * @return
      */
     @SuppressWarnings("unchecked")
-    private static ConcurrentHashMap<Integer, PriorityQueue<WheelWorker>> createWheel(int ticksPerWheel) {
+    private static ConcurrentHashMap<Integer, PriorityQueue<MyWheelWorker>> createWheel(int ticksPerWheel) {
         if (ticksPerWheel <= 0) {
             throw new IllegalArgumentException(
                     "ticksPerWheel must be greater than 0: " + ticksPerWheel);
@@ -130,7 +130,7 @@ public class MyWheelTimer {
         }
 
         ticksPerWheel = normalizeTicksPerWheel(ticksPerWheel);
-        ConcurrentHashMap<Integer, PriorityQueue<WheelWorker>> wheel = new ConcurrentHashMap<Integer, PriorityQueue<WheelWorker>>(ticksPerWheel);
+        ConcurrentHashMap<Integer, PriorityQueue<MyWheelWorker>> wheel = new ConcurrentHashMap<Integer, PriorityQueue<MyWheelWorker>>(ticksPerWheel);
         for (int i = 0; i < ticksPerWheel; i++) {
             wheel.put(i, new PriorityQueue<>());
         }
@@ -171,7 +171,7 @@ public class MyWheelTimer {
      *
      * @return
      */
-    public List<WheelWorker> stop() {
+    public List<MyWheelWorker> stop() {
         if (workerState != WORKER_STATE_STARTED) {
             log.info("wheel not started, no need to stop");
             return Collections.emptyList();
@@ -206,22 +206,22 @@ public class MyWheelTimer {
     /**
      * 新增一个工作
      *
-     * @param wheelWorker
+     * @param myWheelWorker
      */
-    public void addWheelWorker(WheelWorker wheelWorker) {
+    public void addWheelWorker(MyWheelWorker myWheelWorker) {
         long now = System.currentTimeMillis();
-        long diff = wheelWorker.getTriggerTime() - now;
+        long diff = myWheelWorker.getTriggerTime() - now;
         if (diff < 0) {
             log.error("worker already expired, can't add!");
             return;
         }
         if (diff < tickDuration) {
             //如果在该轮当前格子的时间范围内，则放到当前轮的下一个格子
-            wheelWorker.setRoundCount(0);
-            addTaskWheel(tick + 1, wheelWorker);
+            myWheelWorker.setRoundCount(0);
+            addTaskWheel(tick + 1, myWheelWorker);
         } else {
             now = System.currentTimeMillis();
-            diff = wheelWorker.getTriggerTime() - now;
+            diff = myWheelWorker.getTriggerTime() - now;
             //差的总格子数
             long tickTotal = 1 + diff / tickDuration;
             //默认在当前轮
@@ -244,37 +244,37 @@ public class MyWheelTimer {
                 log.error("triggerTime too big, can't add!");
                 return;
             }
-            wheelWorker.setRoundCount(round);
-            addTaskWheel(Integer.parseInt(String.valueOf(thisTick)), wheelWorker);
+            myWheelWorker.setRoundCount(round);
+            addTaskWheel(Integer.parseInt(String.valueOf(thisTick)), myWheelWorker);
         }
     }
 
     /**
      * 移除一个工作
      *
-     * @param wheelWorker
+     * @param myWheelWorker
      */
-    public void removeWheelWorker(WheelWorker wheelWorker) {
+    public void removeWheelWorker(MyWheelWorker myWheelWorker) {
         long now = System.currentTimeMillis();
-        long diff = wheelWorker.getTriggerTime() - now;
+        long diff = myWheelWorker.getTriggerTime() - now;
         if (diff < 0) {
             log.error("worker already expired, can't remove!");
             return;
         }
-        removeTaskWheel(wheelWorker);
+        removeTaskWheel(myWheelWorker);
     }
 
-    private void removeTaskWheel(WheelWorker wheelWorker) {
+    private void removeTaskWheel(MyWheelWorker myWheelWorker) {
         synchronized (taskWheel) {
-            Iterator<Map.Entry<Integer, PriorityQueue<WheelWorker>>> it = taskWheel.entrySet().iterator();
+            Iterator<Map.Entry<Integer, PriorityQueue<MyWheelWorker>>> it = taskWheel.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry<Integer, PriorityQueue<WheelWorker>> entry = it.next();
-                PriorityQueue<WheelWorker> queue = entry.getValue();
+                Map.Entry<Integer, PriorityQueue<MyWheelWorker>> entry = it.next();
+                PriorityQueue<MyWheelWorker> queue = entry.getValue();
                 if (queue == null || queue.isEmpty()) {
                     continue;
                 }
-                for (WheelWorker workerInQueue : queue) {
-                    if (workerInQueue.getId() == wheelWorker.getId()) {
+                for (MyWheelWorker workerInQueue : queue) {
+                    if (workerInQueue.getId() == myWheelWorker.getId()) {
                         queue.remove(workerInQueue);
                         return;
                     }
@@ -283,16 +283,16 @@ public class MyWheelTimer {
         }
     }
 
-    private void addTaskWheel(int tick, WheelWorker wheelWorker) {
+    private void addTaskWheel(int tick, MyWheelWorker myWheelWorker) {
         synchronized (taskWheel) {
-            PriorityQueue<WheelWorker> thisTickQueue = taskWheel.computeIfAbsent(tick, list -> new PriorityQueue<>());
-            thisTickQueue.add(wheelWorker);
+            PriorityQueue<MyWheelWorker> thisTickQueue = taskWheel.computeIfAbsent(tick, list -> new PriorityQueue<>());
+            thisTickQueue.add(myWheelWorker);
             taskWheel.put(tick, thisTickQueue);
         }
     }
 
-    private List<WheelWorker> getTaskList() {
-        List<WheelWorker> tasks = new ArrayList<>();
+    private List<MyWheelWorker> getTaskList() {
+        List<MyWheelWorker> tasks = new ArrayList<>();
         synchronized (taskWheel) {
             for (PriorityQueue queue : taskWheel.values()) {
                 if (queue == null || queue.isEmpty()) {
@@ -349,25 +349,25 @@ public class MyWheelTimer {
                 if (deadline > 0) {
                     //取工作队列
                     synchronized (taskWheel) {
-                        PriorityQueue<WheelWorker> thisTickQueue = taskWheel.computeIfAbsent(tick, list -> new PriorityQueue<>());
+                        PriorityQueue<MyWheelWorker> thisTickQueue = taskWheel.computeIfAbsent(tick, list -> new PriorityQueue<>());
                         if (!thisTickQueue.isEmpty()) {
                             //缓存不是这轮的任务
-                            PriorityQueue<WheelWorker> notThisRoundQueue = new PriorityQueue<>(thisTickQueue.size());
-                            thisTickQueue.forEach(wheelWorker -> {
-                                if (wheelWorker == null) {
+                            PriorityQueue<MyWheelWorker> notThisRoundQueue = new PriorityQueue<>(thisTickQueue.size());
+                            thisTickQueue.forEach(myWheelWorker -> {
+                                if (myWheelWorker == null) {
                                     return;
                                 }
                                 //round数不为0，说明还没到触发轮，缓存到下一轮
-                                if (wheelWorker.getRoundCount() > 0) {
+                                if (myWheelWorker.getRoundCount() > 0) {
                                     //轮数-1
-                                    wheelWorker.setRoundCount(wheelWorker.getRoundCount() - 1);
-                                    notThisRoundQueue.add(wheelWorker);
+                                    myWheelWorker.setRoundCount(myWheelWorker.getRoundCount() - 1);
+                                    notThisRoundQueue.add(myWheelWorker);
                                     return;
                                 }
 
                                 try {
                                     //把task分配给线程池，准备触发
-                                    executorService.submit(wheelWorker);
+                                    executorService.submit(myWheelWorker);
                                 } catch (Exception e) {
                                     log.error(e.getMessage(), e);
                                 }

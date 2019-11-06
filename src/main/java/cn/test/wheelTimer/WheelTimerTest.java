@@ -31,7 +31,7 @@ public class WheelTimerTest {
                 log.info("I'm run 1");
             }
         };
-        WheelWorker wheelWorker1 = new WheelWorker(now + 10000L, runnable1);
+        MyWheelWorker myWheelWorker1 = new MyWheelWorker(now + 10000L, runnable1);
 
         Runnable runnable2 = new Runnable() {
             @Override
@@ -39,7 +39,7 @@ public class WheelTimerTest {
                 log.info("I'm run 2");
             }
         };
-        WheelWorker wheelWorker2 = new WheelWorker(now + 15000L, runnable2);
+        MyWheelWorker myWheelWorker2 = new MyWheelWorker(now + 15000L, runnable2);
 
         Runnable runnable3 = new Runnable() {
             @Override
@@ -47,11 +47,11 @@ public class WheelTimerTest {
                 log.info("I'm run 3");
             }
         };
-        WheelWorker wheelWorker3 = new WheelWorker(now + 200000000L, runnable3);
+        MyWheelWorker myWheelWorker3 = new MyWheelWorker(now + 200000000L, runnable3);
 
-        myWheelTimer.addWheelWorker(wheelWorker1);
-        myWheelTimer.addWheelWorker(wheelWorker2);
-        myWheelTimer.addWheelWorker(wheelWorker3);
+        myWheelTimer.addWheelWorker(myWheelWorker1);
+        myWheelTimer.addWheelWorker(myWheelWorker2);
+        myWheelTimer.addWheelWorker(myWheelWorker3);
         myWheelTimer.start();
 //        myWheelTimer2.start();
 
