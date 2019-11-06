@@ -2,10 +2,7 @@ package cn.test.wheelTimer;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -15,16 +12,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class MyWheelTimer {
     private static final boolean IS_WINDOWS;
+
     static {
-        String os = System.getProperty("os.name");;
+        String os = System.getProperty("os.name");
         // windows
-        IS_WINDOWS =  os.toLowerCase().contains("win");
+        IS_WINDOWS = os.toLowerCase().contains("win");
     }
 
     /**
      * 时间轮id，整个系统全局唯一
      */
-    private static final AtomicInteger id = new AtomicInteger();
+    private static final AtomicInteger AUTO_ID = new AtomicInteger();
+    /**
+     * 对象的id
+     */
+    private int id;
     /**
      * 线程池
      */
@@ -34,7 +36,7 @@ public class MyWheelTimer {
      * key : 格子编号
      * value： 该格子内的任务，自动按照触发时间升序排序
      */
-    private final ConcurrentHashMap<Integer, PriorityQueue<? extends WheelWorker>> taskWheel;
+    private final ConcurrentHashMap<Integer, PriorityQueue<WheelWorker>> taskWheel;
     /**
      * 一圈的格数，2的次方
      */
@@ -44,6 +46,10 @@ public class MyWheelTimer {
      */
     private long tickDuration;
     /**
+     * 一圈时间
+     */
+    private long roundDuration;
+    /**
      * 时间单位
      */
     private TimeUnit unit;
@@ -52,6 +58,10 @@ public class MyWheelTimer {
      */
     private final ExecutorService workerThread = Executors.newSingleThreadExecutor();
     private final Worker worker = new Worker();
+    /**
+     * 当前转到的格子数
+     */
+    private int tick;
     /**
      * 时间轮开始时间
      */
@@ -63,11 +73,13 @@ public class MyWheelTimer {
     private static final int WORKER_STATE_INIT = 0;
     private static final int WORKER_STATE_STARTED = 1;
     private static final int WORKER_STATE_SHUTDOWN = 2;
-    @SuppressWarnings({ "unused", "FieldMayBeFinal", "RedundantFieldInitialization" })
+    @SuppressWarnings({"unused", "FieldMayBeFinal", "RedundantFieldInitialization"})
     private volatile int workerState = WORKER_STATE_INIT; // 0 - init, 1 - started, 2 - shut down
 
     public MyWheelTimer(ExecutorService executorService,
                         long tickDuration, TimeUnit unit, int ticksPerWheel) {
+        AUTO_ID.incrementAndGet();
+        this.id = AUTO_ID.get();
         if (executorService == null) {
             throw new NullPointerException("executorService");
         }
@@ -83,6 +95,11 @@ public class MyWheelTimer {
             throw new IllegalArgumentException(
                     "ticksPerWheel must be greater than 0: " + ticksPerWheel);
         }
+        if (tickDuration > Long.MAX_VALUE / ticksPerWheel ) {
+            throw new IllegalArgumentException(
+                    "roundDuration = tickDuration * ticksPerWheel too big");
+        }
+        this.roundDuration = tickDuration * ticksPerWheel;
 
         this.executorService = executorService;
 
@@ -90,16 +107,9 @@ public class MyWheelTimer {
         this.ticksPerWheel = ticksPerWheel;
         taskWheel = createWheel(ticksPerWheel);
 
-        // Convert tickDuration to nanos.
+        // Convert tickDuration to Millis.
         this.unit = unit;
-        this.tickDuration = unit.toNanos(tickDuration);
-
-        // Prevent overflow.
-        if (this.tickDuration >= Long.MAX_VALUE / taskWheel.size()) {
-            throw new IllegalArgumentException(String.format(
-                    "tickDuration: %d (expected: 0 < tickDuration in nanos < %d",
-                    tickDuration, Long.MAX_VALUE / taskWheel.size()));
-        }
+        this.tickDuration = unit.toMillis(tickDuration);
     }
 
     /**
@@ -109,7 +119,7 @@ public class MyWheelTimer {
      * @return
      */
     @SuppressWarnings("unchecked")
-    private static ConcurrentHashMap<Integer, PriorityQueue<? extends WheelWorker>> createWheel(int ticksPerWheel) {
+    private static ConcurrentHashMap<Integer, PriorityQueue<WheelWorker>> createWheel(int ticksPerWheel) {
         if (ticksPerWheel <= 0) {
             throw new IllegalArgumentException(
                     "ticksPerWheel must be greater than 0: " + ticksPerWheel);
@@ -120,8 +130,8 @@ public class MyWheelTimer {
         }
 
         ticksPerWheel = normalizeTicksPerWheel(ticksPerWheel);
-        ConcurrentHashMap<Integer, PriorityQueue<? extends WheelWorker>> wheel = new ConcurrentHashMap<Integer, PriorityQueue<? extends WheelWorker>>(ticksPerWheel);
-        for (int i = 0; i < wheel.size(); i ++) {
+        ConcurrentHashMap<Integer, PriorityQueue<WheelWorker>> wheel = new ConcurrentHashMap<Integer, PriorityQueue<WheelWorker>>(ticksPerWheel);
+        for (int i = 0; i < ticksPerWheel; i++) {
             wheel.put(i, new PriorityQueue<>());
         }
         return wheel;
@@ -153,6 +163,7 @@ public class MyWheelTimer {
                 // Ignore - it will be ready very soon.
             }
         }
+        log.info("wheel {} started finish", id);
     }
 
     /**
@@ -160,32 +171,128 @@ public class MyWheelTimer {
      *
      * @return
      */
-    public List<? extends WheelWorker> stop() {
+    public List<WheelWorker> stop() {
         if (workerState != WORKER_STATE_STARTED) {
             log.info("wheel not started, no need to stop");
             return Collections.emptyList();
         }
-        boolean interrupted = false;
-        while (!workerThread.isTerminated()) {
-            workerThread.shutdown();
-            try {
-                workerThread.awaitTermination(100, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException e) {
-                interrupted = true;
+
+        executorService.shutdownNow();
+        try {
+            while (!executorService.awaitTermination(1000, TimeUnit.MILLISECONDS)){
             }
+        } catch (InterruptedException e) {
+            log.error("executorService stopped" + e.getMessage(), e);
         }
 
-        if (interrupted) {
-            Thread.currentThread().interrupt();
+        //调整状态，worker会因为条件不满足停止
+        workerState = WORKER_STATE_SHUTDOWN;
+
+        workerThread.shutdownNow();
+        try {
+            while (!workerThread.awaitTermination(1000, TimeUnit.MILLISECONDS)) {
+            }
+        } catch (InterruptedException e) {
+            log.info("workerThread stopped" + e.getMessage(), e);
         }
+
+        Thread.currentThread().interrupt();
 
         log.info("wheel {} stopped", id);
-        workerState = WORKER_STATE_SHUTDOWN;
+
         return getTaskList();
     }
 
-    private List<? extends WheelWorker> getTaskList() {
-        List<? extends WheelWorker> tasks = new ArrayList<>();
+    /**
+     * 新增一个工作
+     *
+     * @param wheelWorker
+     */
+    public void addWheelWorker(WheelWorker wheelWorker) {
+        long now = System.currentTimeMillis();
+        long diff = wheelWorker.getTriggerTime() - now;
+        if (diff < 0) {
+            log.error("worker already expired, can't add!");
+            return;
+        }
+        if (diff < tickDuration) {
+            //如果在该轮当前格子的时间范围内，则放到当前轮的下一个格子
+            wheelWorker.setRoundCount(0);
+            addTaskWheel(tick + 1, wheelWorker);
+        } else {
+            now = System.currentTimeMillis();
+            diff = wheelWorker.getTriggerTime() - now;
+            //差的总格子数
+            long tickTotal = 1 + diff / tickDuration;
+            //默认在当前轮
+            long round = 0;
+            long thisTick = 0;
+            if (tickTotal > ticksPerWheel - tick) {
+                //如果总格子数 > 当前轮剩余格子数，则需要计算新轮数
+                //先去除当前轮数剩余的格子数
+                tickTotal = tickTotal + tick - ticksPerWheel;
+                //重新计算轮数
+                round = 1 + tickTotal / ticksPerWheel;
+                //重新计算偏移量
+                thisTick = 1 + tickTotal % ticksPerWheel;
+            } else {
+                //如果总格子数 < 当前轮剩余格子数，直接放入当前轮数偏移总格子数的位置
+                thisTick = tick + tickTotal + 1;
+            }
+
+            if (thisTick > Integer.MAX_VALUE) {
+                log.error("triggerTime too big, can't add!");
+                return;
+            }
+            wheelWorker.setRoundCount(round);
+            addTaskWheel(Integer.parseInt(String.valueOf(thisTick)), wheelWorker);
+        }
+    }
+
+    /**
+     * 移除一个工作
+     *
+     * @param wheelWorker
+     */
+    public void removeWheelWorker(WheelWorker wheelWorker) {
+        long now = System.currentTimeMillis();
+        long diff = wheelWorker.getTriggerTime() - now;
+        if (diff < 0) {
+            log.error("worker already expired, can't remove!");
+            return;
+        }
+        removeTaskWheel(wheelWorker);
+    }
+
+    private void removeTaskWheel(WheelWorker wheelWorker) {
+        synchronized (taskWheel) {
+            Iterator<Map.Entry<Integer, PriorityQueue<WheelWorker>>> it = taskWheel.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<Integer, PriorityQueue<WheelWorker>> entry = it.next();
+                PriorityQueue<WheelWorker> queue = entry.getValue();
+                if (queue == null || queue.isEmpty()) {
+                    continue;
+                }
+                for (WheelWorker workerInQueue : queue) {
+                    if (workerInQueue.getId() == wheelWorker.getId()) {
+                        queue.remove(workerInQueue);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    private void addTaskWheel(int tick, WheelWorker wheelWorker) {
+        synchronized (taskWheel) {
+            PriorityQueue<WheelWorker> thisTickQueue = taskWheel.computeIfAbsent(tick, list -> new PriorityQueue<>());
+            thisTickQueue.add(wheelWorker);
+            taskWheel.put(tick, thisTickQueue);
+        }
+    }
+
+    private List<WheelWorker> getTaskList() {
+        List<WheelWorker> tasks = new ArrayList<>();
         synchronized (taskWheel) {
             for (PriorityQueue queue : taskWheel.values()) {
                 if (queue == null || queue.isEmpty()) {
@@ -219,17 +326,14 @@ public class MyWheelTimer {
      * 时间轮主线程要干的工作
      */
     private final class Worker implements Runnable {
-        /**
-         * 当前转到的格子数
-         */
-        private int tick;
+
         @Override
         public void run() {
             //初始化格子
             tick = 0;
 
             // Initialize the startTime.
-            startTime = System.nanoTime();
+            startTime = System.currentTimeMillis();
             if (startTime == 0) {
                 // We use 0 as an indicator for the uninitialized value here, so make sure it's not 0 when initialized.
                 startTime = 1;
@@ -240,55 +344,71 @@ public class MyWheelTimer {
 
             //如果时间轮在工作状态，while循环
             do {
+                log.info("tick:" + tick);
                 final long deadline = waitForNextTick();
                 if (deadline > 0) {
                     //取工作队列
-                    PriorityQueue<? extends WheelWorker> thisTickQueue = taskWheel.computeIfAbsent(tick, list -> new PriorityQueue<>());
+                    synchronized (taskWheel) {
+                        PriorityQueue<WheelWorker> thisTickQueue = taskWheel.computeIfAbsent(tick, list -> new PriorityQueue<>());
+                        if (!thisTickQueue.isEmpty()) {
+                            //缓存不是这轮的任务
+                            PriorityQueue<WheelWorker> notThisRoundQueue = new PriorityQueue<>(thisTickQueue.size());
+                            thisTickQueue.forEach(wheelWorker -> {
+                                if (wheelWorker == null) {
+                                    return;
+                                }
+                                //round数不为0，说明还没到触发轮，缓存到下一轮
+                                if (wheelWorker.getRoundCount() > 0) {
+                                    //轮数-1
+                                    wheelWorker.setRoundCount(wheelWorker.getRoundCount() - 1);
+                                    notThisRoundQueue.add(wheelWorker);
+                                    return;
+                                }
 
+                                try {
+                                    //把task分配给线程池，准备触发
+                                    executorService.submit(wheelWorker);
+                                } catch (Exception e) {
+                                    log.error(e.getMessage(), e);
+                                }
+                            });
+                            //把没执行的非该轮任务，再放回去等待执行
+                            taskWheel.put(tick, notThisRoundQueue);
+                        }
+                    }
                     //步进一格
                     tick++;
+                    if (tick >= ticksPerWheel) {
+                        //tick 取值范围 [0,ticksPerWheel-1]
+                        tick = 0;
+                    }
                 }
             } while (workerState == WORKER_STATE_STARTED);
         }
 
         /**
-         * calculate goal nanoTime from startTime and current tick number,
-         * then wait until that goal has been reached.
-         * @return Long.MIN_VALUE if received a shutdown request,
-         * current time otherwise (with Long.MIN_VALUE changed by +1)
-         */
+         * 等到下一个触发时间
+         * */
         private long waitForNextTick() {
-            long deadline = tickDuration * (tick + 1);
-
-            for (;;) {
-                final long currentTime = System.nanoTime() - startTime;
-                long sleepTimeMs = (deadline - currentTime + 999999) / 1000000;
-
-                if (sleepTimeMs <= 0) {
-                    if (currentTime == Long.MIN_VALUE) {
-                        return -Long.MAX_VALUE;
-                    } else {
-                        return currentTime;
-                    }
-                }
-
-                // Check if we run on windows, as if thats the case we will need
-                // to round the sleepTime as workaround for a bug that only affect
-                // the JVM if it runs on windows.
-                //
-                // See https://github.com/netty/netty/issues/356
-                if (IS_WINDOWS) {
-                    sleepTimeMs = sleepTimeMs / 10 * 10;
-                }
-
-                try {
-                    Thread.sleep(sleepTimeMs);
-                } catch (InterruptedException e) {
-                    if (workerState == WORKER_STATE_SHUTDOWN) {
-                        return Long.MIN_VALUE;
-                    }
+            long sleepTimeMs = tickDuration;
+            // Check if we run on windows, as if thats the case we will need
+            // to round the sleepTime as workaround for a bug that only affect
+            // the JVM if it runs on windows.
+            //
+            // See https://github.com/netty/netty/issues/356
+            //如果是windows平台，先除以10再乘以10，是因为windows平台下最小调度单位是10ms，如果不处理成10ms的倍数，可能导致sleep更不准了
+            if (IS_WINDOWS) {
+                sleepTimeMs = sleepTimeMs / 10 * 10;
+            }
+            try {
+                Thread.sleep(sleepTimeMs);
+            } catch (InterruptedException e) {
+                //最后，如果线程被打断了，并且是shutdown状态，会直接返回负数，并在随后的while判断中挑出循环
+                if (workerState == WORKER_STATE_SHUTDOWN) {
+                    return Long.MIN_VALUE;
                 }
             }
+            return sleepTimeMs;
         }
     }
 }
