@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Data
 @Slf4j
-public class WheelWorker implements Runnable, Comparable<WheelWorker> {
+public class MyWheelWorker implements Runnable, Comparable<MyWheelWorker> {
     /**
      * 时间轮工人id，整个系统全局唯一
      */
@@ -32,7 +32,7 @@ public class WheelWorker implements Runnable, Comparable<WheelWorker> {
     private long roundCount;
     private Runnable runnable;
 
-    public WheelWorker(long triggerTime, Runnable runnable) {
+    public MyWheelWorker(long triggerTime, Runnable runnable) {
         AUTO_ID.incrementAndGet();
         this.id = AUTO_ID.get();
         this.triggerTime = triggerTime;
@@ -65,7 +65,7 @@ public class WheelWorker implements Runnable, Comparable<WheelWorker> {
     }
 
     @Override
-    public int compareTo(WheelWorker o) {
+    public int compareTo(MyWheelWorker o) {
         if (this.triggerTime < o.triggerTime) {
             return -1;
         } else if (this.triggerTime > o.triggerTime) {
