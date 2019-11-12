@@ -1,3 +1,18 @@
 server:
   port: 8010
 
+
+management:
+  security:
+    # 设置actuator的链接不需要权限
+    # 也可以添加spring-boot-starter-security，然后有ACTUATOR角色的用户将可以访问对应链接
+    enabled: false
+
+# 设置actuator的info信息
+info:
+  app:
+    name: @project.artifactId@
+    encoding: @project.build.sourceEncoding@
+    java:
+      source: @java.version@
+      target: @java.version@
