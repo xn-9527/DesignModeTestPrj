@@ -16,3 +16,6 @@ info:
     java:
       source: @java.version@
       target: @java.version@
+
+user:
+  userServiceUrl: http://localhost:8000/user/
