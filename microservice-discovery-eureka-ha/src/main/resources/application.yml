@@ -1,6 +1,17 @@
 spring:
   application:
     name: microservice-discovery-eureka-ha
+eureka:
+  # 简化url配置
+  client:
+    # 是否将自己注册到eureka,默认是true
+#    register-with-eureka: false
+    # 是否从eureka server获取注册信息，默认为true。因为当前应用就是eureka server，所以设置成false
+#    fetch-registry: false
+    serviceUrl:
+      # 设置与eureka server交互的地址，查询服务和注册服务都需要依赖这个地址。多个地址间，用","分隔
+      # 集群时，将自己注册到另一个eureka server上
+      defaultZone: http://peer1:8761/eureka/,http://peer2:8762/eureka/
 
 ---
 # 第一个项目配置，启动时，java -jar microservice-discovery-eureka-ha-1.0.jar --spring.profiles.active=peer1
@@ -15,16 +26,16 @@ eureka:
   instance:
     # 指定当profile=peer1时，主机名是peer1
     hostname: peer1
-  client:
-    # 是否将自己注册到eureka,默认是true
-#    register-with-eureka: false
-    # 是否从eureka server获取注册信息，默认为true。因为当前应用就是eureka server，所以设置成false
-#    fetch-registry: false
-    serviceUrl:
-      # 设置与eureka server交互的地址，查询服务和注册服务都需要依赖这个地址。多个地址间，用","分隔
-#      defaultZone: http://localhost:8761/eureka/
-      # 集群时，将自己注册到另一个eureka server上
-      defaultZone: http://peer2:8762/eureka/
+#  client:
+#    # 是否将自己注册到eureka,默认是true
+##    register-with-eureka: false
+#    # 是否从eureka server获取注册信息，默认为true。因为当前应用就是eureka server，所以设置成false
+##    fetch-registry: false
+#    serviceUrl:
+#      # 设置与eureka server交互的地址，查询服务和注册服务都需要依赖这个地址。多个地址间，用","分隔
+##      defaultZone: http://localhost:8761/eureka/
+#      # 集群时，将自己注册到另一个eureka server上
+#      defaultZone: http://peer2:8762/eureka/
 
 ---
 # 第二个项目配置，启动时，java -jar microservice-discovery-eureka-ha-1.0.jar --spring.profiles.active=peer2
@@ -37,12 +48,12 @@ eureka:
   instance:
     # 指定当profile=peer2时，主机名是peer2
     hostname: peer2
-  client:
-    # 是否将自己注册到eureka,默认是true
-#    register-with-eureka: false
-    # 是否从eureka server获取注册信息，默认为true。因为当前应用就是eureka server，所以设置成false
-#    fetch-registry: false
-    serviceUrl:
-      # 设置与eureka server交互的地址，查询服务和注册服务都需要依赖这个地址。多个地址间，用","分隔
-      # 集群时，将自己注册到另一个eureka server上
-      defaultZone: http://peer1:8761/eureka/
+#  client:
+#    # 是否将自己注册到eureka,默认是true
+##    register-with-eureka: false
+#    # 是否从eureka server获取注册信息，默认为true。因为当前应用就是eureka server，所以设置成false
+##    fetch-registry: false
+#    serviceUrl:
+#      # 设置与eureka server交互的地址，查询服务和注册服务都需要依赖这个地址。多个地址间，用","分隔
+#      # 集群时，将自己注册到另一个eureka server上
+#      defaultZone: http://peer1:8761/eureka/
