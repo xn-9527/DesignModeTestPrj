@@ -8,14 +8,27 @@ management:
     # 也可以添加spring-boot-starter-security，然后有ACTUATOR角色的用户将可以访问对应链接
     enabled: false
 
-# 设置actuator的info信息
-info:
-  app:
-    name: @project.artifactId@
-    encoding: @project.build.sourceEncoding@
-    java:
-      source: @java.version@
-      target: @java.version@
+# 设置actuator的info信息,跟eureka client配置冲突
+#info:
+#  app:
+#    name: @project.artifactId@
+#    encoding: @project.build.sourceEncoding@
+#    java:
+#      source: @java.version@
+#      target: @java.version@
 
 user:
   userServiceUrl: http://localhost:8000/user/
+
+spring:
+  application:
+    # 指定注册到eureka server上应用的名称
+    name: microservice-movie
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    # true 表示把自己的IP注册到eureka server。false 表示注册微服务所在的操作系统的hostname到eureka server。
+    instance:
+      prefer-ip-address: true

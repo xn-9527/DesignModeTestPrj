@@ -52,7 +52,7 @@
             <version>1.7.25</version>
             <!--<type>jar</type>-->
         </dependency>
-        <!--actuator GET监控，访问端口号后加指定参数可以查看系统状态-->
+        <!--actuator 监控，访问端口号后加指定参数可以查看系统状态-->
         <!--autoconfig GET显示自动配置信息-->
         <!--beans GET显示上下文的bean-->
         <!--configprops GET显示所有@ConfigurationProperties的配置属性列表-->
@@ -67,6 +67,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!--默认引入依赖自动注册到eureka server，如果不想自动注册设置spring.cloud.service-registry.auto-registration.enable=false，
+        或在启动类上@EnableDiscoveryClient(autoRegister=false)-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
     </dependencies>
 
