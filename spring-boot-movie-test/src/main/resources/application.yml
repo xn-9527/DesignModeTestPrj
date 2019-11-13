@@ -29,6 +29,14 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://peer1:8761/eureka/,http://peer2:8762/eureka/
+      # 带权限的注册,或者使用com.netflix.discovery.DiscoveryClient.DiscoveryClientOptionalArgs的Bean，并向其中注入ClientFilter，需要引入pom包
+      # <dependency>
+      #  <groupId>com.sun.jersey</groupId>
+      #  <artifactId>jersey-client</artifactId>
+      #  <version>1.19</version>
+      # </dependency>
+#      defaultZone: http://user:password123@peer1:8761/eureka/
+
     # true 表示把自己的IP注册到eureka server。false 表示注册微服务所在的操作系统的hostname到eureka server。
     instance:
       prefer-ip-address: true

@@ -1,0 +1,68 @@
+spring:
+  application:
+    name: microservice-discovery-eureka-authentication
+eureka:
+  # 简化url配置
+  client:
+    # 是否将自己注册到eureka,默认是true
+#    register-with-eureka: false
+    # 是否从eureka server获取注册信息，默认为true。因为当前应用就是eureka server，所以设置成false
+#    fetch-registry: false
+    serviceUrl:
+      # 设置与eureka server交互的地址，查询服务和注册服务都需要依赖这个地址。多个地址间，用","分隔
+      # 集群时，将自己注册到另一个eureka server上
+      defaultZone: http://user:password123@peer1:8761/eureka/
+
+security:
+  basic:
+    enabled: true
+  user:
+    # 配置登陆的账号是user
+    name: user
+    # 配置登陆的密码，如果不配置，默认是一个随机密码，启动项目时会打印出来
+    password: password123
+
+---
+# 第一个项目配置，启动时，java -jar microservice-discovery-eureka-ha-1.0.jar --spring.profiles.active=peer1
+# 访问http://peer1:8761/，可以看到两个eureka server服务
+spring:
+  # 指定是节点1，先改本地hosts，里面增加127.0.0.1 peer1 peer2
+  profiles: peer1
+server:
+  port: 8761
+
+eureka:
+  instance:
+    # 指定当profile=peer1时，主机名是peer1
+    hostname: peer1
+#  client:
+#    # 是否将自己注册到eureka,默认是true
+##    register-with-eureka: false
+#    # 是否从eureka server获取注册信息，默认为true。因为当前应用就是eureka server，所以设置成false
+##    fetch-registry: false
+#    serviceUrl:
+#      # 设置与eureka server交互的地址，查询服务和注册服务都需要依赖这个地址。多个地址间，用","分隔
+##      defaultZone: http://localhost:8761/eureka/
+#      # 集群时，将自己注册到另一个eureka server上
+#      defaultZone: http://peer2:8762/eureka/
+
+---
+# 第二个项目配置，启动时，java -jar microservice-discovery-eureka-ha-1.0.jar --spring.profiles.active=peer2
+# 访问http://peer2:8762/，可以看到两个eureka server服务
+spring:
+  profiles: peer2
+server:
+  port: 8762
+eureka:
+  instance:
+    # 指定当profile=peer2时，主机名是peer2
+    hostname: peer2
+#  client:
+#    # 是否将自己注册到eureka,默认是true
+##    register-with-eureka: false
+#    # 是否从eureka server获取注册信息，默认为true。因为当前应用就是eureka server，所以设置成false
+##    fetch-registry: false
+#    serviceUrl:
+#      # 设置与eureka server交互的地址，查询服务和注册服务都需要依赖这个地址。多个地址间，用","分隔
+#      # 集群时，将自己注册到另一个eureka server上
+#      defaultZone: http://peer1:8761/eureka/

@@ -1,9 +1,15 @@
 package cn.chay;
 
+import com.netflix.discovery.DiscoveryClient;
+import com.sun.jersey.api.client.filter.ClientFilter;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Created by xiaoni on 2019/11/12.
@@ -13,6 +19,15 @@ public class ProviderMovieApplication {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    @Bean
+    public DiscoveryClient.DiscoveryClientOptionalArgs discoveryClientOptionalArgs() {
+        DiscoveryClient.DiscoveryClientOptionalArgs discoveryClientOptionalArgs = new DiscoveryClient.DiscoveryClientOptionalArgs();
+        List<ClientFilter> additionalFilters = new ArrayList<>();
+        additionalFilters.add(new HTTPBasicAuthFilter("user", "password123"));
+        discoveryClientOptionalArgs.setAdditionalFilters(additionalFilters);
+        return discoveryClientOptionalArgs;
     }
 
     public static void main(String[] args) {
