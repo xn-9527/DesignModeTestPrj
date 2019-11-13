@@ -28,7 +28,7 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://peer1:8761/eureka/,http://peer2:8762/eureka/
     # true 表示把自己的IP注册到eureka server。false 表示注册微服务所在的操作系统的hostname到eureka server。
     instance:
       prefer-ip-address: true
