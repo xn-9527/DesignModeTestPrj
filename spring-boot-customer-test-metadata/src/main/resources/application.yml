@@ -26,12 +26,16 @@ spring:
     data: classpath:data.sql  #指定h2数据库的数据脚本
   application:
     # 指定注册到eureka server上应用的名称
-    name: microservice-user
+    name: microservice-user-metadata
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://peer1:8761/eureka/,http://peer2:8762/eureka/
+#      defaultZone: http://peer1:8761/eureka/,http://peer2:8762/eureka/
+      defaultZone: http://localhost:8761/eureka/
   instance:
     # true 表示把自己的IP注册到eureka server。false 表示注册微服务所在的操作系统的hostname到eureka server。
     prefer-ip-address: true
+    metadata-map:
+      # 自定义的元数据，key/value都可以随便填写
+      my-metadata: 我自定义的user元数据
