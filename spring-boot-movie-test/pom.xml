@@ -74,14 +74,31 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <!--默认情况下，eureka client使用jersey 1.x版本，与docker client只支持jersey2.x，不推荐该排除1.x后再引入2.x方式，因为jersey2.x不是官方维护的。
+            所以需要排除原生的jersey依赖，
+            然后把springCloud升级到Edgware,Spring Cloud将自动配置一个基于RestTemplate的Http客户端-->
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jersey.contribs</groupId>
+                    <artifactId>jersey-apache-client4</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
-        <!--为了引入ClientFilter-->
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>1.19</version>
-        </dependency>
+        <!--为了引入ClientFilter，跟上面排除jersey的pom配置冲突，排除了，这个就不能引入-->
+        <!--<dependency>-->
+            <!--<groupId>com.sun.jersey</groupId>-->
+            <!--<artifactId>jersey-client</artifactId>-->
+            <!--<version>1.19</version>-->
+        <!--</dependency>-->
     </dependencies>
 
     <!--引入spring cloud的依赖-->
