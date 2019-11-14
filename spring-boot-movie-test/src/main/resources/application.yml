@@ -40,6 +40,9 @@ spring:
 
 eureka:
   client:
+    #使用actuator的health端点来代替心跳表明服务是否可用(项目启动，服务不可用也会显示down，而如果默认的监控方式，依然会显示up)，反应到eureka server ui上服务的UP还是DOWN；IDEA不会提示这个配置。
+    healthcheck:
+      enabled: true
     serviceUrl:
       defaultZone: http://peer1:8761/eureka/,http://peer2:8762/eureka/
       # 带权限的注册,或者使用com.netflix.discovery.DiscoveryClient.DiscoveryClientOptionalArgs的Bean，并向其中注入ClientFilter，需要引入pom包

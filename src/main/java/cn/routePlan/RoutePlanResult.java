@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * Created by chay on 2017/10/13.
+ * @author Created by chay on 2017/10/13.
  */
 @Data
 public class RoutePlanResult {
