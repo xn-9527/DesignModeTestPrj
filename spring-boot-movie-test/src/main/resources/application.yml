@@ -24,6 +24,19 @@ spring:
   application:
     # 指定注册到eureka server上应用的名称
     name: microservice-movie
+  cloud:
+    inetutils:
+      # 按需选择IP的能力，忽略指定名称的网卡，忽略docker0网卡以及所有veth开头的网卡
+      ignored-interfaces:
+        - docker0
+        - veth.*
+      # 使用正则表达式，指定使用的网络地址
+      preferred-networks:
+        - 192.168
+        - 10.0
+      # 只使用站点本地地址
+      use-only-site-local-interfaces: true
+
 
 eureka:
   client:
@@ -39,3 +52,5 @@ eureka:
   instance:
     # true 表示把自己的IP注册到eureka server。false 表示注册微服务所在的操作系统的hostname到eureka server。
     prefer-ip-address: true
+    # 手动指定注册到eureka server的微服务IP地址
+#    ip-address: 127.0.0.1
