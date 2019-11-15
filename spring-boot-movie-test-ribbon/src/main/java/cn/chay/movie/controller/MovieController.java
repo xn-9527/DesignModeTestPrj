@@ -34,6 +34,7 @@ public class MovieController {
 //        User findOne = this.restTemplate.getForObject(userServiceUrl + id, User.class);
         //eureka和负载均衡器ribbon配合使用时，会自动将虚拟主机名映射成微服务的网络地址
         //默认服务名称与虚拟主机名一致，也可以使用eureka.instance.virtual-host-name或eureka.instance.secure-virtual-host-name指定虚拟主机名称
+        //!!!虚拟主机名不能包含_等字符，否则ribbon在调用时会报异常
         User findOne = this.restTemplate.getForObject("http://microservice-user/user/" + id, User.class);
         return findOne;
     }
