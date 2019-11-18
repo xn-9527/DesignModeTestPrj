@@ -1,5 +1,6 @@
 package cn.chay.config;
 
+import cn.chay.annotation.ExcludeFromComponentScan;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,5 +12,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @RibbonClient(name = "microservice-user", configuration = RibbonConfiguration.class)
+@ExcludeFromComponentScan
 public class TestConfiguration {
 }
