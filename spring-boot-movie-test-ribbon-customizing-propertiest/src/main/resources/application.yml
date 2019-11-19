@@ -1,0 +1,66 @@
+server:
+  port: 8010
+
+
+management:
+  security:
+    # 设置actuator的链接不需要权限
+    # 也可以添加spring-boot-starter-security，然后有ACTUATOR角色的用户将可以访问对应链接
+    enabled: false
+
+# 设置actuator的info信息,跟eureka client配置冲突
+#info:
+#  app:
+#    name: @project.artifactId@
+#    encoding: @project.build.sourceEncoding@
+#    java:
+#      source: @java.version@
+#      target: @java.version@
+
+user:
+  userServiceUrl: http://localhost:8000/user/
+
+spring:
+  application:
+    # 指定注册到eureka server上应用的名称
+    name: microservice-movie-ribbon-customizing-properties
+  cloud:
+    inetutils:
+      # 按需选择IP的能力，忽略指定名称的网卡，忽略docker0网卡以及所有veth开头的网卡
+      ignored-interfaces:
+        - docker0
+        - veth.*
+      # 使用正则表达式，指定使用的网络地址
+      preferred-networks:
+        - 192.168
+        - 10.0
+      # 只使用站点本地地址
+      use-only-site-local-interfaces: true
+
+
+eureka:
+  client:
+    #使用actuator的health端点来代替心跳表明服务是否可用(项目启动，服务不可用也会显示down，而如果默认的监控方式，依然会显示up)，反应到eureka server ui上服务的UP还是DOWN；IDEA不会提示这个配置。
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://peer1:8761/eureka/
+      # 带权限的注册,或者使用com.netflix.discovery.DiscoveryClient.DiscoveryClientOptionalArgs的Bean，并向其中注入ClientFilter，需要引入pom包
+      # <dependency>
+      #  <groupId>com.sun.jersey</groupId>
+      #  <artifactId>jersey-client</artifactId>
+      #  <version>1.19</version>
+      # </dependency>
+#      defaultZone: http://user:password123@peer1:8761/eureka/
+  instance:
+    # true 表示把自己的IP注册到eureka server。false 表示注册微服务所在的操作系统的hostname到eureka server。
+    prefer-ip-address: true
+    # 手动指定注册到eureka server的微服务IP地址
+#    ip-address: 127.0.0.1
+---
+# 属性配置比代码配置的方式优先级更高
+# 这个clientName表示只对microservice-user做负载均衡，如何删除microservice-user该行，则表示对所有ribbon client设置规则
+microservice-user:
+  ribbon:
+    # 负载均衡设置
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
