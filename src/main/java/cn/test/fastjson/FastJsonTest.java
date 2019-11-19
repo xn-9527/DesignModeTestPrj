@@ -25,6 +25,20 @@ public class FastJsonTest {
         } catch (Exception e) {
             log.error("null" + e.getMessage(), e);
         }
-
+        /**
+         * 测试@jsonField注解的字段，获取是用jsonField里的下划线还是用驼峰
+         */
+        JsonMissionDataPoint jsonMissionDataPoint = new JsonMissionDataPoint();
+        jsonMissionDataPoint.setMapName("testMap");
+        jsonMissionDataPoint.setSceneName("testScene");
+        jsonMissionDataPoint.setPointName("testPoint");
+        jsonMissionDataPoint.setX(1.2d);
+        jsonMissionDataPoint.setY(1.3d);
+        jsonMissionDataPoint.setTh(-12d);
+        String jsonString = JSON.toJSONString(jsonMissionDataPoint);
+        log.info("jsonString: {}", jsonString);
+        JSONObject jsonObject = JSON.parseObject(jsonString);
+        log.info("非驼峰：" + jsonObject.getString("map_name"));
+        log.info("驼峰：" + jsonObject.getString("mapName"));
     }
 }
