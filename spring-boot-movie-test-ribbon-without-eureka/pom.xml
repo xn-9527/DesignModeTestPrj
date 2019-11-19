@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.chay.spring.demo</groupId>
+    <artifactId>movie-ribbon-without-eureka</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <!--引入spring boot 的pom依赖-->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.9.RELEASE</version>
+    </parent>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
+        <lombok.version>1.16.16</lombok.version>
+    </properties>
+
+    <dependencies>
+        <!--spring mvc支持-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!--spring jpa支持-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
+        <!--使用@Data注解相关快速构建get,set-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <!-- springboot中集成了，所以加上-->
+            <!--<scope>provided</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.25</version>
+            <!--<type>jar</type>-->
+        </dependency>
+        <!--actuator 监控，访问端口号后加指定参数可以查看系统状态-->
+        <!--autoconfig GET显示自动配置信息-->
+        <!--beans GET显示上下文的bean-->
+        <!--configprops GET显示所有@ConfigurationProperties的配置属性列表-->
+        <!--dump GET显示线程活动快照-->
+        <!--env GET显示应用的环境变量-->
+        <!--health GET显示应用的健康指标-->
+        <!--info GET显示应用的信息-->
+        <!--mappings GET显示所有@RequestMapping的路径列表-->
+        <!--metrics GET显示应用的度量标准信息-->
+        <!--shutdown POST关闭应用(默认关闭，如需启用，需要设置end-points.shutdown.enabled=true)-->
+        <!--trace GET显示跟踪信息(默认最近的100个http请求)-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!--独立引入负载均衡ribbon-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+        </dependency>
+    </dependencies>
+
+    <!--引入spring cloud的依赖-->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Edgware.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!--添加spring-boot的maven插件-->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
