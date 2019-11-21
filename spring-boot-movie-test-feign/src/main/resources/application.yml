@@ -57,3 +57,15 @@ eureka:
     prefer-ip-address: true
     # 手动指定注册到eureka server的微服务IP地址
 #    ip-address: 127.0.0.1
+
+feign:
+  compression:
+    request:
+      # 开启压缩功能
+      enabled: true
+      # 支持的媒体类型
+      mime-types: text/xml,application/xml,application/json
+      # 设置请求的最小阈值
+      min-request-size: 2048
+    response:
+      enabled: true
