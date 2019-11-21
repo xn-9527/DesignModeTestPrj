@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,5 +42,10 @@ public class MovieController {
     @PostMapping("user/post")
     public User post(@RequestBody User user) {
         return this.userFeignClient.post(user);
+    }
+
+    @PostMapping("user/upload")
+    public String post(@RequestParam MultipartFile file) {
+        return this.userFeignClient.fileUpload(file);
     }
 }

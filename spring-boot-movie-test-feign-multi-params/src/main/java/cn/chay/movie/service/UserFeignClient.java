@@ -1,8 +1,11 @@
 package cn.chay.movie.service;
 
+import cn.chay.config.MultipartSupportConfig;
 import cn.chay.movie.vo.User;
 import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -10,7 +13,7 @@ import java.util.Map;
  * Created by xiaoni on 2019/11/20.
  */
 //name指定ribbon client负载均衡
-@FeignClient(name = "microservice-user-multi-params")
+@FeignClient(name = "microservice-user-multi-params", configuration = MultipartSupportConfig.class)
 public interface UserFeignClient {
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
     public User findById(@PathVariable("id") Long id);
@@ -36,4 +39,10 @@ public interface UserFeignClient {
 
     @RequestMapping(value = "/user/post", method = RequestMethod.POST)
     public User post(@RequestBody User user);
+
+    @RequestMapping(value = "/user/upload", method = RequestMethod.POST,
+        //这两个配置不能少
+        produces = {MediaType.APPLICATION_JSON_UTF8_VALUE},
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String fileUpload(@RequestPart(value = "file")MultipartFile file);
 }
