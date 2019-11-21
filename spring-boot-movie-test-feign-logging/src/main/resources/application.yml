@@ -69,6 +69,11 @@ feign:
       min-request-size: 2048
     response:
       enabled: true
+  client:
+    config:
+      # 配置某个feign client的日志级别
+      microservice-user:
+        loggerLevel: basic
 logging:
   level:
 #    # 将Feign接口的日志级别设置成debug，因为Feign的Logger.level只对Debug做出响应
