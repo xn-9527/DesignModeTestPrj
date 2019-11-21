@@ -1,0 +1,37 @@
+server:
+  port: ${SERVER_PORT:8000}
+
+logging:
+  level:
+    root: INFO
+    org.hibernate: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
+
+management:
+  security:
+    # 设置actuator的链接不需要权限
+    # 也可以添加spring-boot-starter-security，然后有ACTUATOR角色的用户将可以访问对应链接
+    enabled: false
+
+spring:
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  datasource:
+    platform: h2
+    schema: classpath:schema.sql  #指定h2的建库脚本
+    data: classpath:data.sql  #指定h2数据库的数据脚本
+  application:
+    # 指定注册到eureka server上应用的名称
+    name: microservice-user-multi-params
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://peer1:8761/eureka/,http://peer2:8762/eureka/
+  instance:
+    # true 表示把自己的IP注册到eureka server。false 表示注册微服务所在的操作系统的hostname到eureka server。
+    prefer-ip-address: true
