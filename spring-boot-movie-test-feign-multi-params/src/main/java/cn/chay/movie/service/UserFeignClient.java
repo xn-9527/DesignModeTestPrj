@@ -44,5 +44,7 @@ public interface UserFeignClient {
         //这两个配置不能少
         produces = {MediaType.APPLICATION_JSON_UTF8_VALUE},
         consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    //注意这里的注解是@RequestPart，而不是@RequestParam
+    //因为文件大的时候，上传时间长，所以需要将Hystrix的超时时间设置长一些
     public String fileUpload(@RequestPart(value = "file")MultipartFile file);
 }
