@@ -43,6 +43,7 @@ public class MovieController {
     },
     //ignoreExceptions 指定不想执行回退的异常类。
     //另外，Hystrix有个HystrixBadRequestException类，当该异常发生时，不会触发回退。所以如果我们业务抛出该异常，也不会回退。
+    //执行回退操作，并不代表断路器打开，阈值是5s内20次失败的失败率才会触发断路器
     ignoreExceptions = {IllegalArgumentException.class, NullPointerException.class})
     @GetMapping("/user/{id}")
     public User findById(@PathVariable Long id) {
@@ -73,6 +74,7 @@ public class MovieController {
      * @return
      */
     public User findByIdFallback(Long id, Throwable throwable) {
+        log.error("执行回退操作" + throwable.getMessage());
         User user = new User();
         user.setId(-1L);
         user.setName("默认用户");
