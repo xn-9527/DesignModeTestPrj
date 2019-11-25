@@ -40,7 +40,10 @@ public class MovieController {
     }, threadPoolProperties = {
             @HystrixProperty(name = "coreSize", value = "1"),
             @HystrixProperty(name = "maxQueueSize", value = "10")
-    })
+    },
+    //ignoreExceptions 指定不想执行回退的异常类。
+    //另外，Hystrix有个HystrixBadRequestException类，当该异常发生时，不会触发回退。所以如果我们业务抛出该异常，也不会回退。
+    ignoreExceptions = {IllegalArgumentException.class, NullPointerException.class})
     @GetMapping("/user/{id}")
     public User findById(@PathVariable Long id) {
         //硬编码url
@@ -62,7 +65,14 @@ public class MovieController {
         log.info("###################{}:{}:{}", serviceInstance.getServiceId(), serviceInstance.getHost(), serviceInstance.getPort());
     }
 
-    public User findByIdFallback(Long id) {
+    /**
+     *
+     * @param id
+     * @param throwable 获取异常的原因，只需要加这个参数即可
+     *
+     * @return
+     */
+    public User findByIdFallback(Long id, Throwable throwable) {
         User user = new User();
         user.setId(-1L);
         user.setName("默认用户");
