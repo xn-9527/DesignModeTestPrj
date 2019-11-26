@@ -1,5 +1,5 @@
 server:
-  port: 8010
+  port: ${SERVER_PORT:8010}
 
 
 management:
@@ -23,7 +23,7 @@ user:
 spring:
   application:
     # 指定注册到eureka server上应用的名称
-    name: microservice-movie-feign
+    name: microservice-movie-feign-hystrix-fallback-stream
   cloud:
     inetutils:
       # 按需选择IP的能力，忽略指定名称的网卡，忽略docker0网卡以及所有veth开头的网卡
