@@ -36,7 +36,12 @@ public class MovieController {
      */
     @HystrixCommand(fallbackMethod = "findByIdFallback", commandProperties = {
             @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "5000"),
-            @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "10000")
+            @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "10000"),
+            /**
+             * 如果你想传播线程的上下文到@HystrixCommand，默认声明将不会工作。因为它会在线程池中执行命令(在超时的情况下)。
+             * 可以通过一些配置，让Hystrix使用相同的线程，或者直接配置不同的隔离策略，下面例子使用的是SEMAPHORE信号量隔离，默认的是THREAD线程隔离。
+             */
+            @HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE")
     }, threadPoolProperties = {
             @HystrixProperty(name = "coreSize", value = "1"),
             @HystrixProperty(name = "maxQueueSize", value = "10")

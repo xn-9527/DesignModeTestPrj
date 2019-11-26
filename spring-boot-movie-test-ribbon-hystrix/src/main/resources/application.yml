@@ -57,3 +57,9 @@ eureka:
     prefer-ip-address: true
     # 手动指定注册到eureka server的微服务IP地址
 #    ip-address: 127.0.0.1
+
+hystrix:
+  # 自动配置一个Hystrix并发策略插件的hook，这个hook会将SecurityContext从主线程传输到Hystrix的命令
+  # 因为Histrix不允许注册多个Hystrix并发策略，所以可以声明HystrixConcurrencyStrategy为一个Spring bean来实现扩展。
+  # springCloud会在spring上下文中查找你的实现，并包装在自己的插件中
+  shareSecurityContext: true
