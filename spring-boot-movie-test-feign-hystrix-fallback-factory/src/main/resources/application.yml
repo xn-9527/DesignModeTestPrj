@@ -44,7 +44,7 @@ eureka:
     healthcheck:
       enabled: true
     serviceUrl:
-      defaultZone: http://peer1:8761/eureka/,http://peer2:8762/eureka/
+      defaultZone: http://peer1:8761/eureka/
       # 带权限的注册,或者使用com.netflix.discovery.DiscoveryClient.DiscoveryClientOptionalArgs的Bean，并向其中注入ClientFilter，需要引入pom包
       # <dependency>
       #  <groupId>com.sun.jersey</groupId>
@@ -69,6 +69,6 @@ feign:
       min-request-size: 2048
     response:
       enabled: true
-  # 开启feign hystrix支持
+  # 开启feign hystrix支持，如果设置成false，则表示全局禁用Hystrix
   hystrix:
     enabled: true

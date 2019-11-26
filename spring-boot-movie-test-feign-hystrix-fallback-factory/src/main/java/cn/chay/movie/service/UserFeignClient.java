@@ -1,5 +1,6 @@
 package cn.chay.movie.service;
 
+import cn.chay.movie.config.FeignDisableHystrixConfiguration;
 import cn.chay.movie.vo.User;
 import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * Incompatible fallback instance. Fallback/fallbackFactory of type class cn.chay.movie.service.FeignClientFallbackFactory is not assignable to interface
  */
 @FeignClient(name = "microservice-user", fallbackFactory = FeignClientFallbackFactory.class)
+//测试禁用feign自带的hystrix
+//@FeignClient(name = "microservice-user", configuration = FeignDisableHystrixConfiguration.class)
 public interface UserFeignClient {
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
     public User findById(@PathVariable("id") Long id);
