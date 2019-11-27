@@ -16,7 +16,11 @@ import java.util.List;
 /**
  * @EnableCircuitBreaker 或者 @EnableHystrix 启动熔断器
  *
- * 试了下启动hystrix-dashboard,然后访问localhost:8030，添加localhost:8031并不能解析监控数据。
+ * 试了下启动hystrix-dashboard,然后访问localhost:8030，添加localhost:8031或localhost:8031/turbine.stream并不能解析监控数据。
+ * 打印日志
+ * 2019-11-27 19:17:58.117  INFO 231220 --- [nio-8030-exec-3] ashboardConfiguration$ProxyStreamServlet :
+    Proxy opening connection to: http://localhost:8031/turbine.stream
+ *
  *
  * @author Created by xiaoni on 2019/11/12.
  */
