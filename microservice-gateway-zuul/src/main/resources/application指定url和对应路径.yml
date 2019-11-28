@@ -1,0 +1,25 @@
+server:
+  port: 8040
+spring:
+  application:
+    name: microservice-gateway-zuul
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+#  instance:
+#    prefer-ip-address: true
+management:
+  security:
+    enabled: false
+
+zuul:
+  routes:
+    # 同等效果 microservice-user: /user/**
+    # 该配置方式中，user-route只是给路由一个名称，可以任意起名
+    user-route:
+      # 指定的url，需要注意的是，使用这种方式配置的路由不会作为HystrixCommand执行，同时也不能使用Ribbon来负载均衡多个URL。
+      url: http://localhost:8000/
+      # service-id对应的路径
+      path: /user/**
+
