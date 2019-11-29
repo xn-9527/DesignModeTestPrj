@@ -13,8 +13,8 @@ management:
   security:
     enabled: false
 
-zuul:
-  routes:
+#zuul:
+#  routes:
     # 指定微服务serviceId=映射指定路径
     # http://localhost:8040/routes 查看路由
     #    {
@@ -22,10 +22,10 @@ zuul:
     #        "/microservice-user/**": "microservice-user",
     #        "/microservice-movie-ribbon-hystrix/**": "microservice-movie-ribbon-hystrix"
     #    }
-    microservice-user: /user/**
+#    microservice-user: /user/**
   # 忽略服务 *忽略所有服务；多个服务直接用逗号分隔
   # http://localhost:8040/routes 查看路由
   #  {
   #      "/user/**": "microservice-user"
   #  }
-  ignored-services: '*'
+#  ignored-services: '*'
