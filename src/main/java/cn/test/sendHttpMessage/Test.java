@@ -14,18 +14,22 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @Slf4j
 public class Test {
-    SendHttpMessageServiceImpl sendHttpMessageService = new SendHttpMessageServiceImpl();
-    UuidCacheServiceImpl uuidCacheService = new UuidCacheServiceImpl();
+    SendHttpMessageServiceImpl sendHttpMessageService;
+    UuidCacheServiceImpl uuidCacheService;
+    public Test(SendHttpMessageServiceImpl sendHttpMessageService, UuidCacheServiceImpl uuidCacheService) {
+        this.sendHttpMessageService = sendHttpMessageService;
+        this.uuidCacheService = uuidCacheService;
+    }
 
     private void agentOrderConfirmMessage(String robotSn, String uuid) {
-        log.debug(">>>>>>>>>>>>>>agentOrderConfirmMessage try get {} message uuid {}", robotSn, uuid);
+        log.info(">>>>>>>>>>>>>>agentOrderConfirmMessage try get {} message uuid {}", robotSn, uuid);
         List<SendHttpMessage> messageList = sendHttpMessageService.listByIsSuccessAndAfterSendTime(null, null, robotSn, uuid);
         if (messageList == null || messageList.isEmpty()) {
-            log.debug(">>>>>>>>>>>>>>agentOrderConfirmMessage try get {} message uuid {}, result : null", robotSn, uuid);
+            log.info(">>>>>>>>>>>>>>agentOrderConfirmMessage try get {} message uuid {}, result : null", robotSn, uuid);
             return;
         }
         SendHttpMessage message = messageList.get(0);
-        log.debug(">>>>>>>>>>>>>>agentOrderConfirmMessage try get {} message uuid {}, result : {}", robotSn, uuid, message);
+        log.info(">>>>>>>>>>>>>>agentOrderConfirmMessage try get {} message uuid {}, result : {}", robotSn, uuid, message);
         //修改状态
         message.setMessageStatusType(-100);
         //更新最近被拉取时间
@@ -42,7 +46,7 @@ public class Test {
 
     public AjaxResult call(String robotSN, MessageInfo messageInfo) {
         log.info("开始写入sendHttpCommandMessage,robotSN=" + robotSN);
-        log.debug("robotSN: {},message is : {}", robotSN, messageInfo);
+        log.info("robotSN: {},message is : {}", robotSN, messageInfo);
         messageInfo.setSenderId("cloud");
         messageInfo.setMessageStatusType(MessageStatusType.INIT);
         messageInfo.setSuccess(false);
@@ -51,7 +55,7 @@ public class Test {
             String uuid = messageInfo.getUuId();
             //消息下发是否需要回执
             if (true) {
-                log.debug("uuid:{}是需要回执的消息，开始加锁", uuid);
+                log.info("uuid:{}是需要回执的消息，开始加锁", uuid);
                 try {
                     log.info("开始等待消息uuid:{}机器人{}回执:{}", uuid, robotSN, System.currentTimeMillis());
                     String robotUuid = UUIDUtil.combineUUIDWithRobotCodeAndSuffix(robotSN, uuid, "agent");
@@ -72,11 +76,11 @@ public class Test {
                     log.error(e.getMessage(), e);
                     return AjaxResult.failed(e.getMessage());
                 } finally {
-                    log.debug(uuid + "尝试释放锁");
+                    log.info(uuid + "尝试释放锁");
                 }
 
                 //如果超过时间没有等到回执，清除这条消息
-                log.debug("message {} send time out, time {}, clear this unDealMessage", uuid, System.currentTimeMillis());
+                log.info("message {} send time out, time {}, clear this unDealMessage", uuid, System.currentTimeMillis());
                 SendHttpMessage domain = new SendHttpMessage();
                 domain.setUuid(uuid);
                 sendHttpMessageService.delete(domain);
@@ -84,7 +88,7 @@ public class Test {
                 log.info("message {} Time out,robot no response.", uuid);
                 return AjaxResult.failed();
             } else {
-                log.debug("uuid:{}不需要等待回执的消息，直接返回成功", uuid);
+                log.info("uuid:{}不需要等待回执的消息，直接返回成功", uuid);
                 return AjaxResult.success();
             }
         } catch (Exception e) {
@@ -110,12 +114,39 @@ public class Test {
     }
 
     public static void main(String[] args) {
+        SendHttpMessageServiceImpl sendHttpMessageService = new SendHttpMessageServiceImpl();
+        UuidCacheServiceImpl uuidCacheService = new UuidCacheServiceImpl();
+        String robotSN = "test123";
+        String uuid = UUIDUtil.get32UUID();
         MessageInfo messageInfo = new MessageInfo();
         messageInfo.setSuccess(false);
-        messageInfo.setUuId(UUIDUtil.get32UUID());
+        messageInfo.setUuId(uuid);
+        messageInfo.setReceiverId(robotSN);
         messageInfo.setMessageText("adsfsfdfs");
-        Test test = new Test();
-        test.call("test123", messageInfo);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                log.info("thread 1 start");
+                Test test = new Test(sendHttpMessageService, uuidCacheService);
+                test.call(robotSN, messageInfo);
+                log.info("thread 1 end");
+            }
+        }).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(30000L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                log.info("thread 2 start");
+                Test test = new Test(sendHttpMessageService, uuidCacheService);
+                test.agentOrderConfirmMessage(robotSN, uuid);
+                log.info("thread 2 end");
+            }
+        }).start();
+
 
     }
 }

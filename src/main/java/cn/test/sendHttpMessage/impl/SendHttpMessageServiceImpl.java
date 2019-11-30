@@ -65,10 +65,10 @@ public class SendHttpMessageServiceImpl implements SendHttpMessageService {
         reentrantLock.lock();
         try {
             if (true) {
-                log.debug("机器人{}系统状态参数异常：未准备好,不拉取普通订单的任务消息", robotCode);
+                log.info("机器人{}系统状态参数异常：未准备好,不拉取普通订单的任务消息", robotCode);
                 sendHttpMessageList = this.listByIsSuccessAndAfterSendTimeNoMission(false, null, robotCode, null);
             } else {
-                log.debug("机器人{}系统状态参数正常,拉取所有未处理消息，含普通订单的任务消息", robotCode);
+                log.info("机器人{}系统状态参数正常,拉取所有未处理消息，含普通订单的任务消息", robotCode);
                 //取发送时间有效范围内（定时任务会清除5分钟以上的消息）、未处理的消息,含任务消息
                 sendHttpMessageList = this.listByIsSuccessAndAfterSendTime(false, null, robotCode, null);
             }
@@ -102,7 +102,7 @@ public class SendHttpMessageServiceImpl implements SendHttpMessageService {
 
     @Override
     public void delete(SendHttpMessage sendHttpMessage) {
-        log.debug("delete sendHttpMessage: {}", sendHttpMessage);
+        log.info("delete sendHttpMessage: {}", sendHttpMessage);
         if (sendHttpMessage == null || StringUtil.isNullOrEmpty(sendHttpMessage.getReceiverId())) {
             return;
         }
@@ -111,7 +111,7 @@ public class SendHttpMessageServiceImpl implements SendHttpMessageService {
 
     @Override
     public long save(SendHttpMessage message) {
-        log.debug("save sendHttpMessage: {}", message);
+        log.info("save sendHttpMessage: {}", message);
         if (null == message || StringUtil.isNullOrEmpty(message.getReceiverId())) {
             return 0L;
         }
@@ -122,7 +122,7 @@ public class SendHttpMessageServiceImpl implements SendHttpMessageService {
 
     @Override
     public void update(SendHttpMessage message) {
-        log.debug("update sendHttpMessage: {}", message);
+        log.info("update sendHttpMessage: {}", message);
         if (null == message || StringUtil.isNullOrEmpty(message.getReceiverId())) {
             return;
         }
@@ -351,7 +351,7 @@ public class SendHttpMessageServiceImpl implements SendHttpMessageService {
 
     @Override
     public synchronized void printMessageCacheDebugStats() {
-        log.debug("robotMessageCache status, hitCount1: {}, missCount: {}, hitRate: {}",
+        log.info("robotMessageCache status, hitCount1: {}, missCount: {}, hitRate: {}",
                 robotMessageCache.stats().hitCount(),
                 robotMessageCache.stats().missCount(),
                 robotMessageCache.stats().hitRate());
