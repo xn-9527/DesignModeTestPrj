@@ -1,0 +1,48 @@
+server:
+  port: 8040
+spring:
+  application:
+    name: microservice-gateway-zuul
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+#  instance:
+#    prefer-ip-address: true
+management:
+  security:
+    enabled: false
+
+zuul:
+  routes:
+    # 指定微服务serviceId=映射指定路径
+    # http://localhost:8040/routes 查看路由
+    #    {
+    #        "/user/**": "microservice-user",
+    #        "/microservice-user/**": "microservice-user",
+    #        "/microservice-movie-ribbon-hystrix/**": "microservice-movie-ribbon-hystrix"
+    #    }
+    microservice-user: /user/**
+  # 忽略某些路径，正则表达式，如下实例忽略所有microservice-movie的路径
+  # SimpleRouteLocator类下的方法boolean matchesIgnoredPatterns(String path)
+  # 忽略前的映射路径
+#  {
+#      "/user/**": "microservice-user",
+#      "/microservice-movie-ribbon/**": "microservice-movie-ribbon",
+#      "/microservice-user/**": "microservice-user"
+#  }
+  # 忽略后路由映射表不变，但是当访问接口时，会跟据忽略pattern过滤，
+  # 如/**/microservice-movie-ribbon/**配置，过滤的是服务名，
+  # 则访问该服务名的接口会直接返回404，而不进入SimpleRouteLocator类进行pattern判断
+  # 此时若访问user接口，会匹配该次访问url的pattern是不是要忽略。
+  ignored-patterns: /**/microservice-movie-ribbon/**,/**/admin/**
+  # 忽略服务 *忽略所有服务；多个服务直接用逗号分隔
+  # http://localhost:8040/routes 查看路由
+  #  {
+  #      "/user/**": "microservice-user"
+  #  }
+#  ignored-services: '*'
+
+logging:
+  level:
+    com.netflix: DEBUG

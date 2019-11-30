@@ -7,22 +7,17 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
-  instance:
-    prefer-ip-address: true
+#  instance:
+#    prefer-ip-address: true
 management:
   security:
     enabled: false
 
 zuul:
+  # 指定路由前缀，访问zuul的/api/microservice-user/1路径会映射到microservice-user的api/1路径，注意服务提供的路径也要带这个api前缀
+  prefix: /api
+  strip-prefix: false
   routes:
-    route-name:
-      # 本地转发 ：访问zuul的path路径将会转发到zuul的url配置的forward path
-      #{
-      #    "/microservice-user/**": "forward:/user/**",
-      #    "/microservice-movie-ribbon/**": "microservice-movie-ribbon"
-      #}
-      path: /microservice-movie-ribbon/movie/**
-      url: forward:/microservice-user/**
     # 指定微服务serviceId=映射指定路径
     # http://localhost:8040/routes 查看路由
     #    {
@@ -30,14 +25,10 @@ zuul:
     #        "/microservice-user/**": "microservice-user",
     #        "/microservice-movie-ribbon-hystrix/**": "microservice-movie-ribbon-hystrix"
     #    }
-#    microservice-user: /user/**
+    microservice-user: /user/**
   # 忽略服务 *忽略所有服务；多个服务直接用逗号分隔
   # http://localhost:8040/routes 查看路由
   #  {
   #      "/user/**": "microservice-user"
   #  }
 #  ignored-services: '*'
-
-logging:
-  level:
-    com.netflix: DEBUG
