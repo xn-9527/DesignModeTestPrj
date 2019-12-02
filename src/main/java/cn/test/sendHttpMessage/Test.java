@@ -50,6 +50,7 @@ public class Test {
         messageInfo.setSenderId("cloud");
         messageInfo.setMessageStatusType(MessageStatusType.INIT);
         messageInfo.setSuccess(false);
+        messageInfo.setIsNeedReturn("1");
         try {
             saveSendHttpRecord(messageInfo);
             String uuid = messageInfo.getUuId();
@@ -126,27 +127,29 @@ public class Test {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                log.info("thread 1 start");
+                log.info("thread wait1 start");
                 Test test = new Test(sendHttpMessageService, uuidCacheService);
                 test.call(robotSN, messageInfo);
-                log.info("thread 1 end");
+                log.info("thread wait1 end");
             }
         }).start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(30000L);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        for (int i = 1; i< 10; i++) {
+            int j = i;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(j * 1000L);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.gc();
+                    log.info("thread {} start", j);
+                    Test test = new Test(sendHttpMessageService, uuidCacheService);
+                    test.agentOrderConfirmMessage(robotSN, uuid);
+                    log.info("thread {} end", j);
                 }
-                log.info("thread 2 start");
-                Test test = new Test(sendHttpMessageService, uuidCacheService);
-                test.agentOrderConfirmMessage(robotSN, uuid);
-                log.info("thread 2 end");
-            }
-        }).start();
-
-
+            }).start();
+        }
     }
 }
