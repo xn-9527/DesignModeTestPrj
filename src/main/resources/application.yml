@@ -145,5 +145,8 @@ endpoints:
     #禁用密码验证
     sensitive: false
 
+test:
+  param-a: true
+  paramB: false
 
 

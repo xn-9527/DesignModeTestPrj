@@ -1,6 +1,7 @@
 package cn.quartz;
 
 import cn.test.service.TestUserService;
+import cn.test.testYamlValue.TestYamlValue;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,8 @@ public class ScheduleExecutorTest {
 
     @Autowired
     private TestUserService testUserService;
+    @Autowired
+    private TestYamlValue testYamlValue;
 
     public ScheduleExecutorTest() {
         this.testSchedule();
@@ -41,6 +44,7 @@ public class ScheduleExecutorTest {
                 lastWith = now;
                 //测试Service的AutoWired，不加@Component注解autoWired是空的，加了就不是空的
                 testUserService.sayHello();
+                testYamlValue.testAB();
                 try {
                     for (int i = 0;i < 3;i++) {
                         Thread.sleep(1000);
