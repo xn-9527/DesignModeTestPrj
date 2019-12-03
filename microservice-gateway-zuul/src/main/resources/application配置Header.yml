@@ -1,0 +1,32 @@
+server:
+  port: 8040
+spring:
+  application:
+    name: microservice-gateway-zuul
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+management:
+  security:
+    enabled: false
+
+zuul:
+  routes:
+    microservice-user:
+      path: /user/**
+      # 为微服务指定敏感Header，会覆盖全局的配置，默认是Cookie,Set-Cookie,Authorization
+      sensitive-headers: Cookie,Set-Cookie,Authorization
+      url: https://downstream
+  # 指定全局的敏感Header，默认是Cookie,Set-Cookie,Authorization
+  sensitive-headers: Cookie,Set-Cookie,Authorization
+  # 忽略Header，默认是空。在Spring Security的classpath中，默认是Pragma,Cache-Control,X-Frame-Options,X-Content-Type-Options,X-XSS-Protection,Expires
+  ignored-headers: Header1, Header2
+  # 所以spring security项目中可以使用zuul.ignore-security-headers=false来使用spring security的默认配置
+  ignore-security-headers: false
+
+logging:
+  level:
+    com.netflix: DEBUG
