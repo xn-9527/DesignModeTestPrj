@@ -1,0 +1,35 @@
+server:
+  port: 8040
+spring:
+  application:
+    name: microservice-gateway-zuul
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+management:
+  security:
+    enabled: false
+
+zuul:
+  routes:
+    # 指定微服务serviceId=映射指定路径
+    # http://localhost:8040/routes 查看路由
+    #    {
+    #        "/user/**": "microservice-user",
+    #        "/microservice-user/**": "microservice-user",
+    #        "/microservice-movie-ribbon-hystrix/**": "microservice-movie-ribbon-hystrix"
+    #    }
+    microservice-user: /user/**
+  # 忽略服务 *忽略所有服务；多个服务直接用逗号分隔
+  # http://localhost:8040/routes 查看路由
+  #  {
+  #      "/user/**": "microservice-user"
+  #  }
+#  ignored-services: '*'
+
+logging:
+  level:
+    com.netflix: DEBUG
