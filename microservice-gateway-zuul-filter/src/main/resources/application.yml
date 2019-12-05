@@ -29,6 +29,10 @@ zuul:
   #      "/user/**": "microservice-user"
   #  }
 #  ignored-services: '*'
+  # 禁用过滤器：类名.类型.disable,访问http://localhost:8040/microservice-user/user/1，不会打印过滤器的日志send %s request to %s
+#  PreRequestLogFilter:
+#    pre:
+#      disable: true
 
 logging:
   level:
