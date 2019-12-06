@@ -23,7 +23,16 @@ zuul:
     #        "/microservice-movie-ribbon-hystrix/**": "microservice-movie-ribbon-hystrix"
     #    }
     microservice-user: /user/**
-
+  # 请求处理时，query param会被解码。如果query param使用javaScript的encodeURIComponent()方法进行编码，
+  # 那么重新编码后的结果可能与原始值不同——虽然大多数情况下不会引起问题，但某些Web服务器可能会对复杂的query string进行编码。
+  # 要强制让query string与HttpServletRequest.getQueryString()保持一致，可使用如下配置
+  force-original-query-string-encoding: true
+  # 忽略服务 *忽略所有服务；多个服务直接用逗号分隔
+  # http://localhost:8040/routes 查看路由
+  #  {
+  #      "/user/**": "microservice-user"
+  #  }
+#  ignored-services: '*'
 
 logging:
   level:
