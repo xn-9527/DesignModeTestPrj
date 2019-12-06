@@ -24,7 +24,6 @@ zuul:
     #    }
     microservice-user: /user/**
 
-
 logging:
   level:
     com.netflix: DEBUG

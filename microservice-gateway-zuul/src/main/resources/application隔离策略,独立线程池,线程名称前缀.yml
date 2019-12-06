@@ -28,6 +28,8 @@ zuul:
   thread-pool:
     # HystrixThreadPoolKey默认是RibbonCommand，所有的HystrixCommand都会在相同的Hystrix线程池中执行，使用如下配置让每个路由使用独立的线程池
     use-separate-thread-pools: true
+    # 给HystrixThreadPoolKey添加前缀
+    thread-pool-key-prefix: testprefix-
 
 logging:
   level:
