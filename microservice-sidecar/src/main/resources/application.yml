@@ -18,3 +18,6 @@ sidecar:
   # 非JVM服务不在同一主机上，配置方法二
 #  hostname: 非JVM微服务的hostname
 #  ip-address: 非JVM微服务的IP地址
+management:
+  security:
+    enabled: false
