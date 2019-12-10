@@ -9,6 +9,12 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
   instance:
     prefer-ip-address: true
+    # 非JVM服务不在同一主机上，配置方法一
+#    hostname: 非JVM微服务的hostname
 sidecar:
+  # 非JVM服务在同一台主机上
   port: 8060                                      # Node.js微服务的端口
   health-uri: http://localhost:8060/health.json   # Node.js微服务的健康检查URL
+  # 非JVM服务不在同一主机上，配置方法二
+#  hostname: 非JVM微服务的hostname
+#  ip-address: 非JVM微服务的IP地址
