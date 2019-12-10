@@ -37,7 +37,11 @@ public class SendHttpMessageServiceImpl implements SendHttpMessageService {
      */
     private final Cache<String, LinkedHashMap<String, SendHttpMessage>> robotMessageCache = CacheBuilder.newBuilder()
             //过期时间未写后X秒
-            .expireAfterWrite(50, TimeUnit.SECONDS)
+            /**
+             * 注意：value为更新操作会重置计时器。
+             * 但是写入后过期的风险就是不管有没有访问，在没有被更新或写入的时候缓存有可能被强制清空，导致丢失数据
+             */
+            .expireAfterWrite(10, TimeUnit.SECONDS)
             //todo debug用，稳定后删除
             .recordStats()
             .build();
@@ -64,7 +68,7 @@ public class SendHttpMessageServiceImpl implements SendHttpMessageService {
         //未获取到锁等待
         reentrantLock.lock();
         try {
-            if (true) {
+            if (false) {
                 log.info("机器人{}系统状态参数异常：未准备好,不拉取普通订单的任务消息", robotCode);
                 sendHttpMessageList = this.listByIsSuccessAndAfterSendTimeNoMission(false, null, robotCode, null);
             } else {

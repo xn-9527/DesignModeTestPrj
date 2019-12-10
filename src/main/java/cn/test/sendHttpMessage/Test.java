@@ -51,8 +51,29 @@ public class Test {
         messageInfo.setMessageStatusType(MessageStatusType.INIT);
         messageInfo.setSuccess(false);
         messageInfo.setIsNeedReturn("1");
+        messageInfo.setSendTime(new Date());
         try {
             saveSendHttpRecord(messageInfo);
+            //模拟阻塞延迟缓存X秒的超时时间
+            log.info("getSendHttpMessage: {}", sendHttpMessageService.getUnDealMessages(robotSN));
+            log.info("####################模拟阻塞延迟缓存X秒的超时时间start");
+            for (int i = 0; i < 20; i++) {
+                log.info("####################模拟更新 {}", i);
+                try {
+                    Thread.sleep(1000);
+                    //1为了证明更新不会重置写入X时间后缓存的超时时间，我们更新下value更新map——证明更新不会重置超时时间，断点调试value的对象id变了
+//                    sendHttpMessageService.update(sendHttpMessageService.toSendHttpMessage(messageInfo));
+                    //2为了证明更新不会重置写入X时间后缓存的超时时间，我们更新下value插入map——证明更新不会重置超时时间，断点调试value的id变了
+                    sendHttpMessageService.save(sendHttpMessageService.toSendHttpMessage(messageInfo));
+                    List<SendHttpMessage> messageList = sendHttpMessageService.getUnDealMessages(robotSN);
+                    log.info("getSendHttpMessage: {}", messageList);
+                } catch (InterruptedException e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+            log.info("模拟阻塞延迟缓存X秒的超时时间，并更新缓存end");
+            log.info("getSendHttpMessage: {}", sendHttpMessageService.getUnDealMessages(robotSN));
+
             String uuid = messageInfo.getUuId();
             //消息下发是否需要回执
             if (true) {
@@ -60,7 +81,7 @@ public class Test {
                 try {
                     log.info("开始等待消息uuid:{}机器人{}回执:{}", uuid, robotSN, System.currentTimeMillis());
                     String robotUuid = UUIDUtil.combineUUIDWithRobotCodeAndSuffix(robotSN, uuid, "agent");
-                    for (int i = 0; i < 50; i++) {
+                    for (int i = 0; i < 10; i++) {
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
@@ -133,6 +154,12 @@ public class Test {
                 log.info("thread wait1 end");
             }
         }).start();
+        //等25秒再回执确认
+        try {
+            Thread.sleep(25 * 1000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         for (int i = 1; i< 10; i++) {
             int j = i;
             new Thread(new Runnable() {
