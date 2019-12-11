@@ -2,7 +2,7 @@ server:
   port: 8040
 spring:
   application:
-    name: microservice-gateway-zuul
+    name: microservice-gateway-zuul-aggregation
 eureka:
   client:
     service-url:
