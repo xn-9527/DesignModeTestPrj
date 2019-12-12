@@ -1,0 +1,9 @@
+# 注意：必需配置在bootstrap.yml，否则不能正常工作。例如会链接默认的url:localhost:8888
+spring:
+  application:
+    name: microservice-foo    # 对应config server所获取的配置文件的{application}
+  cloud:
+    config:
+      uri: http://localhost:8080/ # 默认：localhost:8888
+      profile: dev            # profile对应config server所获取的配置文件中的{profile} 
+      label: master           # 指定Git仓库的分支，对应config server所获取的配置文件的{label}
