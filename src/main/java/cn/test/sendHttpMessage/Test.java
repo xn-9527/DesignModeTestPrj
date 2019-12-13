@@ -60,6 +60,7 @@ public class Test {
             for (int i = 0; i < 20; i++) {
                 log.info("####################模拟更新 {}", i);
                 try {
+                    messageInfo.setMessageText(String.valueOf(i));
                     Thread.sleep(1000);
                     //1为了证明更新不会重置写入X时间后缓存的超时时间，我们更新下value更新map——证明更新不会重置超时时间，断点调试value的对象id变了
 //                    sendHttpMessageService.update(sendHttpMessageService.toSendHttpMessage(messageInfo));
