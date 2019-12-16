@@ -1,0 +1,32 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: microservice-config-server
+  cloud:
+    config:
+      server:
+        git:
+#          uri: https://github.com/xiaoni2009/spring-cloud-config-repo.git      # 配置Git仓库的地址
+          # 模式匹配：带有通配符的{application}/{profile}名称的列表，如果不匹配任何模式，它将使用spring.cloud.config.server.git.uri
+          uri: https://github.com/xiaoni2009/spring-cloud-config-repo      # 配置默认的Git仓库的地址
+          # 配置带有通配符的{application}/{profile}名称的列表
+          repos:
+            # 只匹配所有配置文件中名为simple的应用程序
+            simple:
+              uri: https://github.com/xiaoni2009/special-spring-cloud-config-repo
+            # 只匹配所有配置文件中名为special的应用程序
+            special:
+              pattern: special*/dev*,*special*/dev*
+              uri: https://github.com/xiaoni2009/special-spring-cloud-config-repo
+            # 匹配所有local开头的所有应用程序的名称
+            local:
+              pattern: local*
+              uri: file:D:/WorkSpace/special-spring-cloud-config-repo
+          username:                                                        # Git仓库的账号
+          password:                                                     # Git仓库的密码
+logging:
+  level:
+    org.springframework.cloud: DEBUG
+    org.springframework.boot: DEBUG
+
