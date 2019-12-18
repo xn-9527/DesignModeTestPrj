@@ -1,0 +1,21 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: microservice-config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/xiaoni2009/spring-cloud-config-repo.git      # 配置Git仓库的地址
+          # 经测试，效果是把所有的配置文件夹里面的配置文件合并，重复名字的使用的是默认路径下的配置文件，
+          # 比如访问localhost:8080/foo-test.properties就是foo目录下的foo-test.properties，外面的目录没有这个配置文件
+          search-paths: foo,bar*
+          username:                                                        # Git仓库的账号
+          password:                                                     # Git仓库的密码
+logging:
+  level:
+    org.springframework.cloud: DEBUG
+    org.springframework.boot: DEBUG
+
+# 测试：访问http://localhost:8080/application/default
