@@ -1,0 +1,27 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: microservice-config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/xiaoni2009/spring-cloud-config-repo.git      # 配置Git仓库的地址
+          repos:
+            team-a:
+              pattern:  microservice-*
+              # 让ConfigServer clone指定Git仓库，也可以在git.clone-one-start=true配置全局启动时clone git仓库
+              clone-on-start: true
+              uri: https://github.com/xiaoni2009/special-spring-cloud-config-repo.git
+          username:                                                        # Git仓库的账号
+          password:                                                        # Git仓库的密码
+logging:
+  level:
+    org.springframework.cloud: DEBUG
+    org.springframework.boot: DEBUG
+
+# 测试：
+# 1.观察启动日志
+# 2.访问http://localhost:8080/microservice-foo/dev,展示的是special-spring-cloud-config-repo
+# 3.访问localhost:8080/abc.properties等不存在的地址，展示的是默认的spring-cloud-config-repo.git
