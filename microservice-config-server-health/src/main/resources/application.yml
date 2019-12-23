@@ -11,7 +11,7 @@ spring:
           username:                                                         # Git仓库的账号
           password:                                                         # Git仓库的密码
         health:
-          # 禁用监控状况指示器
+          # 禁用监控状况指示器，如果禁用，不管访问repositories是否存在，访问localhost:8080/health显示的结果一直都是{"status": "UP"}
 #          enabled: false
           repositories:
             # 默认健康检查的是EnvironmentRepository对应的{application} {profile} {label}的端点，可通过如下配置修改监控检查的端点
