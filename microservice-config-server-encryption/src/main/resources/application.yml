@@ -6,6 +6,9 @@ spring:
   cloud:
     config:
       server:
+        encrypt:
+          # 理论上设置为false会直接返回密文，但实际测试无论true还是false都无法直接返回密文
+          enabled: false
         git:
           uri: https://git.oschina.net/itmuch/spring-cloud-config-repo      # 配置Git仓库的地址
           username:                                                         # Git仓库的账号
