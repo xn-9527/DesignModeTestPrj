@@ -1,0 +1,7 @@
+# encrypt开头的配置，必需防止bootstrap.yml下
+encrypt:
+  keyStore:
+    location: classpath:/server.jks # jks文件的路径
+    password: letmein               # storepass
+    alias: mytestkey                # alias
+    secret: changeme                # keypass

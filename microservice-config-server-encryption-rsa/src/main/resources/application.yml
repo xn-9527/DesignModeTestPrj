@@ -1,0 +1,14 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: microservice-config-server-encryption-rsa
+  cloud:
+    config:
+      server:
+        git:
+          # 使用如下命令，创建一个Key Store，keytool工具在jdk的bin目录下
+          # keytool -genkeypair -alias mytestkey -keyalg RSA -dname "CN=Web Server,OU=Unit,O=Organization,L=City,S=State,C=US" -keypass changeme -keystore server.jks -storepass l etmein
+          uri: https://github.com/xiaoni2009/spring-cloud-config-repo.git      # 配置Git仓库的地址
+          username:                                                        # Git仓库的账号
+          password:                                                     # Git仓库的密码
