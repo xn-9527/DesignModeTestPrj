@@ -1,0 +1,9 @@
+server:
+  port: ${SERVER_PORT:8081}
+
+#不配置这个，没有权限访问actuator
+management:
+  security:
+    # 设置actuator的链接不需要权限
+    # 也可以添加spring-boot-starter-security，然后有ACTUATOR角色的用户将可以访问对应链接
+    enabled: false

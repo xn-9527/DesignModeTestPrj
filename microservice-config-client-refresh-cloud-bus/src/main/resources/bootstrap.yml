@@ -1,0 +1,28 @@
+# 注意：必需配置在bootstrap.yml，否则不能正常工作。例如会链接默认的url:localhost:8888
+spring:
+  application:
+    name: microservice-foo    # 对应config server所获取的配置文件的{application}
+  cloud:
+    config:
+      uri: http://localhost:8080/ # 默认：localhost:8888
+      profile: dev            # profile对应config server所获取的配置文件中的{profile} 
+      label: master           # 指定Git仓库的分支，对应config server所获取的配置文件的{label}
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+# 访问localhost:8081/bus/refresh，会触发自动更新每个client的配置，打印如下日志
+#2019-12-27 09:44:10.979  INFO 556 --- [xKRidiQm1DERQ-1] s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@2fa31bb1: startup date [Fri Dec 27 09:44:10 CST 2019]; root of context hierarchy
+#2019-12-27 09:44:11.039  INFO 556 --- [xKRidiQm1DERQ-1] trationDelegate$BeanPostProcessorChecker : Bean 'configurationPropertiesRebinderAutoConfiguration' of type [org.springframework.cloud.autoconfigure.ConfigurationPropertiesRebinderAutoConfiguration$$EnhancerBySpringCGLIB$$ab6510c4] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+#2019-12-27 09:44:12.752  INFO 556 --- [xKRidiQm1DERQ-1] c.c.c.ConfigServicePropertySourceLocator : Fetching config from server at: http://localhost:8080/
+#2019-12-27 09:44:18.172  INFO 556 --- [xKRidiQm1DERQ-1] c.c.c.ConfigServicePropertySourceLocator : Located environment: name=microservice-foo, profiles=[dev], label=master, version=85a2daaba81219ce198584399b0c3847b1e55126, state=null
+#2019-12-27 09:44:18.172  INFO 556 --- [xKRidiQm1DERQ-1] b.c.PropertySourceBootstrapConfiguration : Located property source: CompositePropertySource [name='configService', propertySources=[MapPropertySource {name='configClient'}, MapPropertySource {name='https://github.com/xiaoni2009/spring-cloud-config-repo.git/microservice-foo-dev.properties'}, MapPropertySource {name='https://github.com/xiaoni2009/spring-cloud-config-repo.git/microservice-foo.properties'}, MapPropertySource {name='https://github.com/xiaoni2009/spring-cloud-config-repo.git/application.properties'}]]
+#2019-12-27 09:44:18.174  INFO 556 --- [xKRidiQm1DERQ-1] o.s.boot.SpringApplication               : No active profile set, falling back to default profiles: default
+#2019-12-27 09:44:18.178  INFO 556 --- [xKRidiQm1DERQ-1] s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@21c16259: startup date [Fri Dec 27 09:44:18 CST 2019]; parent: org.springframework.context.annotation.AnnotationConfigApplicationContext@2fa31bb1
+#2019-12-27 09:44:18.217  INFO 556 --- [xKRidiQm1DERQ-1] o.s.boot.SpringApplication               : Started application in 8.931 seconds (JVM running for 396.486)
+#2019-12-27 09:44:18.217  INFO 556 --- [xKRidiQm1DERQ-1] s.c.a.AnnotationConfigApplicationContext : Closing org.springframework.context.annotation.AnnotationConfigApplicationContext@21c16259: startup date [Fri Dec 27 09:44:18 CST 2019]; parent: org.springframework.context.annotation.AnnotationConfigApplicationContext@2fa31bb1
+#2019-12-27 09:44:18.218  INFO 556 --- [xKRidiQm1DERQ-1] s.c.a.AnnotationConfigApplicationContext : Closing org.springframework.context.annotation.AnnotationConfigApplicationContext@2fa31bb1: startup date [Fri Dec 27 09:44:10 CST 2019]; root of context hierarchy
+#2019-12-27 09:44:18.520  INFO 556 --- [xKRidiQm1DERQ-1] o.s.cloud.bus.event.RefreshListener      : Received remote refresh request. Keys refreshed [config.client.version, profile]
+#2019-12-27 09:44:18.545  INFO 556 --- [xKRidiQm1DERQ-1] o.s.a.r.c.CachingConnectionFactory       : Created new connection: SpringAMQP#4523f70d:0/SimpleConnection@34816fa [delegate=amqp://guest@127.0.0.1:5672/, localPort= 49756]
