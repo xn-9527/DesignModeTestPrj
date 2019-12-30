@@ -26,3 +26,6 @@ spring:
 #2019-12-27 09:44:18.218  INFO 556 --- [xKRidiQm1DERQ-1] s.c.a.AnnotationConfigApplicationContext : Closing org.springframework.context.annotation.AnnotationConfigApplicationContext@2fa31bb1: startup date [Fri Dec 27 09:44:10 CST 2019]; root of context hierarchy
 #2019-12-27 09:44:18.520  INFO 556 --- [xKRidiQm1DERQ-1] o.s.cloud.bus.event.RefreshListener      : Received remote refresh request. Keys refreshed [config.client.version, profile]
 #2019-12-27 09:44:18.545  INFO 556 --- [xKRidiQm1DERQ-1] o.s.a.r.c.CachingConnectionFactory       : Created new connection: SpringAMQP#4523f70d:0/SimpleConnection@34816fa [delegate=amqp://guest@127.0.0.1:5672/, localPort= 49756]
+
+# 访问localhost:8081/bus/refresh?destination=abc:8081会触发只更新8081服务，而不会更新其他服务
+# destination=abc:8081中的abc:8081是对应的spring.application.name:server.port，作为唯一的ApplicationContext ID。
