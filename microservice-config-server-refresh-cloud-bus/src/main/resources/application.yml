@@ -25,3 +25,6 @@ management:
     # 设置actuator的链接不需要权限
     # 也可以添加spring-boot-starter-security，然后有ACTUATOR角色的用户将可以访问对应链接
     enabled: false
+
+# 经测试，全局rabbitmq刷新有效，访问localhost:8080/bus/refresh
+# 经测试，局部rabbitmq刷新无效，访问localhost:8080/bus/refresh?destination=abc:8081无效，不会像访问client那样刷新
