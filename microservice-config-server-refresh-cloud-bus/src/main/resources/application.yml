@@ -1,0 +1,27 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: microservice-config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/xiaoni2009/spring-cloud-config-repo.git      # 配置Git仓库的地址
+          username:                                                         # Git仓库的账号
+          password:                                                         # Git仓库的密码
+    bus:
+      trace:
+        enabled: true     # 开启cloud bus的跟踪
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+#不配置这个，没有权限访问actuator
+management:
+  security:
+    # 设置actuator的链接不需要权限
+    # 也可以添加spring-boot-starter-security，然后有ACTUATOR角色的用户将可以访问对应链接
+    enabled: false
