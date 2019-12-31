@@ -5,6 +5,8 @@ spring:
     config:
       uri: http://localhost:8080/
       username: user
+      # 如果密码不对，会加载不到配置，直接抛异常
+      # Caused by: java.lang.IllegalArgumentException: Could not resolve placeholder 'profile' in value "${profile}"
       password: password123
       profile: dev            # profile对应config server所获取的配置文件中的{profile} 
       label: master           # 指定Git仓库的分支，对应config server所获取的配置文件的{label}
