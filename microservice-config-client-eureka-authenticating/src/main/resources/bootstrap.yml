@@ -4,6 +4,8 @@ spring:
   cloud:
     config:
       username: user
+      # 如果密码不对，会加载不到配置，直接抛异常
+      # Caused by: java.lang.IllegalArgumentException: Could not resolve placeholder 'profile' in value "${profile}"
       password: password123
       profile: dev
       label: master
