@@ -12,6 +12,7 @@ spring:
           password:                                                         # Git仓库的密码
     bus:
       trace:
+        # 访问localhost:8080/trace，会打印事件传播的细节
         enabled: true     # 开启cloud bus的跟踪
   rabbitmq:
     host: localhost
@@ -28,3 +29,391 @@ management:
 
 # 经测试，全局rabbitmq刷新有效，访问localhost:8080/bus/refresh
 # 经测试，局部rabbitmq刷新无效，访问localhost:8080/bus/refresh?destination=abc:8081无效，不会像访问client那样刷新
+
+#  访问localhost:8080/trace，会打印事件传播的细节
+#  [
+#  {
+#    "timestamp": 1577756824645,
+#    "info": {
+#      "signal": "spring.cloud.bus.ack",
+#      "event": "RefreshRemoteApplicationEvent",
+#      "id": "a2032d89-f1e4-4d28-b2d9-2d199dba5c15",
+#      "origin": "microservice-foo:8081",
+#      "destination": "**"
+#    }
+#  },
+#  {
+#    "timestamp": 1577756824306,
+#    "info": {
+#      "method": "GET",
+#      "path": "/microservice-foo/dev/master",
+#      "headers": {
+#        "request": {
+#          "accept": "application/json, application/*+json",
+#          "user-agent": "Java/1.8.0_91",
+#          "host": "localhost:8080",
+#          "connection": "keep-alive"
+#        },
+#        "response": {
+#          "X-Application-Context": "microservice-config-server:8080",
+#          "Content-Type": "application/json;charset=UTF-8",
+#          "Transfer-Encoding": "chunked",
+#          "Date": "Tue, 31 Dec 2019 01:47:04 GMT",
+#          "status": "200"
+#        }
+#      },
+#      "timeTaken": "6878"
+#    }
+#  },
+#  {
+#    "timestamp": 1577756821811,
+#    "info": {
+#      "signal": "spring.cloud.bus.ack",
+#      "event": "RefreshRemoteApplicationEvent",
+#      "id": "a2032d89-f1e4-4d28-b2d9-2d199dba5c15",
+#      "origin": "microservice-foo:8082",
+#      "destination": "**"
+#    }
+#  },
+#  {
+#    "timestamp": 1577756821479,
+#    "info": {
+#      "method": "GET",
+#      "path": "/microservice-foo/dev/master",
+#      "headers": {
+#        "request": {
+#          "accept": "application/json, application/*+json",
+#          "user-agent": "Java/1.8.0_91",
+#          "host": "localhost:8080",
+#          "connection": "keep-alive"
+#        },
+#        "response": {
+#          "X-Application-Context": "microservice-config-server:8080",
+#          "Content-Type": "application/json;charset=UTF-8",
+#          "Transfer-Encoding": "chunked",
+#          "Date": "Tue, 31 Dec 2019 01:47:01 GMT",
+#          "status": "200"
+#        }
+#      },
+#      "timeTaken": "4072"
+#    }
+#  },
+#  {
+#    "timestamp": 1577756817564,
+#    "info": {
+#      "method": "POST",
+#      "path": "/bus/refresh",
+#      "headers": {
+#        "request": {
+#          "user-agent": "PostmanRuntime/7.21.0",
+#          "accept": "*/*",
+#          "cache-control": "no-cache",
+#          "postman-token": "e733d541-7f15-477f-bcab-73947839a954",
+#          "host": "localhost:8080",
+#          "accept-encoding": "gzip, deflate",
+#          "content-length": "0",
+#          "connection": "keep-alive"
+#        },
+#        "response": {
+#          "X-Application-Context": "microservice-config-server:8080",
+#          "status": "200"
+#        }
+#      },
+#      "timeTaken": "4242"
+#    }
+#  },
+#  {
+#    "timestamp": 1577756813342,
+#    "info": {
+#      "signal": "spring.cloud.bus.sent",
+#      "type": "RefreshRemoteApplicationEvent",
+#      "id": "a2032d89-f1e4-4d28-b2d9-2d199dba5c15",
+#      "origin": "microservice-config-server:8080",
+#      "destination": "**:**"
+#    }
+#  },
+#  {
+#    "timestamp": 1577756813342,
+#    "info": {
+#      "signal": "spring.cloud.bus.ack",
+#      "event": "RefreshRemoteApplicationEvent",
+#      "id": "a2032d89-f1e4-4d28-b2d9-2d199dba5c15",
+#      "origin": "microservice-config-server:8080",
+#      "destination": "**"
+#    }
+#  },
+#  {
+#    "timestamp": 1577756644238,
+#    "info": {
+#      "method": "POST",
+#      "path": "/bus/refresh",
+#      "headers": {
+#        "request": {
+#          "user-agent": "PostmanRuntime/7.21.0",
+#          "accept": "*/*",
+#          "cache-control": "no-cache",
+#          "postman-token": "a60078f6-b375-4b5c-86d3-02f154e69d24",
+#          "host": "localhost:8080",
+#          "accept-encoding": "gzip, deflate",
+#          "content-length": "0",
+#          "connection": "keep-alive"
+#        },
+#        "response": {
+#          "X-Application-Context": "microservice-config-server:8080",
+#          "status": "200"
+#        }
+#      },
+#      "timeTaken": "3502"
+#    }
+#  },
+#  {
+#    "timestamp": 1577756640753,
+#    "info": {
+#      "signal": "spring.cloud.bus.sent",
+#      "type": "RefreshRemoteApplicationEvent",
+#      "id": "0f1c81ae-8ce7-4908-a1c9-ea2ae7e52515",
+#      "origin": "microservice-config-server:8080",
+#      "destination": "customers:8081:**"
+#    }
+#  },
+#  {
+#    "timestamp": 1577756626157,
+#    "info": {
+#      "method": "POST",
+#      "path": "/bus/refresh",
+#      "headers": {
+#        "request": {
+#          "user-agent": "PostmanRuntime/7.21.0",
+#          "accept": "*/*",
+#          "cache-control": "no-cache",
+#          "postman-token": "d8d4f2e4-2288-4d91-8da1-9034676a4904",
+#          "host": "localhost:8080",
+#          "accept-encoding": "gzip, deflate",
+#          "content-length": "0",
+#          "connection": "keep-alive"
+#        },
+#        "response": {
+#          "X-Application-Context": "microservice-config-server:8080",
+#          "status": "200"
+#        }
+#      },
+#      "timeTaken": "3179"
+#    }
+#  },
+#  {
+#    "timestamp": 1577756622983,
+#    "info": {
+#      "signal": "spring.cloud.bus.sent",
+#      "type": "RefreshRemoteApplicationEvent",
+#      "id": "f18605da-43d0-46d1-ad1f-65ecca2c9b77",
+#      "origin": "microservice-config-server:8080",
+#      "destination": "customers:8081:**"
+#    }
+#  },
+#  {
+#    "timestamp": 1577756610119,
+#    "info": {
+#      "method": "POST",
+#      "path": "/bus/refresh",
+#      "headers": {
+#        "request": {
+#          "user-agent": "PostmanRuntime/7.21.0",
+#          "accept": "*/*",
+#          "cache-control": "no-cache",
+#          "postman-token": "cd6fdc6b-a4be-4b56-81bd-71775e856b38",
+#          "host": "localhost:8080",
+#          "accept-encoding": "gzip, deflate",
+#          "content-length": "0",
+#          "connection": "keep-alive"
+#        },
+#        "response": {
+#          "X-Application-Context": "microservice-config-server:8080",
+#          "status": "200"
+#        }
+#      },
+#      "timeTaken": "3285"
+#    }
+#  },
+#  {
+#    "timestamp": 1577756606840,
+#    "info": {
+#      "signal": "spring.cloud.bus.sent",
+#      "type": "RefreshRemoteApplicationEvent",
+#      "id": "e1abcbfd-dbd8-4716-8c9e-7f08bf02dc5b",
+#      "origin": "microservice-config-server:8080",
+#      "destination": "abc:8081:**"
+#    }
+#  },
+#  {
+#    "timestamp": 1577756473673,
+#    "info": {
+#      "method": "POST",
+#      "path": "/bus/refresh",
+#      "headers": {
+#        "request": {
+#          "user-agent": "PostmanRuntime/7.21.0",
+#          "accept": "*/*",
+#          "cache-control": "no-cache",
+#          "postman-token": "1363ba91-68c6-40da-9d3b-0c758773843a",
+#          "host": "localhost:8080",
+#          "accept-encoding": "gzip, deflate",
+#          "content-length": "0",
+#          "connection": "keep-alive"
+#        },
+#        "response": {
+#          "X-Application-Context": "microservice-config-server:8080",
+#          "status": "200"
+#        }
+#      },
+#      "timeTaken": "4017"
+#    }
+#  },
+#  {
+#    "timestamp": 1577756469921,
+#    "info": {
+#      "signal": "spring.cloud.bus.sent",
+#      "type": "RefreshRemoteApplicationEvent",
+#      "id": "19688bb4-dd29-4dad-87fd-5cb5ade5b9b5",
+#      "origin": "microservice-config-server:8080",
+#      "destination": "abc:8081:**"
+#    }
+#  },
+#  {
+#    "timestamp": 1577755927395,
+#    "info": {
+#      "method": "GET",
+#      "path": "/microservice-foo/dev/master",
+#      "headers": {
+#        "request": {
+#          "accept": "application/json, application/*+json",
+#          "user-agent": "Java/1.8.0_91",
+#          "host": "localhost:8080",
+#          "connection": "keep-alive"
+#        },
+#        "response": {
+#          "X-Application-Context": "microservice-config-server:8080",
+#          "Content-Type": "application/json;charset=UTF-8",
+#          "Transfer-Encoding": "chunked",
+#          "Date": "Tue, 31 Dec 2019 01:32:07 GMT",
+#          "status": "200"
+#        }
+#      },
+#      "timeTaken": "2568"
+#    }
+#  },
+#  {
+#    "timestamp": 1577755923168,
+#    "info": {
+#      "method": "GET",
+#      "path": "/microservice-foo/dev/master",
+#      "headers": {
+#        "request": {
+#          "accept": "application/json, application/*+json",
+#          "user-agent": "Java/1.8.0_91",
+#          "host": "localhost:8080",
+#          "connection": "keep-alive"
+#        },
+#        "response": {
+#          "X-Application-Context": "microservice-config-server:8080",
+#          "Content-Type": "application/json;charset=UTF-8",
+#          "Transfer-Encoding": "chunked",
+#          "Date": "Tue, 31 Dec 2019 01:32:03 GMT",
+#          "status": "200"
+#        }
+#      },
+#      "timeTaken": "3003"
+#    }
+#  },
+#  {
+#    "timestamp": 1577755919341,
+#    "info": {
+#      "method": "GET",
+#      "path": "/microservice-foo/dev/master",
+#      "headers": {
+#        "request": {
+#          "accept": "application/json, application/*+json",
+#          "user-agent": "Java/1.8.0_91",
+#          "host": "localhost:8080",
+#          "connection": "keep-alive"
+#        },
+#        "response": {
+#          "X-Application-Context": "microservice-config-server:8080",
+#          "Content-Type": "application/json;charset=UTF-8",
+#          "Transfer-Encoding": "chunked",
+#          "Date": "Tue, 31 Dec 2019 01:31:59 GMT",
+#          "status": "200"
+#        }
+#      },
+#      "timeTaken": "2749"
+#    }
+#  },
+#  {
+#    "timestamp": 1577755913699,
+#    "info": {
+#      "method": "GET",
+#      "path": "/microservice-foo/dev/master",
+#      "headers": {
+#        "request": {
+#          "accept": "application/json, application/*+json",
+#          "user-agent": "Java/1.8.0_91",
+#          "host": "localhost:8080",
+#          "connection": "keep-alive"
+#        },
+#        "response": {
+#          "X-Application-Context": "microservice-config-server:8080",
+#          "Content-Type": "application/json;charset=UTF-8",
+#          "Transfer-Encoding": "chunked",
+#          "Date": "Tue, 31 Dec 2019 01:31:53 GMT",
+#          "status": "200"
+#        }
+#      },
+#      "timeTaken": "7046"
+#    }
+#  },
+#  {
+#    "timestamp": 1577755910993,
+#    "info": {
+#      "method": "GET",
+#      "path": "/microservice-foo/dev/master",
+#      "headers": {
+#        "request": {
+#          "accept": "application/json, application/*+json",
+#          "user-agent": "Java/1.8.0_91",
+#          "host": "localhost:8080",
+#          "connection": "keep-alive"
+#        },
+#        "response": {
+#          "X-Application-Context": "microservice-config-server:8080",
+#          "Content-Type": "application/json;charset=UTF-8",
+#          "Transfer-Encoding": "chunked",
+#          "Date": "Tue, 31 Dec 2019 01:31:50 GMT",
+#          "status": "200"
+#        }
+#      },
+#      "timeTaken": "5490"
+#    }
+#  },
+#  {
+#    "timestamp": 1577755894957,
+#    "info": {
+#      "method": "GET",
+#      "path": "/microservice-foo/dev/master",
+#      "headers": {
+#        "request": {
+#          "accept": "application/json, application/*+json",
+#          "user-agent": "Java/1.8.0_91",
+#          "host": "localhost:8080",
+#          "connection": "keep-alive"
+#        },
+#        "response": {
+#          "X-Application-Context": "microservice-config-server:8080",
+#          "Content-Type": "application/json;charset=UTF-8",
+#          "Transfer-Encoding": "chunked",
+#          "Date": "Tue, 31 Dec 2019 01:31:34 GMT",
+#          "status": "200"
+#        }
+#      },
+#      "timeTaken": "3334"
+#    }
+#  }
+#  ]
