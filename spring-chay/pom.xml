@@ -59,7 +59,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>1.5.4.RELEASE</version>
                 <configuration>
-                    <mainClass>cn.muye.cn.chay.Application</mainClass>
+                    <mainClass>cn.chay.Application</mainClass>
                 </configuration>
                 <executions>
                     <execution>

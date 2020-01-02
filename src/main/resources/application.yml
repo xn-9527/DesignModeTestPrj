@@ -99,7 +99,7 @@ spring:
 #
 ##mappers 多个接口时逗号隔开
 #mapper:
-#  mappers: cn.muye.cn.ni.util.MyMapper
+#  mappers: cn.ni.util.MyMapper
 #  not-empty: false
 #  identity: MYSQL
 #
