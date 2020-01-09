@@ -1,0 +1,7 @@
+server:
+  port: 9411
+
+spring:
+  application:
+    # 指定注册到eureka server上应用的名称
+    name: microservice-trace-zipkin-server
