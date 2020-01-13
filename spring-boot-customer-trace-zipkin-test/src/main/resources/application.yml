@@ -30,7 +30,9 @@ spring:
     # 指定注册到eureka server上应用的名称
     name: microservice-user-trace-zipkin
   zipkin:
-    base-url: http://localhost:9411
+#    base-url: http://localhost:9411
+    # 使用eureka的zipkin的服务名
+    base-url: http://microservice-trace-zipkin-eureka-server/
   sleuth:
     sampler:
       #指定需采样的请求的百分比，默认是0.1，即10%。在分布式系统中，数据量可能会非常大。
