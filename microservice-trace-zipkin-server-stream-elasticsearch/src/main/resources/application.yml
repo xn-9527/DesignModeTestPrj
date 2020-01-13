@@ -1,0 +1,24 @@
+server:
+  port: 9411
+
+spring:
+  application:
+    # 指定注册到eureka server上应用的名称
+    name: microservice-trace-zipkin-server-stream-elasticsearch
+
+zipkin:
+  collector:
+    rabbitmq:
+      # 多个地址逗号分隔
+      addresses: localhost:5672
+      password: guest
+      username: guest
+      queue: zipkin
+  storage:
+    type: elasticsearch
+    elasticsearch:
+      cluster: elasticsearch
+      hosts: http://localhost:9200
+      index: zipkin
+      index-shards: 5
+      index-replicas: 1
