@@ -53,4 +53,19 @@ public class TestPingUtilService {
         }
         log.info("test finished, result: total-Failed {}, total {}", totalFailed, total);
     }
+
+    public static void main(String[] args) {
+//        for (int i = 0; i < 255; i++) {
+//            String ipPre = "172.16.0.";
+//            if (PingUtil.ping(ipPre + i, null)) {
+//                log.info("ping success: {}", ipPre + i);
+//            }
+//        }
+        for (int i = 0; i < 255; i++) {
+            String ipPre = "172.16.1.";
+            if (PingUtil.ping(ipPre + i, null)) {
+                log.info("ping success: {}", ipPre + i);
+            }
+        }
+    }
 }
