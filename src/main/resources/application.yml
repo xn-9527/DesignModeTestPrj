@@ -60,18 +60,9 @@ spring:
   application:
     name: spirng-boot-testEnum
   datasource:
-#    url: jdbc:mysql://172.16.2.70:33163/agv?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
-#    url: jdbc:mysql://localhost:3306/agv20180320wuhan?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
-#    url: jdbc:mysql://localhost:3306/agv20180427wuhan?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
-#    url: jdbc:mysql://172.16.0.15:3306/agvA?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
-#    url: jdbc:mysql://localhost:3306/goor_hospital_20180116bb_test?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
-#    url: jdbc:mysql://localhost:3306/goor_18back20171226?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
-    url: jdbc:mysql://localhost:3306/goor_hospital_20180516bf?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
+    url: jdbc:mysql://localhost:3306/test1?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
     username: root
     password: root
-#    password: 123456
-#    password: Q123~qqq
-#    password: myeeChinarenx0+/
 #    driver-class-name: com.mysql.jdbc.Driver
 #    type: com.alibaba.druid.pool.DruidDataSource
     initialSize: 5
