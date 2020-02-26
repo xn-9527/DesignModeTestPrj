@@ -11,7 +11,7 @@ import java.util.Date;
 public class Fruit {
 
     public void ripe(Date time, int weight, int sweet) {
-        log.info("riped on: time-{},{} kg, {} sweet.", time, weight, sweet);
+        log.info("fruit riped on: time-{},{} kg, {} sweet.", time, weight, sweet);
     }
 
 }

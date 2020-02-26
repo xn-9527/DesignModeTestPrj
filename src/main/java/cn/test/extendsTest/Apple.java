@@ -11,11 +11,11 @@ import java.util.Date;
 public class Apple extends Fruit {
 
     public void ripe(Date time, int sweet) {
-        log.info("riped on: time-{}, {} sweet.", time, sweet);
+        log.info("apple riped on: time-{}, {} sweet.", time, sweet);
     }
 
     public void ripe(Date time, int weight, int sweet, String name) {
-        log.info("{} riped on: time-{},{} kg, {} sweet.", name, time, weight, sweet);
+        log.info("name {} apple riped on: time-{},{} kg, {} sweet.", name, time, weight, sweet);
     }
 
     public static void main(String[] args) {
@@ -23,7 +23,7 @@ public class Apple extends Fruit {
         fruit.ripe(new Date(), 2, 1);
         Apple apple = new Apple();
         apple.ripe(new Date(), 3);
-        apple.ripe(new Date(), 4, 2, "apple");
+        apple.ripe(new Date(), 4, 2, "红富士");
         apple.ripe(new Date(), 5, 3);
     }
 }
