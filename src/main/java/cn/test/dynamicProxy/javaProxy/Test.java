@@ -5,11 +5,11 @@ package cn.test.dynamicProxy.javaProxy;
  */
 public class Test {
     public static void main(String[] args) {
-        MyProxy myProxy = new MyProxy();
-        IHouse iHouseA = myProxy.getInstance(new HouseA());
+        JdkProxy jdkProxy = new JdkProxy();
+        IHouse iHouseA = jdkProxy.getInstance(new HouseA());
         iHouseA.rent();
 
-        IHouse iHouseB = myProxy.getInstance(new HouseB());
+        IHouse iHouseB = jdkProxy.getInstance(new HouseB());
         iHouseB.rent();
     }
 }
