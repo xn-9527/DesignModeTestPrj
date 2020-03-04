@@ -7,7 +7,7 @@ import java.lang.reflect.Proxy;
 /**
  * Created by xiaoni on 2020/3/4.
  */
-public class MyProxy implements InvocationHandler {
+public class JdkProxy implements InvocationHandler {
     private IHouse target;
     public IHouse getInstance(IHouse target) {
         this.target = target;
