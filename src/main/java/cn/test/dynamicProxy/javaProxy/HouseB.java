@@ -9,4 +9,9 @@ public class HouseB implements IHouse {
         System.out.println("B rent for 2000");
         return 2000;
     }
+
+    @Override
+    public final void onlyForYou() {
+        System.out.println("我只为B");
+    }
 }

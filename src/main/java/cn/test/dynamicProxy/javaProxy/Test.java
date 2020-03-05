@@ -8,8 +8,16 @@ public class Test {
         JdkProxy jdkProxy = new JdkProxy();
         IHouse iHouseA = jdkProxy.getInstance(new HouseA());
         iHouseA.rent();
+        iHouseA.onlyForYou();
 
+        System.out.println("####################");
         IHouse iHouseB = jdkProxy.getInstance(new HouseB());
         iHouseB.rent();
+        iHouseB.onlyForYou();
+
+        System.out.println("####################");
+        IHouse iHouseC = jdkProxy.getInstance(new FinalHouseC());
+        iHouseC.rent();
+        iHouseC.onlyForYou();
     }
 }

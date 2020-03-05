@@ -5,4 +5,6 @@ package cn.test.dynamicProxy.javaProxy;
  */
 public interface IHouse {
     int rent();
+
+    void onlyForYou();
 }
