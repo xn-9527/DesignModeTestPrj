@@ -10,7 +10,7 @@
     <!--</parent>-->
 
     <groupId>com.my.testio</groupId>
-    <artifactId>testIOModule</artifactId>
+    <artifactId>DesignModeTest</artifactId>
     <version>1.0</version>
     <modules>
         <module>spring-boot-starter-helloworld</module>
@@ -51,12 +51,12 @@
 
         <!--rabbitMQ相关配置-->
         <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-amqp</artifactId>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-starter-amqp</artifactId>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-starter-bus-amqp</artifactId>-->
+        <!--<groupId>org.springframework.cloud</groupId>-->
+        <!--<artifactId>spring-cloud-starter-bus-amqp</artifactId>-->
         <!--</dependency>-->
         <!--<dependency>-->
         <!--<groupId>org.springframework.boot</groupId>-->
@@ -64,8 +64,8 @@
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-starter-oauth2</artifactId>-->
+        <!--<groupId>org.springframework.cloud</groupId>-->
+        <!--<artifactId>spring-cloud-starter-oauth2</artifactId>-->
         <!--</dependency>-->
 
         <!--dependency>
@@ -79,13 +79,13 @@
             <version>${spring.cloud.version}</version>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-starter-stream-rabbit</artifactId>-->
+        <!--<groupId>org.springframework.cloud</groupId>-->
+        <!--<artifactId>spring-cloud-starter-stream-rabbit</artifactId>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.mybatis.spring.boot</groupId>-->
-            <!--<artifactId>mybatis-spring-boot-starter</artifactId>-->
-            <!--<version>1.3.0</version>-->
+        <!--<groupId>org.mybatis.spring.boot</groupId>-->
+        <!--<artifactId>mybatis-spring-boot-starter</artifactId>-->
+        <!--<version>1.3.0</version>-->
         <!--</dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -99,14 +99,14 @@
         </dependency>
         <!--这个模版的页面路径在spring.mvc.view.prefix=classpath:/templates/ 跟默认的定位页面的目录到static/下不一样-->
         <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-thymeleaf</artifactId>-->
-            <!--<version>${spring.boot.version}</version>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-starter-thymeleaf</artifactId>-->
+        <!--<version>${spring.boot.version}</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-actuator</artifactId>-->
-            <!--<version>${spring.boot.version}</version>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-starter-actuator</artifactId>-->
+        <!--<version>${spring.boot.version}</version>-->
         <!--</dependency>-->
 
         <!--<dependency> 暂时除去，存在冲突，无法获取表名称
@@ -133,19 +133,19 @@
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>org.apache.tomcat</groupId>-->
-            <!--<artifactId>tomcat-jdbc</artifactId>-->
+        <!--<groupId>org.apache.tomcat</groupId>-->
+        <!--<artifactId>tomcat-jdbc</artifactId>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>com.h2database</groupId>-->
-            <!--<artifactId>h2</artifactId>-->
-            <!--<scope>runtime</scope>-->
+        <!--<groupId>com.h2database</groupId>-->
+        <!--<artifactId>h2</artifactId>-->
+        <!--<scope>runtime</scope>-->
         <!--</dependency>-->
 
         <!--<dependency>-->
-            <!--<groupId>mysql</groupId>-->
-            <!--<artifactId>mysql-connector-java</artifactId>-->
+        <!--<groupId>mysql</groupId>-->
+        <!--<artifactId>mysql-connector-java</artifactId>-->
         <!--</dependency>-->
 
         <!---->
@@ -180,8 +180,8 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>org.yaml</groupId>-->
-            <!--<artifactId>snakeyaml</artifactId>-->
+        <!--<groupId>org.yaml</groupId>-->
+        <!--<artifactId>snakeyaml</artifactId>-->
         <!--</dependency>-->
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-csv -->
         <dependency>
