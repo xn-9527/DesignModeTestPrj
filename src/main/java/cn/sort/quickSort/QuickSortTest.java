@@ -1,6 +1,7 @@
 package cn.sort.quickSort;
 
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * @Author: xiaoni
@@ -30,6 +31,7 @@ public class QuickSortTest {
      */
     private static int partition(int[] input, int startIndex, int endIndex) {
         //取第一个位置(也可以选择随机位置)的元素作为基准元素
+        //比如new Random().nextInt(endIndex);
         int pivot = input[startIndex];
         int left = startIndex;
         int right = endIndex;
