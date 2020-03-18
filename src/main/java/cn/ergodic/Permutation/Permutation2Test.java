@@ -28,7 +28,8 @@ public class Permutation2Test {
         if (str.length() == 1) {
             return Collections.singleton(str);
         }
-        Set<String> result = new HashSet<>();
+        //输出顺序不对也算错，这个TreeSet是关键
+        Set<String> result = new TreeSet<>();
         for (int i = 0; i < str.length(); i++) {
             //都跟第一个交换
             str = swap(str, 0, i);
