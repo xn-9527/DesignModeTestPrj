@@ -19,6 +19,7 @@ public class CorrectWordsTest {
         }
 
         checkWords(words);
+        checkWords2(words);
     }
 
     public static void checkWords(String[] words) {
@@ -56,6 +57,18 @@ public class CorrectWordsTest {
                 }
             }
             System.out.println(String.valueOf(correctChars).trim());
+        }
+    }
+
+    //作者：newSpring(me)
+    //链接：https://www.nowcoder.com/questionTerminal/42852fd7045c442192fa89404ab42e92
+    //来源：牛客网
+    //
+    //(.)\\1+ 表示 表示任意一个字符重复两次或两次以上（括号里的点表示任意字符，后面的\\1表示取第一个括号匹配的内容，后面的加号表示匹配1次或1次以上。二者加在一起就是某个字符重复两次或两次以上）
+    //$1是第一个小括号里的内容，$2是第二个小括号里面的内容，
+    public static void checkWords2(String[] words) {
+        for (String word : words) {
+            System.out.println(word.replaceAll("(.)\\1+","$1$1").replaceAll("(.)\\1(.)\\2","$1$1$2"));
         }
     }
 }
