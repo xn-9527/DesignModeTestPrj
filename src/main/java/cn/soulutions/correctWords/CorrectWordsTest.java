@@ -1,6 +1,7 @@
 package cn.soulutions.correctWords;
 
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 /**
  * 1. 三个同样的字母连在一起，一定是拼写错误，去掉一个的就好啦：比如 helllo -> hello
@@ -20,6 +21,19 @@ public class CorrectWordsTest {
 
         checkWords(words);
         checkWords2(words);
+
+        System.out.println(Pattern.matches("(.)\\1", "aaa"));
+        System.out.println(Pattern.matches("(.)\\1", "aa"));
+        System.out.println("###################");
+        System.out.println(Pattern.matches("(.)\\2", "a"));
+        System.out.println(Pattern.matches("(.)\\2", "aa"));
+        System.out.println(Pattern.matches("(.)\\2", "aaa"));
+        System.out.println(Pattern.matches("(.)\\2", "aaaa"));
+        System.out.println("========================");
+        System.out.println(Pattern.matches("(.)\\1(.)\\2", "ab"));
+        System.out.println(Pattern.matches("(.)\\1(.)\\2", "aab"));
+        System.out.println(Pattern.matches("(.)\\1(.)\\2", "aabb"));
+        System.out.println(Pattern.matches("(.)\\1(.)\\2", "aabbb"));
     }
 
     public static void checkWords(String[] words) {
@@ -64,11 +78,17 @@ public class CorrectWordsTest {
     //链接：https://www.nowcoder.com/questionTerminal/42852fd7045c442192fa89404ab42e92
     //来源：牛客网
     //
-    //(.)\\1+ 表示 表示任意一个字符重复两次或两次以上（括号里的点表示任意字符，后面的\\1表示取第一个括号匹配的内容，后面的加号表示匹配1次或1次以上。二者加在一起就是某个字符重复两次或两次以上）
+    //(.)\\1+ 表示 表示任意一个字符重复两次或两次以上（括号里的点表示任意字符，
+    // 后面的\\1表示取第一个括号匹配的内容，后面的加号表示匹配1次或1次以上。二者加在一起就是某个字符重复两次或两次以上）
     //$1是第一个小括号里的内容，$2是第二个小括号里面的内容，
+//    "(.)\1"匹配两个连续的相同字符。
     public static void checkWords2(String[] words) {
         for (String word : words) {
-            System.out.println(word.replaceAll("(.)\\1+","$1$1").replaceAll("(.)\\1(.)\\2","$1$1$2"));
+            String temp = word.replaceAll("(.)\\1+","$1$1");
+            System.out.println("######" + temp);
+            //因为后面的正则是在第一个正则基础上的，所以第一个正则替换完，只会存在aabb，然后替换成aab就对了。
+            //(.)\1(.)\2 后面的\2表示重复第二个参数1次，所以合起来就是aabb形式
+            System.out.println(temp.replaceAll("(.)\\1(.)\\2","$1$1$2"));
         }
     }
 }
