@@ -42,7 +42,7 @@ public class FindMostLongEqualDiffArray {
      *
      * 记录上次遍历结果比较，输出最长的结果
      *
-     * 通过率：80.00%
+     * 通过率：100.00%
      *
      * @param input
      * @param n
@@ -64,7 +64,6 @@ public class FindMostLongEqualDiffArray {
                 return o1-o2;
             }
         });
-        int max = input.get(size - 1);
 
         for (int i = 0; i < size - 1; i++) {
             int ni = input.get(i);
@@ -72,24 +71,22 @@ public class FindMostLongEqualDiffArray {
                 int nj = input.get(j);
                 int d = nj - ni;
 
-                int k = 1;
                 //添加本次结果的前两个个数
                 thisResultCount = 2;
 //                thisResult.clear();
 //                thisResult.add(ni);
 //                thisResult.add(nj);
-                int nk = nj;
-                while ((nj + k * d) <= max) {
-                    nk = nj + k * d;
-                    //如果包含加了步长d的，则说明这个等差数量符合要求
-                    if (input.contains(nk)) {
+                int lastK = j;
+                for (int k = j + 1; k < size; k++) {
+                    int dk = input.get(k) - input.get(lastK);
+                    if (dk == d) {
 //                        thisResult.add(nk);
                         thisResultCount ++;
-                    } else {
-                        //最长等差数列在此中断
+                        lastK = k;
+                    } else if (dk > d) {
+                        //差值大于才能跳出，差值小于的话k继续++往下循环
                         break;
                     }
-                    k++;
                 }
                 //循环完毕，如果本次循环结果大于上次缓存结果，则替换上次缓存结果
 //                if (thisResult.size() > lastResult.size()) {
