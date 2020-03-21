@@ -1,4 +1,4 @@
-package cn.ergodic.Permutation;
+package cn.tree.ergodic.Permutation;
 
 import java.util.ArrayList;
 import java.util.TreeSet;

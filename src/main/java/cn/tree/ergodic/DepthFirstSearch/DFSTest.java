@@ -1,6 +1,6 @@
-package cn.ergodic.DepthFirstSearch;
+package cn.tree.ergodic.DepthFirstSearch;
 
-import cn.ergodic.TreeNode;
+import cn.tree.ergodic.TreeNode;
 
 import java.util.LinkedList;
 import java.util.Scanner;

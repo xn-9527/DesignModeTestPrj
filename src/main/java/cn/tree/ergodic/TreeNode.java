@@ -1,4 +1,4 @@
-package cn.ergodic;
+package cn.tree.ergodic;
 
 import lombok.Data;
 

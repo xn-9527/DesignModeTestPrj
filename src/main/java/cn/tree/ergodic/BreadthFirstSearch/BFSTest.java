@@ -1,9 +1,8 @@
-package cn.ergodic.BreadthFirstSearch;
+package cn.tree.ergodic.BreadthFirstSearch;
 
-import cn.ergodic.DepthFirstSearch.DFSTest;
-import cn.ergodic.TreeNode;
+import cn.tree.ergodic.DepthFirstSearch.DFSTest;
+import cn.tree.ergodic.TreeNode;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
