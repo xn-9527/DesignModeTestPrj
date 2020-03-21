@@ -122,7 +122,7 @@ public class CalPositionsTest {
     public final static long MOD = 99997867;
 
     /**
-     * end先行，然后往前找最远的start，比j
+     * end先行，然后往前找最远的start，因为end的位置已经确定，所以只需要前面2个从最远start位置开始到end位置Cn取2就可以了
      *
      * @param positions
      * @param d
