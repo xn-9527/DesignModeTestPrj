@@ -1,4 +1,4 @@
-package cn.test.arrayMidInsert;
+package cn.sort.arrayMidInsert;
 
 import lombok.extern.slf4j.Slf4j;
 

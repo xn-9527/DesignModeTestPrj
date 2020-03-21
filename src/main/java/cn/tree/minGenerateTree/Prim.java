@@ -1,4 +1,4 @@
-package cn.test.algorithm;
+package cn.tree.minGenerateTree;
 
 import lombok.extern.slf4j.Slf4j;
 

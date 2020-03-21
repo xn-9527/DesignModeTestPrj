@@ -1,4 +1,4 @@
-package cn.binaryTree;// postfix.java
+package cn.tree.binaryTree;// postfix.java
 // parses postfix arithmetic expressions
 // to run this program: C>java PostfixApp
 import java.io.*;              // for I/O

@@ -1,4 +1,4 @@
-package cn.binaryTree;
+package cn.tree.binaryTree;
 import java.io.*;
 
 /**

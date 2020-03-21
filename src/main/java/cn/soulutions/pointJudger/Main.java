@@ -1,4 +1,4 @@
-package cn.test.pointJudger;
+package cn.soulutions.pointJudger;
 
 import java.util.*;
 

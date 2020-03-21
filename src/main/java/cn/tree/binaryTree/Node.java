@@ -1,4 +1,4 @@
-package cn.binaryTree;
+package cn.tree.binaryTree;
 
 /**
  * Created by xiaoni on 2017/10/18.
