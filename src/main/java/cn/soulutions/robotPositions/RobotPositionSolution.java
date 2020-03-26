@@ -1,9 +1,11 @@
 package cn.soulutions.robotPositions;
 
 import com.alibaba.fastjson.JSON;
-import lombok.ToString;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * 地上有一个m行和n列的方格。一个机器人从坐标0,0的格子开始移动，
@@ -12,14 +14,18 @@ import java.util.*;
  * 例如，当k为18时，机器人能够进入方格（35,37），因为3+5+3+7 = 18。
  * 但是，它不能进入方格（35,38），因为3+5+3+8 = 19。
  * 请问该机器人能够达到多少个格子？
+ *
+ * 这里的解法，前提：机器人不能重复行走走过的格子
  * Created by xiaoni on 2020/3/25.
  */
 @Deprecated
 public class RobotPositionSolution {
     /**
      * 类似于A*算法
+     * <p>
+     * 事实证明A*算法并不太合适，因为题目条件是允许重复行走。
      *
-     * 事实证明A*算法并不太合适，因为不是全局最长路线，局部来说满足终止条件，但是不够长
+     * 我用A*实现了不能重复行走的情况
      *
      * @param threshold
      * @param rows
@@ -29,8 +35,6 @@ public class RobotPositionSolution {
     public int movingCount(int threshold, int rows, int cols) {
         int count = 0;
         Grid endGrid = null;
-        int[][] maze = new int[rows][cols];
-        int maxGridCount = (rows-1) * (cols-1);
         //可到达的格子
         Set<Grid> openList = new TreeSet<>();
         //未到达的格子
@@ -42,7 +46,7 @@ public class RobotPositionSolution {
         while (openList.size() > 0) {
             //在openList中查找总步数最长的格子，将其作为当前方格节点
             //问题在这里，当前最大值的格子，有可能不是全局最大值
-            Grid currentGrid = findMaxCountGrid(openList);
+            Grid currentGrid = findMaxCountGrid(openList, threshold);
             //目前找到的最大值
             if (currentGrid.g > count) {
                 count = currentGrid.g;
@@ -53,7 +57,7 @@ public class RobotPositionSolution {
             //当前方格节点进入closeList
             closeList.add(currentGrid);
             //找到所有的可走满足条件的邻近节点
-            List<Grid> neighbors = findNeighbors(currentGrid, openList, closeList, threshold, rows-1, cols-1);
+            List<Grid> neighbors = findNeighbors(currentGrid, openList, closeList, threshold, rows - 1, cols - 1);
             for (Grid grid : neighbors) {
                 if (!openList.contains(grid)) {
                     //如果邻近节点不在openList，初始化g，并放入openList
@@ -64,7 +68,7 @@ public class RobotPositionSolution {
         }
         System.out.println(count);
         System.out.println(JSON.toJSONString(endGrid));
-        return count;
+        return count + 1;
     }
 
     /**
@@ -73,25 +77,25 @@ public class RobotPositionSolution {
      * @param openList
      * @param closeList
      * @param threshold
-     * @param rows
-     * @param cols        @return
+     * @param rowsLength
+     * @param colsLength        @return
      */
-    private List<Grid> findNeighbors(Grid currentGrid, Set<Grid> openList, Set<Grid> closeList, int threshold, int rows, int cols) {
+    private List<Grid> findNeighbors(Grid currentGrid, Set<Grid> openList, Set<Grid> closeList, int threshold, int rowsLength, int colsLength) {
         List<Grid> gridList = new ArrayList<>();
         //校验当前节点下面的节点
-        if (isValidGrid(currentGrid.x, currentGrid.y - 1, openList, closeList, threshold, rows, cols)) {
+        if (isValidGrid(currentGrid.x, currentGrid.y - 1, openList, closeList, threshold, rowsLength, colsLength)) {
             gridList.add(new Grid(currentGrid.x, currentGrid.y - 1));
         }
         //校验当前节点上面的节点
-        if (isValidGrid(currentGrid.x, currentGrid.y + 1, openList, closeList, threshold, rows, cols)) {
+        if (isValidGrid(currentGrid.x, currentGrid.y + 1, openList, closeList, threshold, rowsLength, colsLength)) {
             gridList.add(new Grid(currentGrid.x, currentGrid.y + 1));
         }
         //校验当前节点左面的节点
-        if (isValidGrid(currentGrid.x - 1, currentGrid.y, openList, closeList, threshold, rows, cols)) {
-            gridList.add(new Grid(currentGrid.x - 1, currentGrid.y));
-        }
+//        if (isValidGrid(currentGrid.x - 1, currentGrid.y, openList, closeList, threshold, rows, cols)) {
+//            gridList.add(new Grid(currentGrid.x - 1, currentGrid.y));
+//        }
         //校验当前节点右面的节点
-        if (isValidGrid(currentGrid.x + 1, currentGrid.y, openList, closeList, threshold, rows, cols)) {
+        if (isValidGrid(currentGrid.x + 1, currentGrid.y, openList, closeList, threshold, rowsLength, colsLength)) {
             gridList.add(new Grid(currentGrid.x + 1, currentGrid.y));
         }
         return gridList;
@@ -104,14 +108,14 @@ public class RobotPositionSolution {
      * @param y
      * @param openList
      * @param closeList
-     * @param rows
-     * @param cols
      * @param threshold
+     * @param rowsLength
+     * @param colsLength
      * @return
      */
-    private boolean isValidGrid(int x, int y, Set<Grid> openList, Set<Grid> closeList, int threshold, int rows, int cols) {
+    private boolean isValidGrid(int x, int y, Set<Grid> openList, Set<Grid> closeList, int threshold, int rowsLength, int colsLength) {
         //校验边界
-        if (x < 0 || x >= rows || y < 0 || y >= cols) {
+        if (x < 0 || x >= rowsLength || y < 0 || y >= colsLength) {
             return false;
         }
         //是否符合判断条件:不能进入行坐标和列坐标的数位之和大于k的格子
@@ -119,11 +123,14 @@ public class RobotPositionSolution {
             return false;
         }
         //校验是否已经在openList中
-        if(containGrid(openList, x, y)) {
-            return false;
+        if (containGrid(openList, x, y)) {
+            //移除旧的点
+            openList.remove(new Grid(x,y));
+            //返回true，以便重新添加该点，并更新该点的g
+            return true;
         }
         //校验是否已经在closeList中
-        if(containGrid(closeList, x, y)) {
+        if (containGrid(closeList, x, y)) {
             return false;
         }
 
@@ -162,21 +169,28 @@ public class RobotPositionSolution {
 
 
     /**
-     * 找到总步数最大的节点
+     * 找到总步数最大的节点,且增长最小
      *
      * @param openList
+     * @param threshold
      * @return
      */
-    private Grid findMaxCountGrid(Set<Grid> openList) {
+    private Grid findMaxCountGrid(Set<Grid> openList, int threshold) {
         if (openList == null || openList.isEmpty()) {
             return null;
         }
         Grid maxCountGrid = null;
         int maxG = -1;
+        int lastX = -1;
         for (Grid grid : openList) {
-            if (grid.g > maxG) {
+            boolean isBetter = grid.g > maxG
+                    //如果g相等，那么优先取x不增加的,且y没有到达边界，
+                    // 因为边界是死点没有可用的邻点
+                    || (grid.g == maxG && grid.x < lastX && (grid.x + grid.y) < threshold);
+            if (isBetter) {
                 maxG = grid.g;
                 maxCountGrid = grid;
+                lastX = grid.x;
             }
         }
         return maxCountGrid;
@@ -215,7 +229,7 @@ public class RobotPositionSolution {
             if (!(o instanceof Grid)) {
                 return false;
             }
-            Grid grid = (Grid)o;
+            Grid grid = (Grid) o;
             if (grid.x == this.x && grid.y == this.y) {
                 return true;
             }
@@ -227,14 +241,12 @@ public class RobotPositionSolution {
             if (!(o instanceof Grid)) {
                 return -1;
             }
-            Grid grid = (Grid)o;
+            Grid grid = (Grid) o;
             if (grid.x > this.x) {
                 return 1;
-            }
-            else if (grid.x < this.x) {
+            } else if (grid.x < this.x) {
                 return -1;
-            }
-            else if (grid.x == this.x) {
+            } else if (grid.x == this.x) {
                 if (grid.y > this.y) {
                     return 1;
                 }
