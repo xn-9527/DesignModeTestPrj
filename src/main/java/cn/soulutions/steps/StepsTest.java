@@ -19,7 +19,7 @@ import java.util.Arrays;
 public class StepsTest {
     public static void main(String[] args) {
         int n = 5;
-        int k = 2;
+        int k = 3;
         //因为a[0]=1是额外的条件，所以空间申请要多一个
         int[] a = new int[n+1];
 
