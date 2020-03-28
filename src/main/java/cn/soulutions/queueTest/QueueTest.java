@@ -14,34 +14,46 @@ public class QueueTest {
     public static void main(String[] args) {
         BlockingQueue queue = new LinkedBlockingQueue();
 
-        Thread producerThread = new Thread(new ProducerRunnable(queue));
-        Thread consumerThread = new Thread(new ConsumerRunnable(queue));
+        Thread producerThread = new Thread(new ProducerRunnable(queue, "p1,"));
+        Thread producerThread2 = new Thread(new ProducerRunnable(queue, "p2,"));
+        Thread consumerThread = new Thread(new ConsumerRunnable(queue, "c1,"));
 
         producerThread.start();
+        producerThread2.start();
         consumerThread.start();
     }
 
     public static class ProducerRunnable implements Runnable {
         private final BlockingQueue queue;
+        private final String name;
 
-        public ProducerRunnable(BlockingQueue blockingQueue) {
+        public ProducerRunnable(BlockingQueue blockingQueue, String name) {
             this.queue = blockingQueue;
+            this.name = name;
         }
 
         @Override
         public void run() {
             for (int i=0;i<10;i++) {
-                System.out.println("Produced: message" + i);
-                queue.offer(i);
+                String message = name + i;
+                System.out.println("Produced: message" + message);
+                queue.offer(message);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     public static class ConsumerRunnable implements Runnable {
         private final BlockingQueue queue;
+        private final String name;
 
-        public ConsumerRunnable(BlockingQueue queue) {
+        public ConsumerRunnable(BlockingQueue queue, String name) {
             this.queue = queue;
+            this.name = name;
         }
 
         @Override
@@ -57,7 +69,7 @@ public class QueueTest {
 //                    }
                 }
                 try {
-                    System.out.println("Consumed : message" + queue.take());
+                    System.out.println(name + "Consumed : message" + queue.take());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

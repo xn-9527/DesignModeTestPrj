@@ -49,6 +49,9 @@ public class TwoDimensionalArraySearchTest2 {
      对于向右和向下会产生一个岔路；如果我们选择从左下脚开始搜寻的话，
      如果大于就向右，如果小于就向下)。
      *
+     * 左下角开始，遇大右移，遇小上移，
+     * 直到超过边界都没找到，得false。否则得true。
+     *
      * @param target
      * @param array
      * @return
