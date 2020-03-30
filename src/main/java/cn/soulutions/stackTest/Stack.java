@@ -47,5 +47,34 @@ public class Stack {
             b.start();
             c.start();
         }
+
+        /**
+         * java的stack，没有阻塞一说，如果pop为空，直接抛出异常
+         *
+         * java.util.EmptyStackException
+             at java.util.Stack.peek(Stack.java:102)
+             at java.util.Stack.pop(Stack.java:84)
+             at cn.soulutions.stackTest.Stack.lambda$main$1(Stack.java:58)
+             at java.lang.Thread.run(Thread.java:745)
+         */
+        for (int i = 0; i< 100; i++) {
+            java.util.Stack realStack = new java.util.Stack<>();
+            Thread a = new Thread(() -> {
+                realStack.push("a");
+            });
+            Thread b = new Thread(() -> {
+                try {
+                    System.out.println(realStack.pop());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            Thread c = new Thread(() -> {
+                realStack.push("c");
+            });
+            a.start();
+            b.start();
+            c.start();
+        }
     }
 }

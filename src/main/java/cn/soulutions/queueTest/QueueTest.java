@@ -1,10 +1,7 @@
 package cn.soulutions.queueTest;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 通过阻塞队列实现写一个生产者-消费者队列.
@@ -34,7 +31,7 @@ public class QueueTest {
 
         @Override
         public void run() {
-            for (int i=0;i<10;i++) {
+            for (int i = 0; i < 10; i++) {
                 String message = name + i;
                 System.out.println("Produced: message" + message);
                 queue.offer(message);
@@ -58,7 +55,7 @@ public class QueueTest {
 
         @Override
         public void run() {
-            while(true) {
+            while (true) {
                 while (queue.isEmpty()) {
                     Thread.yield();
 //                    try {
