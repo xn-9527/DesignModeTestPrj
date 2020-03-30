@@ -12,6 +12,7 @@ public class AddNumbersTest {
         int[] input = {10,25,19,89,75,56,34,54,16,9,-5};
         findTwoNumber(input, 28);
         findTwoNumber(input, 5);
+        findTwoNumber(input, 20);
     }
 
     /**
