@@ -3,6 +3,7 @@ package cn.soulutions.getLeastNumber;
 import java.util.ArrayList;
 
 /**
+ * 获取最小的k个数
  * @author Chay
  * @date 2020/3/18 22:07
  */
