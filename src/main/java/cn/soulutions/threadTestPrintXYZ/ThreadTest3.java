@@ -50,8 +50,8 @@ public class ThreadTest3 {
      * 因为for循环的第二次，state=2，然后线程a又拿到了synchronized的锁，然后就一直conditionA.await()
      */
     public void printX() {
+        lock.lock();
         try {
-            lock.lock();
             if (flag != 1) {
                 try {
                     conditionA.await();
@@ -68,8 +68,8 @@ public class ThreadTest3 {
     }
 
     public void printY() {
+        lock.lock();
         try {
-            lock.lock();
             if (flag != 2) {
                 try {
                     conditionB.await();
@@ -86,8 +86,8 @@ public class ThreadTest3 {
     }
 
     public void printZ() {
+        lock.lock();
         try {
-            lock.lock();
             if (flag != 3) {
                 try {
                     conditionC.await();
