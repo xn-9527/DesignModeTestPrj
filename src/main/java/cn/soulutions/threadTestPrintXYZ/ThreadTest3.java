@@ -1,4 +1,4 @@
-package cn.soulutions.threadTest;
+package cn.soulutions.threadTestPrintXYZ;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;

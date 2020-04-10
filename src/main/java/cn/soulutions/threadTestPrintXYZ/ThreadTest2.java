@@ -1,4 +1,4 @@
-package cn.soulutions.threadTest;
+package cn.soulutions.threadTestPrintXYZ;
 
 /**
  * 编写代码，使用3个线程，1个线程打印X，一个线程打印Y，一个线程打印Z，同时执行连续打印10次"XYZ"
