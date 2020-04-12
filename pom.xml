@@ -15,7 +15,8 @@
     <modules>
         <module>spring-boot-starter-helloworld</module>
     </modules>
-    <packaging>pom</packaging>
+<!--  这行配置会导致  SpringBoot的application.yml没有生效-->
+<!--    <packaging>pom</packaging>-->
 
     <name>DesignModeTest</name>
     <description>DesignModeTest server project for Spring Boot</description>
