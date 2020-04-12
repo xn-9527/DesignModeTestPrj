@@ -33,6 +33,7 @@ public class MystarterApplicationTests {
         System.out.println("test");
         personService.sayHello();
         testPingUtilService.test();
-        testPingUtilService.testAjaxResult();
+//        testPingUtilService.testAjaxResult();
+        assert false : "测试断言";
     }
 }
