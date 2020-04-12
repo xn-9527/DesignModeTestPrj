@@ -13,6 +13,7 @@ import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PostConstruct;
@@ -38,6 +39,12 @@ public class Application {
         return new SpringContextHolder();
     }
 
+    @Lazy
+    @Bean
+    public ScheduleExecutorTest scheduleExecutorTest() {
+        return new ScheduleExecutorTest();
+    }
+
     /**
      * Start
      */
@@ -46,18 +53,20 @@ public class Application {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
 
         //测试监听器的启动方式,该方式不会打印banner
-        startAppWithListener(args);
+//        startAppWithListener(args);
 
         //原默认启动方式，该方式可以打印banner，可以设置bannerMode(Banner.Mode.OFF).run(args)来关闭
-//		SpringApplication.run(Application.class, args);
+		SpringApplication.run(Application.class, args);
 
         //测试定时任务
-        new ScheduleExecutorTest();
+//        new ScheduleExecutorTest();
 
         logger.info("DesignModeTest SpringBoot Start Success");
 
         //测试获取上下文工具
         SpringContextHolder.getBean(TestApplicationContext.class).test();
+        //测试定时任务
+        SpringContextHolder.getBean(ScheduleExecutorTest.class);
 
         /**
          * 经测试，springboot的shutdownHook无效

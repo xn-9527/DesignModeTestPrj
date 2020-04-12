@@ -1,7 +1,9 @@
-package cn.test.testYamlValue;
+package cn.test.testYamlValue.impl;
 
+import cn.test.testYamlValue.TestYamlValueService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 /**
@@ -9,13 +11,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-public class TestYamlValue {
+public class TestYamlValueImpl implements TestYamlValueService {
 
     @Value("${test.param-a}")
     private Boolean paramA;
     @Value("${test.paramB}")
     private Boolean paramB;
 
+    @Override
     public void testAB() {
         log.info("I am A: {}", paramA);
         log.info("I am B: {}", paramB);
