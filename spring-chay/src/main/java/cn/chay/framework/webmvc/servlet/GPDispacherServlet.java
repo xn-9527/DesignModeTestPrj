@@ -53,7 +53,7 @@ public class GPDispacherServlet extends HttpServlet {
         url = url.replace(contexPath, "").replaceAll("/+", "/");
 
         if (!handlerMapping.containsKey(url)) {
-            resp.getWriter().write("404 not found");
+            resp.getWriter().write("my 404 not found");
             return;
         }
         Method method = handlerMapping.get(url);
