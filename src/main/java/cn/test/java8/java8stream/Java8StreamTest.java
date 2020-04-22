@@ -169,5 +169,7 @@ public class Java8StreamTest {
         userList.add(new User("c","male",null));
         userList = userList.stream().filter(user -> user.getIdCard() != null).collect(Collectors.toList());
         log.info(JSON.toJSONString(userList));
+        List<String> names = userList.stream().map(User::getName).collect(Collectors.toList());
+        log.info(names.toString());
     }
 }
