@@ -1,10 +1,12 @@
 package cn.routePlan;
 
+import cn.test.equals.User;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Created by chay on 2019/9/12.
@@ -12,6 +14,11 @@ import java.util.List;
 @Slf4j
 public class Test {
     public static void main(String[] args) {
+        User user = new User("a", null, null);
+//        String name = Optional.ofNullable(user).map(user::getName).orElse(null);
+        String name = Optional.ofNullable(user).map(user1->user1.getName()).orElse(null);
+        System.out.println(name);
+
         List<Route> routeList = new ArrayList<>();
         /**
          * 11     21    31
