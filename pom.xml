@@ -50,6 +50,12 @@
             <scope>import</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.openjdk.jol</groupId>
+            <artifactId>jol-core</artifactId>
+            <version>0.9</version>
+        </dependency>
+
         <!--rabbitMQ相关配置-->
         <!--<dependency>-->
         <!--<groupId>org.springframework.boot</groupId>-->
