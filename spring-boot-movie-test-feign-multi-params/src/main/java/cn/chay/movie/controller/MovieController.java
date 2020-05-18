@@ -44,6 +44,11 @@ public class MovieController {
         return this.userFeignClient.post(user);
     }
 
+    @PutMapping("user/put")
+    public User put(@RequestBody User user) {
+        return this.userFeignClient.put(user);
+    }
+
     @PostMapping("user/upload")
     public String post(@RequestParam MultipartFile file) {
         return this.userFeignClient.fileUpload(file);

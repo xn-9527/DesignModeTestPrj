@@ -13,6 +13,7 @@ import java.util.Map;
  * Created by xiaoni on 2019/11/20.
  */
 //name指定ribbon client负载均衡
+//注意MultipartSupportConfig 只能用于上传文件的表单提交，不能用于其他post请求的提交，会报错：feign.codec.EncodeException: class cn.chay.movie.vo.User is not a type supported by this encoder.
 @FeignClient(name = "microservice-user-multi-params", configuration = MultipartSupportConfig.class)
 public interface UserFeignClient {
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
@@ -39,6 +40,9 @@ public interface UserFeignClient {
 
     @RequestMapping(value = "/user/post", method = RequestMethod.POST)
     public User post(@RequestBody User user);
+
+    @RequestMapping(value = "/user/put", method = RequestMethod.PUT)
+    public User put(@RequestBody User user);
 
     @RequestMapping(value = "/user/upload", method = RequestMethod.POST,
         //这两个配置不能少

@@ -33,6 +33,11 @@ public class UserController {
         return user;
     }
 
+    @PutMapping("/put")
+    public User put(@RequestBody User user) {
+        return user;
+    }
+
     @PostMapping("/upload")
     public String upload(@RequestParam MultipartFile file) {
         String fileName = file.getName();
