@@ -1,0 +1,37 @@
+public class cn.test.finallyTest.FinallyTest {
+  public cn.test.finallyTest.FinallyTest();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+       4: return
+
+  public static void main(java.lang.String[]);
+    Code:
+       0: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+       3: ldc           #3                  // String try
+       5: invokevirtual #4                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+       8: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      11: ldc           #5                  // String finally
+      13: invokevirtual #4                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+      16: goto          50
+      19: astore_1
+      20: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      23: ldc           #7                  // String catch
+      25: invokevirtual #4                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+      28: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      31: ldc           #5                  // String finally
+      33: invokevirtual #4                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+      36: goto          50
+      39: astore_2
+      40: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+      43: ldc           #5                  // String finally
+      45: invokevirtual #4                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+      48: aload_2
+      49: athrow
+      50: return
+    Exception table:
+       from    to  target type
+           0     8    19   Class java/lang/Exception
+           0     8    39   any
+          19    28    39   any
+}
