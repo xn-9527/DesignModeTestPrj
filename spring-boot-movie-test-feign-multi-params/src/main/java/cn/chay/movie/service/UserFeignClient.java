@@ -1,11 +1,8 @@
 package cn.chay.movie.service;
 
-import cn.chay.config.MultipartSupportConfig;
 import cn.chay.movie.vo.User;
 import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -14,7 +11,7 @@ import java.util.Map;
  */
 //name指定ribbon client负载均衡
 //注意MultipartSupportConfig 只能用于上传文件的表单提交，不能用于其他post请求的提交，会报错：feign.codec.EncodeException: class cn.chay.movie.vo.User is not a type supported by this encoder.
-@FeignClient(name = "microservice-user-multi-params", configuration = MultipartSupportConfig.class)
+//@FeignClient(name = "microservice-user-multi-params")
 public interface UserFeignClient {
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
     public User findById(@PathVariable("id") Long id);
@@ -43,12 +40,4 @@ public interface UserFeignClient {
 
     @RequestMapping(value = "/user/put", method = RequestMethod.PUT)
     public User put(@RequestBody User user);
-
-    @RequestMapping(value = "/user/upload", method = RequestMethod.POST,
-        //这两个配置不能少
-        produces = {MediaType.APPLICATION_JSON_UTF8_VALUE},
-        consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    //注意这里的注解是@RequestPart，而不是@RequestParam
-    //因为文件大的时候，上传时间长，所以需要将Hystrix的超时时间设置长一些
-    public String fileUpload(@RequestPart(value = "file")MultipartFile file);
 }

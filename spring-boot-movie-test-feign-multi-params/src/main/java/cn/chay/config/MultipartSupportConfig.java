@@ -9,7 +9,7 @@ import feign.codec.Encoder;
  * @author Created by xiaoni on 2019/11/21.
  */
 public class MultipartSupportConfig {
-    @Bean
+    @Bean(name = "multipartEncoder")
     public Encoder feignFormEncoder() {
         return new SpringFormEncoder();
     }
