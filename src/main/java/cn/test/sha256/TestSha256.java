@@ -18,7 +18,7 @@ import java.util.Map;
 public class TestSha256 {
     public static void main(String[] args) {
         String newS = null;
-        String appSecret = "abcde";
+        String prefix = "abcde";
         StringBuilder sb = new StringBuilder();
         Map<String, String[]> params = new HashMap<String, String[]>(3){{
             put("key", new String[]{"a", "b"});
@@ -37,7 +37,7 @@ public class TestSha256 {
         log.info("readyBase64Str:{}", readyBase64Str);
         String base64Str = new BASE64Encoder().encode(readyBase64Str.getBytes());
         log.info("base64Str:{}", base64Str);
-        String readySha1Str = appSecret + ":" + base64Str;
+        String readySha1Str = prefix + ":" + base64Str;
         log.info("readyStr:{}", readySha1Str);
         newS = DigestUtils.sha1Hex(readySha1Str);
         log.info("newS:{}", newS);
