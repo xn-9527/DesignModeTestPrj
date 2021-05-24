@@ -1,7 +1,7 @@
 package cn.test.sha256;
 
 /**
- * @author: nichengyun
+ * @author: chay.ni
  * @date: 2021/4/8 14:52 
  * @description:
  */

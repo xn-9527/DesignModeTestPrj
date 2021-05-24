@@ -3,7 +3,7 @@ package cn.test.uuid;
 import java.util.UUID;
 
 /**
- * @author: nichengyun
+ * @author: chay.ni
  * @date: 2021/4/19 14:54 
  * @description:
  */
