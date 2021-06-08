@@ -4,6 +4,15 @@ import java.util.Arrays;
 import java.util.Stack;
 
 /**
+ * LIS:最长上升子序列
+ *
+ * 有一个长为n的数列a0, a1, ......, a(n-1)。请求出这个序列中最长的上升子序列的长度。上升子序列指的是对于任意的i<j都满足ai<aj的子序列，该问题被称为最长上升子序列（LIS，Longest Increasing Subsequence）的著名问题。
+ *
+ * 举个栗子：给你一个序列为（1，5 ，2，6，9，10，3，15），那么它的最长上升子序列为：（1，2，6，9，10，15）
+ * ————————————————
+ * 版权声明：本文为CSDN博主「ltrbless」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+ * 原文链接：https://blog.csdn.net/ltrbless/article/details/81318935
+ *
  * @author Chay
  * @date 2020/3/21 22:37
  */
@@ -36,6 +45,7 @@ public class LISTest {
             for (int j = 0; j < i; j++) {
                 //0存值，1存总序列长度，2存前一个元素下标
                 //j的值小于i的值，且j的深度+1>i的深度
+                //每个元素最终记录了上一个最长序列的指针，并且到当前搜索的j的最长序列长度
                 if (input[j][0] < input[i][0] && input[j][1] + 1 > input[i][1]) {
                     input[i][1] = input[j][1] + 1;
                     input[i][2] = j;

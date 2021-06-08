@@ -61,6 +61,7 @@ public class FindMostLongEqualDiffArray {
         input.sort(new Comparator<Integer>() {
             @Override
             public int compare(Integer o1, Integer o2) {
+                //等价于o1.compareTo(o2);
                 return o1-o2;
             }
         });
