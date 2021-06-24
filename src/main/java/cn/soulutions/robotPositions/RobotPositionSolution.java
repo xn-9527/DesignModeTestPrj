@@ -21,9 +21,9 @@ import java.util.TreeSet;
 @Deprecated
 public class RobotPositionSolution {
     /**
-     * 类似于A*算法
+     * 类似于A*(Astar)算法
      * <p>
-     * 事实证明A*算法并不太合适，因为题目条件是允许重复行走。
+     * 事实证明A*(Astar)算法并不太合适，因为题目条件是允许重复行走。
      *
      * 我用A*实现了不能重复行走的情况
      *
