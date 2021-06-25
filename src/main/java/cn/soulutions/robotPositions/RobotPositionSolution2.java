@@ -14,6 +14,8 @@ import java.util.*;
  *
  * 前提：机器人可以重复行走走过的格子
  *
+ * 机器人的运动范围_牛客题霸_牛客网  https://www.nowcoder.com/practice/6e5207314b5241fb83f2329e89fdecc8?tpId=13&tPage=1&rp=1&ru=%2Fta%2Fcoding-interviews&qru=%2Fta%2Fcoding-interviews%2Fquestion-ranking
+ *
  * 运行时间：68ms
  * 超过0.39% 用Java提交的代码
  * 占用内存：21280KB
@@ -171,6 +173,7 @@ public class RobotPositionSolution2 {
 //        new RobotPositionSolution2().movingCount(15, 100, 1);
 //        new RobotPositionSolution2().movingCount(4, 12, 12);
 //        new RobotPositionSolution2().movingCount(15, 20, 20);
-        new RobotPositionSolution2().movingCount(15, 100, 100);
+//        new RobotPositionSolution2().movingCount(15, 100, 100);
+        new RobotPositionSolution2().movingCount(0, 1, 3);
     }
 }
