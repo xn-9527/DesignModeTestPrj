@@ -4,7 +4,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * @author: nichengyun
+ * @author: chay
  * @date: 2021/7/1 22:05 
  * @description:
  */
