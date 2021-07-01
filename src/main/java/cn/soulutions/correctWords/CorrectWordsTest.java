@@ -34,6 +34,9 @@ public class CorrectWordsTest {
         System.out.println(Pattern.matches("(.)\\1(.)\\2", "aab"));
         System.out.println(Pattern.matches("(.)\\1(.)\\2", "aabb"));
         System.out.println(Pattern.matches("(.)\\1(.)\\2", "aabbb"));
+        System.out.println(Pattern.matches("(.)\\1(.)\\1", "aaaab"));
+        System.out.println(Pattern.matches("(.)\\1(.)\\1", "aaaa"));
+        System.out.println(Pattern.matches("(.)\\1(.)\\2", "aaaa"));
     }
 
     public static void checkWords(String[] words) {
