@@ -25,43 +25,89 @@ public class ThreeThreadPrintNumberTest {
      Thread3: 99
      Thread1: 100
      */
-    public static class MyPrint extends Thread {
-        private Integer i;
-        private Condition wait;
-        private Condition signal;
-
-        public MyPrint(Integer i, Condition wait, Condition signal) {
-            this.i = i;
-            this.wait = wait;
-            this.signal = signal;
+    public static class MyPrint {
+        final ReentrantLock lock = new ReentrantLock();
+        final Condition a = lock.newCondition();
+        final Condition b = lock.newCondition();
+        final Condition c = lock.newCondition();
+        int i = 0;
+        int state = 1;
+        public void printA() {
+            try {
+                lock.lock();
+                while (i <= 100) {
+                    while (state == 1) {
+                        System.out.println(Thread.currentThread().getName() + ":" + i++);
+                        state = 2;
+                        b.signal();
+                    }
+                    try {
+                        a.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Thread.currentThread().interrupt();
+            } finally {
+                lock.unlock();
+            }
         }
 
-        @Override
-        public void run() {
-            if (i <= 100) {
-                System.out.println(i++);
-                signal.signal();
-                try {
-                    wait.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        public void printB() {
+            try {
+                lock.lock();
+                while (i <= 100) {
+                    while (state == 2) {
+                        System.out.println(Thread.currentThread().getName() + ":" + i++);
+                        state = 3;
+                        c.signal();
+                    }
+                    try {
+                        b.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-            } else {
-                this.interrupt();
+                Thread.currentThread().interrupt();
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        public void printC() {
+            try {
+                lock.lock();
+                while (i <= 100) {
+                    while (state == 3) {
+                        System.out.println(Thread.currentThread().getName() + ":" + i++);
+                        state = 1;
+                        a.signal();
+                    }
+                    try {
+                        c.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Thread.currentThread().interrupt();
+            } finally {
+                lock.unlock();
             }
         }
     }
 
     public static void main(String[] args) {
-        ReentrantLock lock = new ReentrantLock();
-        Condition a = lock.newCondition();
-        Condition b = lock.newCondition();
-        Condition c = lock.newCondition();
-        Integer i = 0;
+        MyPrint myPrint = new MyPrint();
 
-        MyPrint aThread = new MyPrint(i, a, b);
-        MyPrint bThread = new MyPrint(i, b, c);
-        MyPrint cThread = new MyPrint(i, c, a);
+        Thread aThread = new Thread(() -> {
+            myPrint.printA();
+        });
+        Thread bThread = new Thread(() -> {
+            myPrint.printB();
+        });
+        Thread cThread = new Thread(() -> {
+            myPrint.printC();
+        });
         aThread.start();
         bThread.start();
         cThread.start();
