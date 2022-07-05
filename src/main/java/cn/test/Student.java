@@ -4,6 +4,9 @@ package cn.test;
  * Created by xiaoni on 2017/3/15.
  */
 public class Student {
+    /**
+     * id
+     */
     private Long id;
     private String name;
 
