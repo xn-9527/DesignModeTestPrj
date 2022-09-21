@@ -5,7 +5,6 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +46,8 @@ public class PingUtil {
         BufferedReader br = null;
         try {
             log.info("[{}]开始ping:{}", logName, hostIp);
-            String osName = System.getProperty("os.name");//获取操作系统类型
+            //获取操作系统类型
+            String osName = System.getProperty("os.name");
             String pingCommand = "";
             //超时时间ms
             int timeOut = 300;
@@ -93,7 +93,7 @@ public class PingUtil {
                 connect = false;
             }
             return connect;
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
         } finally {
             try {
@@ -117,8 +117,8 @@ public class PingUtil {
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
             }
-            return connect;
         }
+        return false;
     }
 
     /**
@@ -132,7 +132,6 @@ public class PingUtil {
      * @param <T>
      * @return
      */
-    @Nullable
     public static <T> T connectAndCheckFirstUseGet(RestTemplate restTemplate,
                                                    String serverUrl,
                                                    String logName,
@@ -163,7 +162,6 @@ public class PingUtil {
      * @param <T>
      * @return
      */
-    @Nullable
     public static <T> T connectAndCheckFirstUsePost(RestTemplate restTemplate,
                                                     String serverUrl,
                                                     String logName,
@@ -194,7 +192,6 @@ public class PingUtil {
      * @param <T>
      * @return
      */
-    @Nullable
     public static <T> T connectAndCheckFirstUseHttpMethod(RestTemplate restTemplate,
                                                           HttpMethod method,
                                                           String serverUrl,
@@ -226,7 +223,6 @@ public class PingUtil {
      * @param <T>
      * @return
      */
-    @Nullable
     public static <T> T serverConnectAndCheckFirstUseGet(RestTemplate restTemplate,
                                                          String serverUrl,
                                                          String logName,
@@ -254,7 +250,6 @@ public class PingUtil {
      * @param <T>
      * @return
      */
-    @Nullable
     public static <T> T serverConnectAndCheckFirstUseHttpMethod(RestTemplate restTemplate,
                                                                 HttpMethod method,
                                                                 String serverUrl,
@@ -320,7 +315,6 @@ public class PingUtil {
      * @param <T>
      * @return
      */
-    @Nullable
     public static <T> T serverConnectAndCheckFirstUsePost(RestTemplate restTemplate,
                                                           String serverUrl,
                                                           String logName,
@@ -393,9 +387,11 @@ public class PingUtil {
 
     public static boolean ping(String ipAddress, int pingTimes, int timeOut) {
         BufferedReader in = null;
-        Runtime r = Runtime.getRuntime();  // 将要执行的ping命令,此命令是windows格式的命令
+        // 将要执行的ping命令,此命令是windows格式的命令
+        Runtime r = Runtime.getRuntime();
         String pingCommand = "ping " + ipAddress + " -n " + pingTimes + " -w " + timeOut;
-        try {   // 执行命令并获取输出
+        try {
+            // 执行命令并获取输出
             System.out.println(pingCommand);
             Process p = r.exec(pingCommand);
             if (p == null) {
@@ -406,7 +402,8 @@ public class PingUtil {
             String line = null;
             while ((line = in.readLine()) != null) {
                 connectedCount += getCheckResult(line);
-            }   // 如果出现类似=23ms TTL=62这样的字样,出现的次数=测试次数则返回真
+            }
+            // 如果出现类似=23ms TTL=62这样的字样,出现的次数=测试次数则返回真
             return connectedCount == pingTimes;
         } catch (Exception ex) {
             log.error(ex.getMessage());
@@ -420,8 +417,14 @@ public class PingUtil {
         }
     }
 
-    //若line含有=18ms TTL=16字样,说明已经ping通,返回1,否則返回0.
-    private static int getCheckResult(String line) {  // System.out.println("控制台输出的结果为:"+line);
+    /**
+     * 若line含有=18ms TTL=16字样,说明已经ping通,返回1,否則返回0.
+     *
+     * @param line
+     * @return
+     */
+    private static int getCheckResult(String line) {
+        // System.out.println("控制台输出的结果为:"+line);
         Pattern pattern = Pattern.compile(PING_RESULT, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(line);
         while (matcher.find()) {
