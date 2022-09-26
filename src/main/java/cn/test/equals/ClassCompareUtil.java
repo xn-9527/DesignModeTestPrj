@@ -203,7 +203,7 @@ public class ClassCompareUtil {
                     null : "oldValue:" + JSON.toJSONString(oldObject) + ",newValue:" +
                     JSON.toJSONString(newObject);
         }
-        //4. 旧对象不为空，新对象不为空
+        //5. 旧对象不为空，新对象不为空
         Map<String, Map<String, Object>> resultMap = compareFields(oldObject, newObject, isIgnoreBlankString);
         if (null == resultMap) {
             return null;
