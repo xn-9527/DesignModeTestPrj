@@ -10,6 +10,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -106,7 +107,7 @@ public class ClassCompareUtil {
      *
      * @param sourceProperty
      * @param targetProperty
-     * @param isIgnoreBlankString 是否忽略空值空值和null
+     * @param isIgnoreBlankString 是否忽略空值空值和null，对属性类型是集合的不生效
      * @return
      */
     private static boolean isSameProperty(Object sourceProperty, Object targetProperty, boolean isIgnoreBlankString) {
@@ -165,7 +166,7 @@ public class ClassCompareUtil {
      *
      * @param oldObject
      * @param newObject
-     * @param isIgnoreBlankString 是否忽略空值空值和null
+     * @param isIgnoreBlankString 是否忽略空值空值和null，对集合内对元素不生效
      * @return 如果返回null，说明两个对象属性没有不同；否则，返回不同的属性值；
      */
     public static String compareObjectResultString(Object oldObject, Object newObject, boolean isIgnoreBlankString) {
@@ -188,6 +189,19 @@ public class ClassCompareUtil {
                 return null;
             }
             return "oldValue not null, newValue is null";
+        }
+        //4. 新旧对象是集合，直接jsonString对比
+        if (oldObject instanceof List) {
+            //list简单用json比较，fastjson没有顺序，可能不对
+            return JSON.toJSONString(oldObject).equals(JSON.toJSONString(newObject)) ?
+                    null : "oldValue:" + JSON.toJSONString(oldObject) + ",newValue:" +
+                    JSON.toJSONString(newObject);
+        }
+        if (newObject instanceof List) {
+            //list简单用json比较，fastjson没有顺序，可能不对
+            return JSON.toJSONString(newObject).equals(JSON.toJSONString(oldObject)) ?
+                    null : "oldValue:" + JSON.toJSONString(oldObject) + ",newValue:" +
+                    JSON.toJSONString(newObject);
         }
         //4. 旧对象不为空，新对象不为空
         Map<String, Map<String, Object>> resultMap = compareFields(oldObject, newObject, isIgnoreBlankString);
@@ -213,6 +227,10 @@ public class ClassCompareUtil {
         System.out.println("compare ignore blank string result:" + compareObjectResultString(user1, user2, true));
         System.out.println("compare not ignore blank string result:" + compareObjectResultString(user1, user2, false));
         System.out.println("compare as jsonString result:" + compareObjectResultString(user1, user2));
+        List<User> users1 = Collections.singletonList(user1);
+        List<User> users2 = Collections.singletonList(user2);
+        System.out.println("compare ignore blank list jsonString result:" + compareObjectResultString(users1, users2, true));
+        System.out.println("compare not ignore blank list jsonString result:" + compareObjectResultString(users1, users2, false));
     }
 }
 
