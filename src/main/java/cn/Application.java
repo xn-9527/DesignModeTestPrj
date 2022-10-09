@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PostConstruct;
+import java.lang.reflect.Method;
 import java.util.TimeZone;
 //import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -67,6 +68,25 @@ public class Application {
         SpringContextHolder.getBean(TestApplicationContext.class).test();
         //测试定时任务
         SpringContextHolder.getBean(ScheduleExecutorTest.class);
+        //测试通过反射获取bean调用方法
+        Object bean = SpringContextHolder.getBean("testApplicationContext");
+        logger.info("testApplicationContext bean:{}" + bean);
+        Class selectsClass = bean.getClass();
+        logger.info("testApplicationContext class:{}" + selectsClass);
+        try {
+            Method method = selectsClass.getMethod("test2", null);
+            logger.info("testApplicationContext method:{}" + method);
+            Object result = method.invoke(bean, null);
+            logger.info("testApplicationContext result:{}" + result);
+
+            Method method3 = selectsClass.getMethod("test3", new Class[] {Integer.class});
+            logger.info("testApplicationContext method:{}" + method3);
+            Object result3 = method3.invoke(bean, 12345);
+            logger.info("testApplicationContext result:{}" + result3);
+        } catch (Exception e) {
+            logger.error("testApplicationContext error" ,e);
+        }
+
 
         /**
          * 经测试，springboot的shutdownHook无效
