@@ -4,6 +4,7 @@ import cn.string2asc.StringToAscUtil;
 import cn.test.equals.User;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -165,11 +166,44 @@ public class Java8StreamTest {
         //test filter
         List<User> userList = new ArrayList<>();
         userList.add(new User("a","male","123"));
-        userList.add(new User("b","male","123"));
+        userList.add(new User("b","male","1234"));
         userList.add(new User("c","male",null));
+        List<String> idCards = userList.stream().map(User::getIdCard).collect(Collectors.toList());
+        log.info("idCards: {}", JSON.toJSONString(idCards));
+
         userList = userList.stream().filter(user -> user.getIdCard() != null).collect(Collectors.toList());
         log.info(JSON.toJSONString(userList));
         List<String> names = userList.stream().map(User::getName).collect(Collectors.toList());
         log.info(names.toString());
+
+        try {
+            //测试NPE
+            List<String> idCards1 = idCards.stream().filter(Objects::nonNull).parallel()
+                    /**
+                     * 上面.filter(Objects::nonNull)过滤下才不会NPE
+                     */
+                    .flatMap(eachIds -> Objects.requireNonNull(handle(eachIds)).stream().filter(Objects::nonNull))
+                    .collect(Collectors.toList());
+            log.info("idCards1:{}", idCards1);
+        } catch (Exception e) {
+            log.error("idCards1 error:", e);
+        }
+
+        try {
+            //测试NPE
+            List<String> idCards2 = idCards.stream().parallel()
+                    .flatMap(eachIds -> Objects.requireNonNull(handle(eachIds)).stream())
+                    .collect(Collectors.toList());
+            log.info("idCards2:{}", idCards2);
+        } catch (Exception e) {
+            log.error("idCards2 error:", e);
+        }
+    }
+
+    private static List<String> handle(String input) {
+        if (StringUtils.isBlank(input)) {
+            return null;
+        }
+        return Collections.singletonList(input);
     }
 }
