@@ -1,7 +1,7 @@
 package cn.test.volatileTest;
 
 /**
- * @Author: Blackknight
+ * @Author: x
  * @Date: 2022/7/28 3:09 下午
  * @Description: volatile测试
  */
