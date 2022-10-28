@@ -35,5 +35,10 @@ public class ListTest<T> {
         });
         log.info("input : {}", inputList);
         log.info("output : {}", listTest.getSortedList(inputList, comparator));
+
+        List<Long> inputList2 = Arrays.asList(23L,12L,33L);
+        log.info("input2 : {}", inputList2);
+        inputList2.sort(comparator);
+        log.info("output2 : {}", inputList2);
     }
 }
