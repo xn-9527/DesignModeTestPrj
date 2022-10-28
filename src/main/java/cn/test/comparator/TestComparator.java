@@ -57,7 +57,7 @@ public class TestComparator {
         });
         System.out.println(l);
 
-        List<Long> longs = Arrays.asList(3L, 2L, 5L);
+        List<Long> longs = Arrays.asList(3L, 2L, 5L, null);
         longs.sort(new Comparator<Object>() {
             @Override
             public int compare(Object o1, Object o2) {
