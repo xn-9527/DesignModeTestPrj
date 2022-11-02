@@ -5,6 +5,7 @@ import cn.test.equals.User;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -198,6 +199,64 @@ public class Java8StreamTest {
         } catch (Exception e) {
             log.error("idCards2 error:", e);
         }
+
+        try {
+            List<String> testIds = Arrays.asList(null, "", "1234");
+            //测试NPE
+            List<String> idCards3 = testIds.stream().parallel()
+                    .flatMap(eachIds -> Objects.requireNonNull(handle(eachIds)).stream())
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+            log.info("idCards3:{}", idCards3);
+        } catch (Exception e) {
+            log.error("idCards3 error:", e);
+        }
+        try {
+            List<String> testIds = Arrays.asList(null, "a", "1234");
+            //测试NPE
+            List<String> idCards4 = testIds.stream().parallel()
+                    .flatMap(eachIds -> Optional.ofNullable(nullTest(eachIds)).orElse(Collections.emptyList()).stream().filter(Objects::nonNull))
+                    .collect(Collectors.toList());
+            log.info("idCards4:{}", idCards4);
+        } catch (Exception e) {
+            log.error("idCards4 error:", e);
+        }
+
+        try {
+            List<String> testIds = Arrays.asList(null, "a", "1234");
+            //测试NPE
+            List<String> idCards5 = testIds.stream().parallel()
+                    .flatMap(eachIds -> Optional.ofNullable(handle(eachIds)).orElse(Collections.emptyList()).stream().filter(Objects::nonNull))
+                    .collect(Collectors.toList());
+
+            log.info("idCards5:{}", idCards5);
+        } catch (Exception e) {
+            log.error("idCards5 error:", e);
+        }
+
+        try {
+            List<String> testIds = Arrays.asList(null, "a", "1234");
+            List<String> testId2s = Arrays.asList("", "b", null);
+            List<List<String>> testIdList = Arrays.asList(null, testIds, testId2s);
+            //测试NPE
+            List<String> idCards6 = testIdList.stream().parallel()
+                    //分批处理
+                    .map(Java8StreamTest::handleList)
+                    //过滤空集合结果
+                    .filter(data -> !CollectionUtils.isEmpty(data))
+//                    .map(eachDatas -> eachDatas.stream().filter(Objects::nonNull))
+                    //扁平展开分批过滤查询结果非空集合的null元素
+                    .flatMap(eachData ->  eachData.stream().filter(Objects::nonNull))
+                    .collect(Collectors.toList());
+
+            log.info("idCards6:{}", idCards6);
+        } catch (Exception e) {
+            log.error("idCards6 error:", e);
+        }
+    }
+
+    private static List<String> nullTest(String input) {
+        return null;
     }
 
     private static List<String> handle(String input) {
@@ -205,5 +264,12 @@ public class Java8StreamTest {
             return null;
         }
         return Collections.singletonList(input);
+    }
+
+    private static List<String> handleList(List<String> input) {
+        if (CollectionUtils.isEmpty(input)) {
+            return null;
+        }
+        return input;
     }
 }
