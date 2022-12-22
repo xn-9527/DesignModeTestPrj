@@ -22,5 +22,8 @@ public class StringTest {
         String s1 = "张三";
         String s2 = new String("张三");
         log.info("" + (s1 == s2));
+
+
+        log.info("测试startWith:" + "a_id".startsWith("a_"));
     }
 }
