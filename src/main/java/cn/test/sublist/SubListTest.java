@@ -3,10 +3,12 @@ package cn.test.sublist;
 import com.alibaba.fastjson.JSON;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @Author: x
@@ -39,5 +41,34 @@ public class SubListTest {
         List<String> resultList = groupDevIds.stream().parallel().flatMap(Collection::stream).collect(
                 Collectors.toList());
         System.out.println(JSON.toJSONString(resultList));
+
+        System.out.println("list group:" + JSON.toJSONString(groupList(devIds, SubListTest.MAX_GROUP_NUM)));
+        System.out.println("list group2:" + JSON.toJSONString(groupList2(devIds, SubListTest.MAX_GROUP_NUM)));
+    }
+
+    /**
+     * 按照某个大小分组数组
+     *
+     * @param list
+     * @param groupSize 分组大小
+     * @param <T>
+     * @return 分组后的结果
+     */
+    public static <T> List<List<T>> groupList(List<T> list, int groupSize) {
+        return IntStream.range(0, (list.size() + groupSize - 1) / groupSize)
+                .mapToObj(i -> list.subList(i * groupSize, Math.min((i + 1) * groupSize, list.size())))
+                .collect(Collectors.toList());
+    }
+
+    public static <T> List<List<T>> groupList2(List<T> list, int groupSize) {
+        int devSize = list.size();
+        int groupNum = devSize / groupSize + 1;
+        List<List<T>> groupDevIds = new ArrayList<>(groupNum);
+        for (int i = 0; i < groupNum; i++) {
+            int startIndexContain = i * groupSize;
+            int endIndexNotContain = (i + 1) * groupSize;
+            groupDevIds.add(list.subList(startIndexContain, Math.min(endIndexNotContain, devSize)));
+        }
+        return groupDevIds;
     }
 }
