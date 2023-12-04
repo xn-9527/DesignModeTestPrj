@@ -3,6 +3,8 @@ package cn.test.jsonTest;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,5 +38,20 @@ public class TestJSONConvert {
         } catch (Exception e) {
             log.error("test2 failed", e);
         }
+
+        //-----------------------------
+        System.out.println("-------------test3-----------------");
+        String orinS = "fffffd";
+        String js = JSON.toJSONString(orinS);
+        byte[] b = JSON.toJSONBytes(orinS);
+        byte[] bjs = js.getBytes(StandardCharsets.UTF_8);
+        String bjDs = JSON.parseObject(js, String.class);
+        log.info("json string {}", js);
+        log.info("json byte string {}", b);
+        log.info("json byte string2 {}", b.toString());
+        log.info("json byte string3 {}", new String(b));
+        log.info("json string byte string {}", new String(bjs));
+        log.info("json string byte string equals {}", new String(bjs).equals(new String(b)));
+        log.info("json string deSerialize {}", bjDs);
     }
 }
