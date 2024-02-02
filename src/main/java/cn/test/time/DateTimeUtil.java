@@ -50,6 +50,16 @@ public class DateTimeUtil {
         return format.format(date);
     }
 
+    public static String format(Long date, String pattern) {
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        return format.format(new Date(date));
+    }
+
+    public static String format(Date date, String pattern) {
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        return format.format(date);
+    }
+
 
     /**
      * 处理季数据
@@ -95,7 +105,7 @@ public class DateTimeUtil {
 
         Set<String> formattedTime = new HashSet<>();
         while (cal.getTimeInMillis() <= endTime) {
-            String formattedTimeStr = format(cal.getTime(), TIME_MONTH_FORMAT, UTC);
+            String formattedTimeStr = format(cal.getTime(), TIME_MONTH_FORMAT);
             formattedTime.add(formattedTimeStr);
             cal.add(Calendar.MONTH, 1);
         }
@@ -146,7 +156,7 @@ public class DateTimeUtil {
 
         Set<String> formattedTime = new HashSet<>();
         while (cal.getTimeInMillis() <= endTime) {
-            String formattedTimeStr = format(cal.getTime(), TIME_DAY_FORMAT, UTC);
+            String formattedTimeStr = format(cal.getTime(), TIME_DAY_FORMAT);
             formattedTime.add(formattedTimeStr);
             cal.add(Calendar.DATE, 7);
         }
@@ -163,8 +173,8 @@ public class DateTimeUtil {
      * @return
      */
     public static Set<String> getAllXValueByYear(Long startTime, Long endTime) {
-        String startYear = format(startTime, TIME_YEAR_FORMAT, TimeZone.getTimeZone(UTC).getID());
-        String endYear = format(endTime, TIME_YEAR_FORMAT, TimeZone.getTimeZone(UTC).getID());
+        String startYear = format(startTime, TIME_YEAR_FORMAT);
+        String endYear = format(endTime, TIME_YEAR_FORMAT);
         if (StringUtils.isEmpty(endYear) || StringUtils.isEmpty(startYear)) {
             log.info("startYear:{} or endYear:{} is empty", startYear, endYear);
             return Collections.emptySet();
@@ -240,8 +250,7 @@ public class DateTimeUtil {
         Long timeIntervalMillis = extTimeData * timeParticleIntervalMillis;
         long currentTimeMillis = endTime;
         while (currentTimeMillis >= startTime) {
-            formattedTime.add(
-                    format(currentTimeMillis, timeFormat, TimeZone.getTimeZone(UTC).getID()));
+            formattedTime.add(format(currentTimeMillis, timeFormat));
             currentTimeMillis -= timeIntervalMillis;
         }
         log.info("getAllXValueByTime formattedTime: {}", JSON.toJSONString(formattedTime));
@@ -249,6 +258,8 @@ public class DateTimeUtil {
     }
 
     public static void main(String[] args) {
+        getAllXValueByWeek(1706284800000L, 1706889599000L, 1);
+        getAllXValueByWeek(1706284800000L, 1706889599000L, 2);
         getAllXValueByWeek(1696166546000L, 1706793746287L, 2);
         getAllXValueByWeek(1696166546000L, 1706793746287L, 4);
         getAllXValueByYear(1696166546000L, 1706793746287L);
