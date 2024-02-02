@@ -292,6 +292,8 @@ public class DateTimeUtil {
         getAllXValueByQuarter(1696166546000L, 1706793746287L);
         getAllXValueByMinute(1706792746287L, 1706793746287L, 10L);
         getAllXValueByMinuteStartFromZero(1706792746287L, 1706793746287L, 10L);
+        getAllXValueByMinute(1706792746287L, 1706793746287L, 3L);
+        getAllXValueByMinuteStartFromZero(1706792746287L, 1706793746287L, 3L);
         getAllXValueByHour(1706692746287L, 1706793746287L, 1L);
         System.out.println(format(System.currentTimeMillis(),TIME_FORMAT,GMT+"+13"));
         System.out.println(format(System.currentTimeMillis(),TIME_FORMAT,GMT+"+12"));
