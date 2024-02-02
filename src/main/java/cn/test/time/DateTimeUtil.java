@@ -230,6 +230,31 @@ public class DateTimeUtil {
     }
 
     /**
+     * 处理分钟数据，
+     * 从 0 开始以多少分钟聚合，比如每 5 分钟，则 1-5 算 5，6-10 算 10，56-0 算 0。
+     *
+     * @param startTime
+     * @param endTime
+     * @param minuteNum 间隔分钟数
+     * @return
+     */
+    public static Set<String> getAllXValueByMinuteStartFromZero(Long startTime, Long endTime, Long minuteNum) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(endTime);
+        int minutes = calendar.get(Calendar.MINUTE);
+        // minuteNum 分钟周期，计算新的分钟数
+        Long roundedMinutes = (minutes / minuteNum) * minuteNum + minuteNum;
+        // 如果计算结果为 60，小时增加1，分钟重置为 0
+        if (roundedMinutes == 60L) {
+            roundedMinutes = 0L;
+            calendar.add(Calendar.HOUR, 1);
+        }
+        calendar.set(Calendar.MINUTE, roundedMinutes.intValue());
+        //以校正过的结束时间作为结束时间
+        return getAllXValueByTime(startTime, calendar.getTimeInMillis(), minuteNum, TIME_MINUTE_FORMAT, ONE_MINUTE_MILLIS);
+    }
+
+    /**
      * 通用处理时间范围分段数据
      *
      * @param startTime
@@ -265,7 +290,8 @@ public class DateTimeUtil {
         getAllXValueByYear(1696166546000L, 1706793746287L);
         getAllXValueByMonth(1696166546000L, 1706793746287L);
         getAllXValueByQuarter(1696166546000L, 1706793746287L);
-        getAllXValueByMinute(1706692746287L, 1706793746287L, 10L);
+        getAllXValueByMinute(1706792746287L, 1706793746287L, 10L);
+        getAllXValueByMinuteStartFromZero(1706792746287L, 1706793746287L, 10L);
         getAllXValueByHour(1706692746287L, 1706793746287L, 1L);
         System.out.println(format(System.currentTimeMillis(),TIME_FORMAT,GMT+"+13"));
         System.out.println(format(System.currentTimeMillis(),TIME_FORMAT,GMT+"+12"));
