@@ -292,8 +292,17 @@ public class DateTimeUtil {
      * @return
      */
     public static BigDecimal calculateDaysUntilDueDate(long startTimestamp, long dueDateTimestamp) {
-        long daysBetween = dueDateTimestamp - startTimestamp;
-        BigDecimal days = BigDecimal.valueOf((float) daysBetween / 1000 / 60 / 60 / 24);
+        return calculateDaysByTimeRange(dueDateTimestamp - startTimestamp);
+    }
+
+    /**
+     * 计算给定时间范围毫秒数多少天，如果 > 1，则取整数，如果 < 1 则取2位小数
+     *
+     * @param rangeTimestamp
+     * @return
+     */
+    public static BigDecimal calculateDaysByTimeRange(long rangeTimestamp) {
+        BigDecimal days = BigDecimal.valueOf((float) rangeTimestamp / 1000 / 60 / 60 / 24);
         if (days.compareTo(BigDecimal.ONE) > 0) {
             return days.setScale(0, RoundingMode.HALF_UP);
         } else {
