@@ -295,10 +295,8 @@ public class DateTimeUtil {
      * @return
      */
     public static BigDecimal calculateDaysUntilDueDate(long dueDateTimestamp) {
-        LocalDate currentDate = LocalDate.now();
-        LocalDate dueDate = Instant.ofEpochMilli(dueDateTimestamp).atZone(ZoneId.systemDefault()).toLocalDate();
-        long daysBetween = ChronoUnit.DAYS.between(currentDate, dueDate);
-        BigDecimal days = new BigDecimal(daysBetween);
+        long daysBetween = dueDateTimestamp - System.currentTimeMillis();
+        BigDecimal days = BigDecimal.valueOf((float) daysBetween / 1000 / 60 / 60 / 24);
         if (days.compareTo(BigDecimal.ONE) > 0) {
             return days.setScale(0, RoundingMode.HALF_UP);
         } else {
@@ -325,5 +323,6 @@ public class DateTimeUtil {
         System.out.println(format(System.currentTimeMillis(),TIME_FORMAT,GMT+"+1"));
         System.out.println(format(System.currentTimeMillis(),TIME_FORMAT,GMT+"+0"));
         System.out.println(calculateDaysUntilDueDate(1713097945000L));
+        System.out.println(calculateDaysUntilDueDate(1712147545000L));
     }
 }
