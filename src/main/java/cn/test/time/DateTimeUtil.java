@@ -7,10 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -291,11 +287,12 @@ public class DateTimeUtil {
     /**
      * 计算到到期时间还剩多少天，如果 > 1，则取整数，如果 < 1 则取2位小数
      *
+     * @param startTimestamp
      * @param dueDateTimestamp
      * @return
      */
-    public static BigDecimal calculateDaysUntilDueDate(long dueDateTimestamp) {
-        long daysBetween = dueDateTimestamp - System.currentTimeMillis();
+    public static BigDecimal calculateDaysUntilDueDate(long startTimestamp, long dueDateTimestamp) {
+        long daysBetween = dueDateTimestamp - startTimestamp;
         BigDecimal days = BigDecimal.valueOf((float) daysBetween / 1000 / 60 / 60 / 24);
         if (days.compareTo(BigDecimal.ONE) > 0) {
             return days.setScale(0, RoundingMode.HALF_UP);
@@ -322,7 +319,7 @@ public class DateTimeUtil {
         System.out.println(format(System.currentTimeMillis(),TIME_FORMAT,GMT+"+8"));
         System.out.println(format(System.currentTimeMillis(),TIME_FORMAT,GMT+"+1"));
         System.out.println(format(System.currentTimeMillis(),TIME_FORMAT,GMT+"+0"));
-        System.out.println(calculateDaysUntilDueDate(1713097945000L));
-        System.out.println(calculateDaysUntilDueDate(1712147545000L));
+        System.out.println(calculateDaysUntilDueDate(System.currentTimeMillis(), 1713097945000L));
+        System.out.println(calculateDaysUntilDueDate(System.currentTimeMillis(), 1712147545000L));
     }
 }
