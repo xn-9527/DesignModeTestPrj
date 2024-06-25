@@ -1,5 +1,6 @@
 package cn.test.batch;
 
+import org.apache.skywalking.apm.toolkit.trace.RunnableWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.collections.CollectionUtils;
@@ -11,6 +12,10 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -25,6 +30,8 @@ public final class BatchQueryHelper {
 
     private static final long EXPECTED_QUERY_TIME = 1000;
     private static final int SINGLE_QUERY_MAX_VALUE = 2;
+
+    private static final ExecutorService poolTaskExecutor = Executors.newFixedThreadPool(3);
 
     private BatchQueryHelper() {}
 
@@ -191,15 +198,29 @@ public final class BatchQueryHelper {
         return result;
     }
 
-    public static void main(String[] args) {
-        List<String> ids = Arrays.asList("a", "b", "c", "d");
-        executeBatchQueryToMapV2(ids, "+cc", (innerIds, param1) -> {
-            Map<String, String> result = new LinkedHashMap<>();
-            for (String id : innerIds) {
-                result.put(id, id + param1);
-            }
-            return result;
-        }).forEach((k, v) -> System.out.println(k + " : " + v));
+    /**
+     * 执行批量查询接口的方法
+     *
+     * @param <P>      双参数函数第一个参数类型
+     * @param <U>      双参数函数第二个参数类型
+     * @param <T>      查询结果中的类型
+     * @param ids      ID 列表，双参数函数第一个参数
+     * @param param2   双参数函数第二个参数
+     * @param function 实际查询双参数函数，第一个参数是集合，第二个参数是param2
+     * @return map 返回结果
+     */
+    public static <P, U, T> Map<P, T> executeBatchQueryToMapConcurrentV2(Collection<P> ids, U param2, BiFunction<List<P>, U, Map<P, T>> function, ExecutorService executorService, int batchSize) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return Collections.emptyMap();
+        }
+        List<P> innerIds = ids.stream().distinct().collect(Collectors.toList());
+        int queryNum = innerIds.size();
+        if (queryNum <= batchSize) {
+            return function.apply(innerIds, param2);
+        }
+        Map<P, T> result = new ConcurrentHashMap<>();
+        innerBatchBiParamConcurrentQuery(innerIds, param2, function, result::putAll, executorService, batchSize);
+        return result;
     }
 
     private static <P, R> void innerBatchQuery(List<P> innerIds, Function<List<P>, R> function, Consumer<R> consumer) {
@@ -222,7 +243,7 @@ public final class BatchQueryHelper {
         }
         long elapsedTime = System.currentTimeMillis() - startTime;
         if (elapsedTime > EXPECTED_QUERY_TIME) {
-            logger.warn("invoke athena interface elapse {}, queryNum {}", elapsedTime, queryNum);
+            logger.warn("invoke batchQueryHelper interface elapse {}, queryNum {}", elapsedTime, queryNum);
         }
     }
 
@@ -257,7 +278,7 @@ public final class BatchQueryHelper {
         }
         long elapsedTime = System.currentTimeMillis() - startTime;
         if (elapsedTime > EXPECTED_QUERY_TIME) {
-            logger.warn("invoke athena interface elapse {}, queryNum {}", elapsedTime, queryNum);
+            logger.warn("invoke batchQueryHelper interface elapse {}, queryNum {}", elapsedTime, queryNum);
         }
     }
 
@@ -292,7 +313,66 @@ public final class BatchQueryHelper {
         }
         long elapsedTime = System.currentTimeMillis() - startTime;
         if (elapsedTime > EXPECTED_QUERY_TIME) {
-            logger.warn("invoke athena interface elapse {}, queryNum {}", elapsedTime, queryNum);
+            logger.warn("invoke batchQueryHelper interface elapse {}, queryNum {}", elapsedTime, queryNum);
+        }
+    }
+
+    /**
+     * 并发执行两个参数批量查询接口的方法
+     *
+     * @param innerIds ID 列表
+     * @param param2 函数第二个参数
+     * @param function 实际查询函数
+     * @param <P> 查询参数的类型
+     * @param <U> 函数第二个参数类型
+     * @param <R>  查询结果中的类型
+     * @return list
+     */
+    private static <P,U,R> void innerBatchBiParamConcurrentQuery(List<P> innerIds,U param2, BiFunction<List<P>, U, R> function, Consumer<R> consumer, ExecutorService executorService, int batchSize) {
+        int queryNum = innerIds.size();
+        int fromIndex = 0;
+        int toIndex = batchSize;
+        List<P> temp;
+        long startTime = System.currentTimeMillis();
+        final List<List<P>> partitionTempList = new LinkedList<>();
+
+        temp = innerIds.subList(fromIndex, toIndex);
+        fromIndex = toIndex;
+        while (CollectionUtils.isNotEmpty(temp)) {
+            partitionTempList.add(temp);
+
+            toIndex = Math.min(toIndex + batchSize, queryNum);
+            temp = innerIds.subList(fromIndex, toIndex);
+            fromIndex = toIndex;
+        }
+
+        if (CollectionUtils.isNotEmpty(partitionTempList)) {
+            CountDownLatch countDownLatch = new CountDownLatch(partitionTempList.size());
+            partitionTempList.forEach(partitionTemp -> {
+                executorService.submit(new RunnableWrapper(() -> {
+                    try {
+                        R singleResult = function.apply(partitionTemp, param2);
+                        if (singleResult != null) {
+                            consumer.accept(singleResult);
+                        }
+                    } catch (Exception e) {
+                        logger.warn("innerBatchBiParamConcurrentQuery error", e);
+                    } finally {
+                        logger.info("innerBatchBiParamConcurrentQuery finally, thread:{}", Thread.currentThread().getName());
+                        countDownLatch.countDown();
+                    }
+                }));
+            });
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                logger.info("countDownLatch await error", e);
+            }
+        }
+
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        if (elapsedTime > EXPECTED_QUERY_TIME) {
+            logger.warn("invoke batchQueryHelper interface elapse {}, queryNum {}", elapsedTime, queryNum);
         }
     }
 
@@ -327,7 +407,29 @@ public final class BatchQueryHelper {
         }
         long elapsedTime = System.currentTimeMillis() - startTime;
         if (elapsedTime > EXPECTED_QUERY_TIME) {
-            logger.warn("invoke athena interface elapse {}, queryNum {}", elapsedTime, queryNum);
+            logger.warn("invoke batchQueryHelper interface elapse {}, queryNum {}", elapsedTime, queryNum);
         }
     }
+
+    public static void main(String[] args) {
+        List<String> ids = Arrays.asList("a", "b", "c", "d");
+        executeBatchQueryToMapV2(ids, "+cc", (innerIds, param1) -> {
+            Map<String, String> result = new LinkedHashMap<>();
+            for (String id : innerIds) {
+                result.put(id, id + param1);
+            }
+            return result;
+        }).forEach((k, v) -> logger.info(k + " : " + v));
+
+        executeBatchQueryToMapConcurrentV2(ids, "+cc", (innerIds, param1) -> {
+            Map<String, String> result = new LinkedHashMap<>();
+            for (String id : innerIds) {
+                result.put(id, id + param1);
+            }
+            return result;
+        }, poolTaskExecutor, 3).forEach((k, v) -> logger.info("concurrent:" + k + " : " + v));
+
+        poolTaskExecutor.shutdown();
+    }
+
 }
