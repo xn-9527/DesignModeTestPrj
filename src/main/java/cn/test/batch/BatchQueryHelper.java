@@ -209,7 +209,7 @@ public final class BatchQueryHelper {
      * @param function 实际查询双参数函数，第一个参数是集合，第二个参数是param2
      * @return map 返回结果
      */
-    public static <P, U, T> Map<P, T> executeBatchQueryToMapConcurrentV2(Collection<P> ids, U param2, BiFunction<List<P>, U, Map<P, T>> function, ExecutorService executorService, int batchSize) {
+    public static <P, U, T> Map<P, T> executeBatchQueryToMapConcurrentV2(Collection<P> ids, U param2, BiFunction<Collection<P>, U, Map<P, T>> function, ExecutorService executorService, int batchSize) {
         if (CollectionUtils.isEmpty(ids)) {
             return Collections.emptyMap();
         }
@@ -328,7 +328,7 @@ public final class BatchQueryHelper {
      * @param <R>  查询结果中的类型
      * @return list
      */
-    private static <P,U,R> void innerBatchBiParamConcurrentQuery(List<P> innerIds,U param2, BiFunction<List<P>, U, R> function, Consumer<R> consumer, ExecutorService executorService, int batchSize) {
+    private static <P,U,R> void innerBatchBiParamConcurrentQuery(List<P> innerIds,U param2, BiFunction<Collection<P>, U, R> function, Consumer<R> consumer, ExecutorService executorService, int batchSize) {
         int queryNum = innerIds.size();
         int fromIndex = 0;
         int toIndex = batchSize;
@@ -416,7 +416,7 @@ public final class BatchQueryHelper {
         executeBatchQueryToMapV2(ids, "+cc", (innerIds, param1) -> {
             Map<String, String> result = new LinkedHashMap<>();
             for (String id : innerIds) {
-                result.put(id, id + param1);
+                result.put(id, id + param1 + "+" + Thread.currentThread().getName());
             }
             return result;
         }).forEach((k, v) -> logger.info(k + " : " + v));
@@ -424,7 +424,7 @@ public final class BatchQueryHelper {
         executeBatchQueryToMapConcurrentV2(ids, "+cc", (innerIds, param1) -> {
             Map<String, String> result = new LinkedHashMap<>();
             for (String id : innerIds) {
-                result.put(id, id + param1);
+                result.put(id, id + param1 + "+" + Thread.currentThread().getName());
             }
             return result;
         }, poolTaskExecutor, 3).forEach((k, v) -> logger.info("concurrent:" + k + " : " + v));
