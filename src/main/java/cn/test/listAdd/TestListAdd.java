@@ -1,5 +1,7 @@
 package cn.test.listAdd;
 
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,5 +31,7 @@ public class TestListAdd {
         }
         System.out.println("++++++++++++++++++++++++++++");
         System.out.println(list);
+        System.out.println(Lists.partition(list, 20));
+        System.out.println(Lists.partition(list, 2));
     }
 }
