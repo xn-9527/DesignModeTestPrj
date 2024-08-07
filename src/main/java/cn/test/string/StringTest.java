@@ -25,5 +25,8 @@ public class StringTest {
 
 
         log.info("测试startWith:" + "a_id".startsWith("a_"));
+        //test replace bug
+        log.info("abcdefghijk".replace("", "http://abcdefg/a"));;
+
     }
 }
