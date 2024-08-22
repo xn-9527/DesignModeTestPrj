@@ -23,5 +23,21 @@ public class JsonTest {
             int d = (int) c[i];
             log.info("第{}个元素：{}", i, d);
         }
+
+        try {
+            log.info(String.valueOf(JSON.parseArray("")));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            log.info(String.valueOf(JSON.parseArray("[1,2,3]")));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            log.info(String.valueOf(JSON.parseArray("1,2,3")));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
