@@ -31,6 +31,7 @@ public class JsonTest {
         }
         try {
             log.info(String.valueOf(JSON.parseArray("[1,2,3]")));
+            log.info(String.valueOf(JSON.parseArray("[]")));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
