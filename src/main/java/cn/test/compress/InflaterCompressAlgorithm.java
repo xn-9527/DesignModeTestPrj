@@ -22,7 +22,7 @@ public class InflaterCompressAlgorithm {
         deflater.setInput(data);
         deflater.finish();
 
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[data.length];
         int compressedDataLength = deflater.deflate(buffer);
         deflater.end();
 
@@ -36,7 +36,7 @@ public class InflaterCompressAlgorithm {
         Inflater inflater = new Inflater();
         inflater.setInput(data);
 
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[data.length];
         int decompressedDataLength = 0;
         try {
             decompressedDataLength = inflater.inflate(buffer);
@@ -91,6 +91,7 @@ public class InflaterCompressAlgorithm {
     }
 
     public static void main(String[] args) {
+        //TIPS：压缩后还原的字符串不完整
         String inputString = "{\"a\":\"Hello, world!asdfsdfgfdgfghnaaaaaaaaaaaaaaaaasdfdsfffffffffffffsddddddddddddvbngfhjrtyrerertwerwe我的家庭\"}";
         byte[] input = inputString.getBytes(StandardCharsets.UTF_8);
         byte[] compressed = compressData(input);
@@ -109,5 +110,12 @@ public class InflaterCompressAlgorithm {
         System.out.println("decompressed log:" + decompressLog(compressLog));
         //input str length:109,compressLog length:88
         System.out.println("input str length:" + inputString.length() + ",compressLog length:" + compressLog.length());
+        System.out.println("decompressed log:" + decompressLog("x��VJT�R�H����Q(�/�IQL,NI\u0003�������Dt\u0000�K)NC\u0006�)H�,)/=-#����(K�S��S�uL|>���mOw�U�\u0005\u00009?1"));
+        String base85 = jBaseZ85.encode(input);
+        System.out.println("base85 encode log:" + base85 + ",length:" + base85.length());
+        String base85compress = jBaseZ85.encode(compressed);
+        System.out.println("base85 encode compress log:" + base85compress + ",length:" + base85compress.length());
+        System.out.println("base85 decode log:" + new String(jBaseZ85.decode(base85), StandardCharsets.UTF_8));
+        System.out.println("base85 compress decode log:" + new String(decompressData(new String(jBaseZ85.decode(base85compress), StandardCharsets.ISO_8859_1).getBytes(StandardCharsets.ISO_8859_1)), StandardCharsets.UTF_8));
     }
 }
