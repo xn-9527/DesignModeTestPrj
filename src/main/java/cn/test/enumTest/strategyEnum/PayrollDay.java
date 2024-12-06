@@ -67,5 +67,6 @@ public enum PayrollDay {
         double payRate = 1;
         log.info("{}的工作时长{}的加班工资多出的部分为{}", PayrollDay.FRIDAY.toString(), hoursWorked, PayrollDay.FRIDAY.payType.overtimePay(hoursWorked, payRate));
         log.info("{}的工作时长{}的应付总工资为{}", PayrollDay.FRIDAY.toString(), hoursWorked,PayrollDay.FRIDAY.payType.pay(hoursWorked, payRate));
+        log.info("{}的 toString, payType:{}", PayrollDay.FRIDAY.toString(), PayrollDay.MONDAY.payType);
     }
 }

@@ -3,7 +3,10 @@ package cn.test.fastjson;
 import cn.test.equals.User;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 /**
  * Created by xiaoni on 2019/10/23.
@@ -40,5 +43,9 @@ public class FastJsonTest {
         JSONObject jsonObject = JSON.parseObject(jsonString);
         log.info("非驼峰：" + jsonObject.getString("map_name"));
         log.info("驼峰：" + jsonObject.getString("mapName"));
+
+        List<String> homeIdList = JSON.parseArray("[\"1\",\"23\"]", String.class);
+        List<List<String>> splitList = Lists.partition(homeIdList, 1);
+        log.info("splitList: {}", splitList);
     }
 }

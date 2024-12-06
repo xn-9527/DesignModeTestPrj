@@ -142,6 +142,7 @@ public class SnappyPressAlgorithm {
         try{
             System.out.println("test5555:" + decompressLog("u\u0090{\"a\":\"Hello, world!asdfsdfgfdgfghnaaa6\u0002\u0000\u0014sdfdsf.\u0001\u0000\u0004sd\u001D\u0001\u0088vbngfhjrtyrerertwerweæ\u0088\u0091ç\u009A\u0084å®¶åº\u00AD\"}"));
             System.out.println("test5255:" + decompressLog("u\u0090{\"a\":\"Hello, world!asdfsdfgfdgfghnaaa6\u0002\u0000\u0014sdfdsf.\u0001\u0000\u0004sd\u001D\u0001\u0088vbngfhjrtyrerertwerweæ\u0088\u0091ç\u009A\u0084å®¶åº\u00AD\"}"));
+            System.out.println("test5355:" + decompressLog("Ñ\\u0001Ð{TQNRbAHdrGmqk5bs:[{abilityCode:tyabiccrdh,productId:>4\\u0000\\u0004},F4\\u0000\u0098n3xgx,extConfig:{\\\\bindLevel\\\\:\\\\strong\\\\},¶U\\u0000\\u001438qux,j4\\u0000\\u0004]}"));
         } catch (Exception e) {
             log.error("decompress error", e);
         }
