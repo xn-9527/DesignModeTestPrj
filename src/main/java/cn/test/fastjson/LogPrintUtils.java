@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 /**
  * @Author: c
  * @Date: 2024/11/25 17:27
- * @Description:
+ * @Description: 开关控制是否打印日志, print.test.log.online.switch 如果线上也需要临时打印，可以打开该开关，默认线上不打印。
  */
 @Slf4j
 public class LogPrintUtils {
@@ -39,11 +39,11 @@ public class LogPrintUtils {
     }
 
     /**
-     * 开关控制是否打印日志, print.test.log.online.switch 如果线上也需要临时打印，可以打开该开关，默认线上不打印。
+     * 直接执行函数
      *
      * @param logFunction
      */
-    public static void onlyPrintInPre(Consumer<Void> logFunction) {
+    private static void printLog(Consumer<Void> logFunction) {
         try {
             logFunction.accept(null);
         } catch (Exception e) {
