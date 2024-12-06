@@ -10,7 +10,8 @@ import java.util.function.Consumer;
 /**
  * @Author: c
  * @Date: 2024/11/25 17:27
- * @Description: 开关控制是否打印日志, print.test.log.online.switch 如果线上也需要临时打印，可以打开该开关，默认线上不打印。
+ * 1.开关控制是否打印日志, print.test.log.online.switch 如果线上也需要临时打印，可以打开该开关，默认线上不打印。
+ * 2.占位符 object 入参如果是 string 则会直接打印，如果是其他对象，则会用 fastJSON 序列化打印。
  */
 @Slf4j
 public class LogPrintUtils {
@@ -83,104 +84,104 @@ public class LogPrintUtils {
      * @param var1
      */
     public static void info(Logger logger, String var1) {
-        onlyPrintInPre((v) -> logger.info(var1));
+        printLog((v) -> logger.info(var1));
     }
 
     public static void info(Logger logger, String var1, Object var2) {
         if (!isPrintLog()) {
             return;
         }
-        onlyPrintInPre((v) -> logger.info(var1, formatString(var2)));
+        printLog((v) -> logger.info(var1, formatString(var2)));
     }
 
     public static void info(Logger logger, String var1, Object var2, Object var3) {
         if (!isPrintLog()) {
             return;
         }
-        onlyPrintInPre((v) -> logger.info(var1, formatString(var2), formatString(var3)));
+        printLog((v) -> logger.info(var1, formatString(var2), formatString(var3)));
     }
 
     public static void info(Logger logger, String var1, Object... var2) {
         if (!isPrintLog()) {
             return;
         }
-        onlyPrintInPre((v) -> logger.info(var1, formatString(var2)));
+        printLog((v) -> logger.info(var1, formatString(var2)));
     }
 
     public static void info(Logger logger, String var1, Throwable var2) {
         if (!isPrintLog()) {
             return;
         }
-        onlyPrintInPre((v) -> logger.info(var1, var2));
+        printLog((v) -> logger.info(var1, var2));
     }
 
     public static void warn(Logger logger, String var1) {
         if (!isPrintLog()) {
             return;
         }
-        onlyPrintInPre((v) -> logger.warn(var1));
+        printLog((v) -> logger.warn(var1));
     }
 
     public static void warn(Logger logger, String var1, Object var2) {
         if (!isPrintLog()) {
             return;
         }
-        onlyPrintInPre((v) -> logger.warn(var1, formatString(var2)));
+        printLog((v) -> logger.warn(var1, formatString(var2)));
     }
 
     public static void warn(Logger logger, String var1, Object var2, Object var3) {
         if (!isPrintLog()) {
             return;
         }
-        onlyPrintInPre((v) -> logger.warn(var1, formatString(var2), formatString(var3)));
+        printLog((v) -> logger.warn(var1, formatString(var2), formatString(var3)));
     }
 
     public static void warn(Logger logger, String var1, Object... var2) {
         if (!isPrintLog()) {
             return;
         }
-        onlyPrintInPre((v) -> logger.warn(var1, formatString(var2)));
+        printLog((v) -> logger.warn(var1, formatString(var2)));
     }
 
     public static void warn(Logger logger, String var1, Throwable var2) {
         if (!isPrintLog()) {
             return;
         }
-        onlyPrintInPre((v) -> logger.warn(var1, var2));
+        printLog((v) -> logger.warn(var1, var2));
     }
 
     public static void error(Logger logger, String var1) {
         if (!isPrintLog()) {
             return;
         }
-        onlyPrintInPre((v) -> logger.error(var1));
+        printLog((v) -> logger.error(var1));
     }
 
     public static void error(Logger logger, String var1, Object var2) {
         if (!isPrintLog()) {
             return;
         }
-        onlyPrintInPre((v) -> logger.error(var1, formatString(var2)));
+        printLog((v) -> logger.error(var1, formatString(var2)));
     }
 
     public static void error(Logger logger, String var1, Object var2, Object var3) {
         if (!isPrintLog()) {
             return;
         }
-        onlyPrintInPre((v) -> logger.error(var1, formatString(var2), formatString(var3)));
+        printLog((v) -> logger.error(var1, formatString(var2), formatString(var3)));
     }
 
     public static void error(Logger logger, String var1, Object... var2) {
         if (!isPrintLog()) {
             return;
         }
-        onlyPrintInPre((v) -> logger.error(var1, formatString(var2)));
+        printLog((v) -> logger.error(var1, formatString(var2)));
     }
 
     public static void error(Logger logger, String var1, Throwable var2) {
         if (!isPrintLog()) {
             return;
         }
-        onlyPrintInPre((v) -> logger.error(var1, var2));
+        printLog((v) -> logger.error(var1, var2));
     }
 }
